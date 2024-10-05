@@ -1,0 +1,29 @@
+﻿@model POS.Models.Users
+
+@{
+    ViewData["Title"] = "লগইন";
+}
+
+<h2>লগইন</h2>
+
+<form asp-action="Login" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label for="phoneNo">ফোন নম্বর</label>
+        <input type="text" name="phoneNo" class="form-control" placeholder="আপনার ফোন নম্বর দিন" />
+        <span asp-validation-for="PhoneNo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="password">পাসওয়ার্ড</label>
+        <input type="password" name="password" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">লগইন</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
