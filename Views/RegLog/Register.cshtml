@@ -1,54 +1,71 @@
 ﻿@model POS.Models.Users
 
-<h2>রেজিস্ট্রেশন</h2>
+@{
+    ViewData["Title"] = "রেজিস্ট্রেশন";
+}
+<div class="py-8 px-8 md:py-8">
+    <p class="text-center font-bold md:text-3xl">রেজিস্ট্রেশন</p>
 
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="Register" method="post" class="font-[sans-serif] m-6 max-w-4xl mx-auto">
+        <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="form-group">
-        <label asp-for="UserName">ব্যবহারকারীর নাম</label>
-        <input asp-for="UserName" class="form-control" />
-        <span asp-validation-for="UserName" class="text-danger"></span>
-    </div>
+        <div class="grid sm:grid-cols-2 gap-10">
 
-    <div class="form-group">
-        <label asp-for="ShopName">দোকানের নাম</label>
-        <input asp-for="ShopName" class="form-control" />
-        <span asp-validation-for="ShopName" class="text-danger"></span>
-    </div>
+            <!-- UserName -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ব্যবহারকারীর নাম</label>
+                <input asp-for="UserName" placeholder="ব্যবহারকারীর নাম লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Address">ঠিকানা</label>
-        <input asp-for="Address" class="form-control" />
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
+            <!-- ShopName -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">দোকানের নাম</label>
+                <input asp-for="ShopName" placeholder="দোকানের নাম লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span asp-validation-for="ShopName" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Email">ইমেইল</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+            <!-- Address -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ঠিকানা</label>
+                <input asp-for="Address" placeholder="ঠিকানা লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="PhoneNo">ফোন নম্বর</label>
-        <input asp-for="PhoneNo" class="form-control" />
-        <span asp-validation-for="PhoneNo" class="text-danger"></span>
-    </div>
+            <!-- Email -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ইমেইল</label>
+                <input asp-for="Email" placeholder="ইমেইল লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="Password">পাসওয়ার্ড</label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+            <!-- PhoneNo -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ফোন নম্বর</label>
+                <input asp-for="PhoneNo" type="number" placeholder="ফোন নম্বর লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span asp-validation-for="PhoneNo" class="text-danger"></span>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="ConfirmPassword">পাসওয়ার্ড নিশ্চিত করুন</label>
-        <input asp-for="ConfirmPassword" class="form-control" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
+            <!-- Password -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পাসওয়ার্ড</label>
+                <input asp-for="Password" type="password" placeholder="পাসওয়ার্ড লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
-    <button type="submit" class="btn btn-primary">রেজিস্টার</button>
-</form>
+            <!-- Confirm Password -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পাসওয়ার্ড নিশ্চিত করুন</label>
+                <input asp-for="ConfirmPassword" type="password" placeholder="পাসওয়ার্ড নিশ্চিত করুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <!-- Register Button -->
+        <button type="submit" class="mt-8 px-6 py-2.5 w-full text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">রেজিস্টার</button>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

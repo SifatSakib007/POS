@@ -3,20 +3,20 @@
   "WorkspaceRootPath": "E:\\POS_Sifat_Muhin\\POS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\views\\shared\\_sidenav.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\shared\\_sidenav.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\views\\reglog\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\reglog\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\views\\reglog\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\reglog\\register.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\controllers\\reglogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:controllers\\reglogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\views\\reglog\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\reglog\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -35,53 +35,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAB8AAAB2AAAAAAAAAA==",
+              "Title": "_SideNav.cshtml",
+              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Views\\Shared\\_SideNav.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_SideNav.cshtml",
+              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Views\\Shared\\_SideNav.cshtml*",
+              "RelativeToolTip": "Views\\Shared\\_SideNav.cshtml*",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAqwDMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-05T15:39:05.491Z",
+              "WhenOpened": "2024-10-05T16:46:25.927Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Login.cshtml",
-              "RelativeDocumentMoniker": "Views\\RegLog\\Login.cshtml",
-              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Login.cshtml",
-              "RelativeToolTip": "Views\\RegLog\\Login.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAA/AAAAAAAAAA==",
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAABXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-05T15:33:44.406Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Register.cshtml",
-              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Register.cshtml",
-              "RelativeDocumentMoniker": "Views\\RegLog\\Register.cshtml",
-              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Register.cshtml",
-              "RelativeToolTip": "Views\\RegLog\\Register.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-05T15:22:04.156Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "RegLogController.cs",
-              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Controllers\\RegLogController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RegLogController.cs",
-              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Controllers\\RegLogController.cs",
-              "RelativeToolTip": "Controllers\\RegLogController.cs",
-              "ViewState": "AgIAAC4AAAAAAAAAAAAAADIAAAAgAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T15:14:47.503Z",
+              "WhenOpened": "2024-10-05T16:16:58.096Z",
               "EditorCaption": ""
             },
             {
@@ -92,9 +66,35 @@
               "RelativeDocumentMoniker": "Models\\Users.cs",
               "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\Users.cs",
               "RelativeToolTip": "Models\\Users.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAA1wBwAAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T15:10:54.167Z",
+              "WhenOpened": "2024-10-05T16:13:54.824Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Register.cshtml",
+              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Register.cshtml",
+              "RelativeDocumentMoniker": "Views\\RegLog\\Register.cshtml",
+              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Register.cshtml",
+              "RelativeToolTip": "Views\\RegLog\\Register.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-05T16:09:23.802Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\RegLog\\Login.cshtml",
+              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Views\\RegLog\\Login.cshtml",
+              "RelativeToolTip": "Views\\RegLog\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-05T16:09:20.843Z",
               "EditorCaption": ""
             }
           ]

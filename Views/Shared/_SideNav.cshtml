@@ -1,0 +1,51 @@
+﻿<header class="flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[80px] tracking-wide relative z-50">
+    <div class="flex flex-wrap items-center gap-5 w-full">
+        <a href="#">
+            Image
+        </a>
+
+        <!-- Large screen navigation -->
+        <nav class="max-sm:hidden sm:hidden md:hidden lg:flex max-xl:flex ml-auto space-x-6">
+            <a href="#" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">Home</a>
+            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Team</a>
+            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Feature</a>
+            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Blog</a>
+            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">About</a>
+            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Contact</a>
+        </nav>
+
+        <!-- Hamburger Button for Small screens -->
+        <button id="toggleOpen" class="lg:hidden ml-auto" onclick="toggleMenu()">
+            <svg class="w-7 h-7" fill="#333" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"></path>
+            </svg>
+        </button>
+
+        <!-- Small screen dropdown menu -->
+        <div id="collapseMenu" class="lg:hidden fixed top-0 left-0 w-full h-full bg-white shadow-md p-6 transition-transform duration-300 ease-in-out -translate-x-full">
+            <button id="toggleClose" class="fixed top-4 right-4 z-50" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <ul class="space-y-4 mt-10">
+                <li><a href="#" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">Home</a></li>
+                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Team</a></li>
+                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Feature</a></li>
+                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Blog</a></li>
+                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">About</a></li>
+                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<script>
+    // JavaScript logic to handle menu open/close state
+    function toggleMenu() {
+        const menu = document.getElementById("collapseMenu");
+        menu.classList.toggle('-translate-x-full');
+        menu.classList.toggle('translate-x-0');
+    }
+</script>
