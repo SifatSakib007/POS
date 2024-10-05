@@ -4,25 +4,53 @@
     ViewData["Title"] = "লগইন";
 }
 
-<h2>লগইন</h2>
+<div class="py-8 px-8 md:py-8">
+    <p class="text-center font-bold md:text-3xl">লগিন করুন</p>
 
-<form asp-action="Login" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
+    <!-- Conditional Validation Summary -->
+    @if (ViewData.ModelState.IsValid == false && ViewData.ModelState.Any())
+    {
+        <div asp-validation-summary="All" class="bg-red-100 text-red-700 border border-red-400 rounded p-4 mb-4">
+        </div>
+    }
 
-    <div class="form-group">
-        <label for="phoneNo">ফোন নম্বর</label>
-        <input type="text" name="phoneNo" class="form-control" placeholder="আপনার ফোন নম্বর দিন" />
-        <span asp-validation-for="PhoneNo" class="text-danger"></span>
-    </div>
+    <form asp-action="Login" method="post" class="font-[sans-serif] m-6 max-w-4xl mx-auto">
+        <div class="grid sm:grid-cols-2 gap-10">
 
-    <div class="form-group">
-        <label for="password">পাসওয়ার্ড</label>
-        <input type="password" name="password" class="form-control" placeholder="আপনার পাসওয়ার্ড দিন" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+            <!-- Phone Number Field -->
+            <div class="relative flex items-center">
+                <label for="phoneNo" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
+                    ফোন নম্বর
+                </label>
+                <input type="text" asp-for="PhoneNo" name="phoneNo" placeholder="ফোন নাম্বার লিখুন"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <svg fill="#bbb" class="w-[18px] h-[18px] absolute right-4" viewBox="0 0 64 64">
+                    <path d="m52.148 42.678-6.479-4.527a5 5 0 0 0-6.963 1.238l-1.504 2.156c-2.52-1.69-5.333-4.05-8.014-6.732-2.68-2.68-5.04-5.493-6.73-8.013l2.154-1.504a4.96 4.96 0 0 0 2.064-3.225 4.98 4.98 0 0 0-.826-3.739l-4.525-6.478C20.378 10.5 18.85 9.69 17.24 9.69a4.69 4.69 0 0 0-1.628.291 8.97 8.97 0 0 0-1.685.828l-.895.63a6.782 6.782 0 0 0-.63.563c-1.092 1.09-1.866 2.472-2.303 4.104-1.865 6.99 2.754 17.561 11.495 26.301 7.34 7.34 16.157 11.9 23.011 11.9 1.175 0 2.281-.136 3.29-.406 1.633-.436 3.014-1.21 4.105-2.302.199-.199.388-.407.591-.67l.63-.899a9.007 9.007 0 0 0 .798-1.64c.763-2.06-.007-4.41-1.871-5.713z" />
+                </svg>
+                <span asp-validation-for="PhoneNo" class="text-danger absolute top-[90%]"></span>
+            </div>
 
-    <button type="submit" class="btn btn-primary">লগইন</button>
-</form>
+            <!-- Password Field -->
+            <div class="relative flex items-center sm:col-span-2">
+                <label for="password" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
+                    পাসওয়ার্ড
+                </label>
+                <input type="password" asp-for="Password" name="password" placeholder="পাসওয়ার্ড লিখুন"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-[18px] h-[18px] absolute right-4 cursor-pointer" viewBox="0 0 128 128">
+                    <path d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z" />
+                </svg>
+                <span asp-validation-for="Password" class="text-danger absolute top-[90%]"></span>
+            </div>
+
+        </div>
+        <p class="text-sm font-medium mt-8">আপনার কি একাউন্ট করা নেই? <span class="text-blue-600"><Link to='/registration'>রেজিস্ট্রেশন করুন</Link></span></p>
+        <button type="submit" class="mt-8 px-6 py-2.5 w-full text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">
+            লগিন
+        </button>
+    </form>
+
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
