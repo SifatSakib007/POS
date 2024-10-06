@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\POS_Sifat_Muhin\\POS\\POS.csproj": {}
+    "F:\\sifat\\POS\\POS.csproj": {}
   },
   "projects": {
-    "E:\\POS_Sifat_Muhin\\POS\\POS.csproj": {
+    "F:\\sifat\\POS\\POS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\POS_Sifat_Muhin\\POS\\POS.csproj",
+        "projectUniqueName": "F:\\sifat\\POS\\POS.csproj",
         "projectName": "POS",
-        "projectPath": "E:\\POS_Sifat_Muhin\\POS\\POS.csproj",
-        "packagesPath": "C:\\Users\\sifat\\.nuget\\packages\\",
-        "outputPath": "E:\\POS_Sifat_Muhin\\POS\\obj\\",
+        "projectPath": "F:\\sifat\\POS\\POS.csproj",
+        "packagesPath": "C:\\Users\\Muhin\\.nuget\\packages\\",
+        "outputPath": "F:\\sifat\\POS\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\sifat\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Muhin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -43,9 +39,8 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
-        },
-        "SdkAnalysisLevel": "9.0.100"
+          "auditMode": "direct"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -91,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-rc.1.24452.12/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
