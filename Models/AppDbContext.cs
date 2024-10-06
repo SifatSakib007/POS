@@ -10,5 +10,10 @@ namespace POS.Models
 
         }
         public DbSet<Users> Users { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<Shop> Shop { get; set; }
+        public DbSet<Sell> Sell { get; set; }
+        public DbSet<Customer> Customer{ get; set; }
+        public DbSet<Client> Client { get; set; }
     }
 }
