@@ -19,6 +19,7 @@ namespace POS.Models
         public string? PhoneNo { get; set; }
 
         public decimal? Due { get; set; }
+        public decimal? DueClose { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property for the purchases made by this customer

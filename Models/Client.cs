@@ -18,6 +18,8 @@ namespace POS.Models
        
         [Phone(ErrorMessage = "ফোন নম্বর সঠিক নয়।")]
         public string? PhoneNo { get; set; }
+        public decimal? Debt { get; set; }
+        public decimal? ClearDebt { get; set; }
 
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
 

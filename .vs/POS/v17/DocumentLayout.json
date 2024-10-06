@@ -3,12 +3,8 @@
   "WorkspaceRootPath": "E:\\POS_Sifat_Muhin\\POS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|E:\\POS_Sifat_Muhin\\POS\\Migrations\\20241006175104_ModelCreated.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20241006175104_ModelCreated.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -25,6 +21,18 @@
     {
       "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|e:\\pos_sifat_muhin\\pos\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,77 +47,103 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "20241006175104_ModelCreated.cs",
+              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Migrations\\20241006175104_ModelCreated.cs",
+              "RelativeDocumentMoniker": "Migrations\\20241006175104_ModelCreated.cs",
+              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Migrations\\20241006175104_ModelCreated.cs",
+              "RelativeToolTip": "Migrations\\20241006175104_ModelCreated.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-06T17:51:04.897Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Models\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Models\\AppDbContext.cs",
+              "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\AppDbContext.cs",
+              "RelativeToolTip": "Models\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-06T17:41:26.524Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "Client.cs",
               "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Models\\Client.cs",
               "RelativeDocumentMoniker": "Models\\Client.cs",
               "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\Client.cs",
               "RelativeToolTip": "Models\\Client.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-06T06:24:56.506Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 7,
               "Title": "Customer.cs",
               "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Models\\Customer.cs",
               "RelativeDocumentMoniker": "Models\\Customer.cs",
               "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\Customer.cs",
               "RelativeToolTip": "Models\\Customer.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAmwBoAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAmwBUAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-06T06:22:16.566Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "Sell.cs",
               "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Models\\Sell.cs",
               "RelativeDocumentMoniker": "Models\\Sell.cs",
               "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\Sell.cs",
               "RelativeToolTip": "Models\\Sell.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAmwDcAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAACIAAAAAAAAAAAAmwD0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-05T18:50:05.732Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Shop.cs",
               "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Models\\Shop.cs",
               "RelativeDocumentMoniker": "Models\\Shop.cs",
               "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\Shop.cs",
               "RelativeToolTip": "Models\\Shop.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAmwBgAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAAA1wBgAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-05T18:46:24.065Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Product.cs",
               "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Models\\Product.cs",
               "RelativeDocumentMoniker": "Models\\Product.cs",
               "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\Product.cs",
               "RelativeToolTip": "Models\\Product.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAA8wCQAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAwwCAAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-05T18:41:17.925Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "Users.cs",
               "DocumentMoniker": "E:\\POS_Sifat_Muhin\\POS\\Models\\Users.cs",
               "RelativeDocumentMoniker": "Models\\Users.cs",
               "ToolTip": "E:\\POS_Sifat_Muhin\\POS\\Models\\Users.cs",
               "RelativeToolTip": "Models\\Users.cs",
-              "ViewState": "AgIAACAAAAAAAAAAAAAuwBcAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAuwBcAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-05T18:42:55.906Z",
               "EditorCaption": ""

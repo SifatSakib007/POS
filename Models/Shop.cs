@@ -9,7 +9,7 @@ namespace POS.Models
 
         [Required(ErrorMessage = "অংশীদারের নাম আবশ্যক।")]
         [StringLength(100, ErrorMessage = "অংশীদারের নাম ১০০ অক্ষরের বেশি হতে পারবে না।")]
-        public required string PartnerName { get; set; }
+        public required string EmployeeName { get; set; }
         
         [Phone(ErrorMessage = "ফোন নম্বর সঠিক নয়।")]
         public string? PhoneNo { get; set; }
