@@ -75,16 +75,16 @@ namespace POS.Controllers
 
             if (user == null)
             {
-                ModelState.AddModelError("", "ফোন নম্বর বা পাসওয়ার্ড সঠিক নয়।");
+                ModelState.AddModelError("", "ফোন নম্বর বা পাসওয়ার্ড সঠিক নয়।"); 
                 return View();
             }
 
             // Set up claims for authentication
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Role, user.Role) // Add role claim
-    };
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, user.Role) // Add role claim
+            };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
@@ -98,11 +98,11 @@ namespace POS.Controllers
             // Redirect based on the role
             if (user.Role == "Admin")
             {
-                return RedirectToAction("AdminDashboard", "Dashboard");
+                return RedirectToAction("AdminDashboard", "Home");
             }
             else if (user.Role == "Client")
             {
-                return RedirectToAction("ClientDashboard", "Dashboard");
+                return RedirectToAction("ClientDashboard", "Home");
             }
 
             return RedirectToAction("Index", "Home"); // Redirect to some home or dashboard page after successful login
