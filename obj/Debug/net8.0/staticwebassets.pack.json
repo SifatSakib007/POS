@@ -13,6 +13,38 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\analytics.png",
+      "PackagePath": "staticwebassets\\image\\analytics.png"
+    },
+    {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\attendant-list.png",
+      "PackagePath": "staticwebassets\\image\\attendant-list.png"
+    },
+    {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\customer-survey.png",
+      "PackagePath": "staticwebassets\\image\\customer-survey.png"
+    },
+    {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\money-bag.png",
+      "PackagePath": "staticwebassets\\image\\money-bag.png"
+    },
+    {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\money-flow.png",
+      "PackagePath": "staticwebassets\\image\\money-flow.png"
+    },
+    {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\product-life-cycle.png",
+      "PackagePath": "staticwebassets\\image\\product-life-cycle.png"
+    },
+    {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\sale.png",
+      "PackagePath": "staticwebassets\\image\\sale.png"
+    },
+    {
+      "Id": "F:\\sifat\\POS\\wwwroot\\image\\stock-chart.png",
+      "PackagePath": "staticwebassets\\image\\stock-chart.png"
+    },
+    {
       "Id": "F:\\sifat\\POS\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

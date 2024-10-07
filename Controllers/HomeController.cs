@@ -13,7 +13,7 @@ namespace POS.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult ClientDashboard()
         {
             return View();
         }
@@ -27,6 +27,75 @@ namespace POS.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public ActionResult ProductSell()
+        {
+            return View();
+        }
+
+        public ActionResult ProductSellReport()
+        {
+            return View();
+        }
+
+        public ActionResult AddCustomer()
+        {
+            return View();
+        }
+
+        public ActionResult CustomerList()
+        {
+            return View();
+        }
+
+        public ActionResult CustomerDue()
+        {
+            return View();
+        }
+
+        public ActionResult ShopHishab()
+        {
+            return View();
+        }
+
+        public ActionResult ProductBuy()
+        {
+            return View();
+        }
+
+        public ActionResult ProductBuyList()
+        {
+            return View();
+        }
+
+        public ActionResult AddSeller()
+        {
+            return View();
+        }
+
+        public ActionResult SellerList()
+        {
+            return View();
+        }
+
+        public ActionResult AddProduct()
+        {
+            return View();
+        }
+
+        public ActionResult ProductList()
+        {
+            return View();
+        }
+
+        public ActionResult OwnShopDue()
+        {
+            return View();
+        }
+        public ActionResult OwnShopHisab()
+        {
+            return View();
         }
     }
 }

@@ -18,12 +18,68 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = F:\sifat\POS
 build_property._RazorSourceGeneratorDebug = 
 
-[F:/sifat/POS/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+[F:/sifat/POS/Views/Home/AddCustomer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZGRDdXN0b21lci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/AddProduct.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZGRQcm9kdWN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/AddSeller.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBZGRTZWxsZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/ClientDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDbGllbnREYXNoYm9hcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/CustomerDue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDdXN0b21lckR1ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/CustomerList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDdXN0b21lckxpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/OwnShopDue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxPd25TaG9wRHVlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/OwnShopHisab.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxPd25TaG9wSGlzYWIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [F:/sifat/POS/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/ProductBuy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcm9kdWN0QnV5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/ProductBuyList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcm9kdWN0QnV5TGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/ProductList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcm9kdWN0TGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/ProductSell.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcm9kdWN0U2VsbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/ProductSellReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcm9kdWN0U2VsbFJlcG9ydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/SellerList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTZWxsZXJMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/sifat/POS/Views/Home/ShopHishab.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTaG9wSGlzaGFiLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [F:/sifat/POS/Views/RegLog/Login.cshtml]
