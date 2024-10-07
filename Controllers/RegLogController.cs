@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using POS.Models;
+using System.Security.Claims;
 
 namespace POS.Controllers
 {
@@ -34,6 +37,9 @@ namespace POS.Controllers
                     return View(model);
                 }
 
+                // Set default role as "Client"
+                model.Role = "Client";  // Assign "Client" as the default role
+
                 // Add the user to the database
                 _db.Users.Add(model);
                 await _db.SaveChangesAsync();
@@ -45,6 +51,7 @@ namespace POS.Controllers
             // If model state is invalid, return the view with validation errors
             return View(model);
         }
+
 
 
         // GET: Login
@@ -72,8 +79,31 @@ namespace POS.Controllers
                 return View();
             }
 
-            // Authentication successful - you can set up session or authentication here
-            // Example: HttpContext.Session.SetString("UserId", user.User_Id.ToString());
+            // Set up claims for authentication
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Role, user.Role) // Add role claim
+    };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                // Options like expiration, persistence, etc.
+            };
+
+            // Sign in the user
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            // Redirect based on the role
+            if (user.Role == "Admin")
+            {
+                return RedirectToAction("AdminDashboard", "Dashboard");
+            }
+            else if (user.Role == "Client")
+            {
+                return RedirectToAction("ClientDashboard", "Dashboard");
+            }
 
             return RedirectToAction("Index", "Home"); // Redirect to some home or dashboard page after successful login
         }

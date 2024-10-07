@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using POS.Models;
 
@@ -13,11 +14,17 @@ namespace POS.Controllers
             _logger = logger;
         }
 
-        public IActionResult ClientDashboard()
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminDashboard()
         {
             return View();
         }
 
+        [Authorize(Roles = "Client")]
+        public IActionResult ClientDashboard()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();
