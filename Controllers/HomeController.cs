@@ -13,7 +13,7 @@ namespace POS.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult ClientDashboard()
         {
             return View();
         }
