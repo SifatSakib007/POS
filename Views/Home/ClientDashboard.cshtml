@@ -1,1 +1,84 @@
-﻿Client
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@{
+    ViewBag.Title = "Dashboard";
+}
+<div class="flex flex-col justify-center items-center min-h-screen  ">
+    <div class="border-3 border-red-500">
+        <!-- ড্যাসবোর্ড টাইটেল -->
+        <p class="text-center text-3xl font-semibold my-10">ড্যাসবোর্ড</p>
+
+        <!-- কাস্টমারের হিসাব নিকাশ -->
+        <p class="text-center text-3xl font-semibold ">কাস্টমারের হিসাব</p>
+
+        <div class="container mx-auto max-w-2xl px-6 grid grid-cols-2 md:grid-cols-3 gap-5 mt-4">
+            <a asp-controller="Home" asp-action="ProductSell" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2">পণ্য বিক্রয় নিবন্ধন</p>
+            </a>
+            <a asp-controller="Home" asp-action="ProductSellReport" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="/image/attendant-list.png" />
+                <p class="text-sm text-center mt-2">বিক্রয়ক্রিত পণ্যের বিবরণী</p>
+            </a>
+            <a asp-controller="Home" asp-action="AddCustomer" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2 text-center">কাস্টমার যোগ করুন</p>
+            </a>
+            <a asp-controller="Home" asp-action="CustomerList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2 text-center">কাস্টমারের লিস্ট</p>
+            </a>
+            <a asp-controller="Home" asp-action="CustomerDue" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2">বাকির হিসাব</p>
+            </a>
+            <a asp-controller="Home" asp-action="ShopHishab" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2">দোকানের হিসাব</p>
+            </a>
+        </div>
+
+        <!-- দোকানের ক্রয়ক্রিত পণ্যের হিসাব নিকাশ -->
+        <p class="text-center text-3xl font-semibold mt-16">দোকানের ক্রয়ক্রিত পণ্যের হিসাব নিকাশ</p>
+
+        <div class="container mx-auto max-w-2xl px-6 grid grid-cols-2 md:grid-cols-3 gap-5 mt-4 mb-20">
+            <a asp-controller="Home" asp-action="ProductBuy" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2 text-center">ক্রয়ক্রিত পণ্য নিবন্ধন</p>
+            </a>
+            <a asp-controller="Home" asp-action="ProductBuyList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm text-center mt-2">ক্রয়ক্রিত পণ্যের বিবরণী</p>
+            </a>
+            <a asp-controller="Home" asp-action="AddSeller" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2 text-center">বিক্রেতা যোগ করুন</p>
+            </a>
+            <a asp-controller="Home" asp-action="SellerList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2 text-center">বিক্রেতার লিস্ট</p>
+            </a>
+            <a asp-controller="Home" asp-action="AddProduct" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2">পণ্য স্টক করুন</p>
+            </a>
+            <a asp-controller="Home" asp-action="ProductList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2 text-center px-1">স্টকক্রিত পণ্য দেখুন</p>
+            </a>
+            <a asp-controller="Home" asp-action="OwnShopDue" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2">বাকির হিসাব</p>
+            </a>
+            <a asp-controller="Home" asp-action="OwnShopHisab" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
+                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
+                <p class="text-sm mt-2">দোকানের হিসাব</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+

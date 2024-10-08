@@ -3,52 +3,20 @@
   "WorkspaceRootPath": "F:\\sifat\\sifat\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\controllers\\reglogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:controllers\\reglogcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\views\\home\\clientdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\home\\clientdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\views\\reglog\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\reglog\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\views\\shared\\_sidenav.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\shared\\_sidenav.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\models\\shop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\shop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\models\\sell.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\sell.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\models\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\client.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:models\\customer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\views\\home\\clientdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\home\\clientdashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\views\\home\\admindashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:views\\home\\admindashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|f:\\sifat\\sifat\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{837F509A-EB88-460D-AF78-5D2943017ABF}|POS.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -58,11 +26,35 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "F:\\sifat\\sifat\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "F:\\sifat\\sifat\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-07T18:28:55.292Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_SideNav.cshtml",
+              "DocumentMoniker": "F:\\sifat\\sifat\\Views\\Shared\\_SideNav.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_SideNav.cshtml",
+              "ToolTip": "F:\\sifat\\sifat\\Views\\Shared\\_SideNav.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_SideNav.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2024-10-07T18:27:41.114Z"
             },
             {
               "$type": "Document",
@@ -72,142 +64,22 @@
               "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
               "ToolTip": "F:\\sifat\\sifat\\Controllers\\HomeController.cs",
               "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAwwDoAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-07T11:27:06.443Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 0,
               "Title": "ClientDashboard.cshtml",
               "DocumentMoniker": "F:\\sifat\\sifat\\Views\\Home\\ClientDashboard.cshtml",
               "RelativeDocumentMoniker": "Views\\Home\\ClientDashboard.cshtml",
               "ToolTip": "F:\\sifat\\sifat\\Views\\Home\\ClientDashboard.cshtml",
               "RelativeToolTip": "Views\\Home\\ClientDashboard.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAmwA8AAAA8AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-07T06:01:30.792Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "AdminDashboard.cshtml",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Views\\Home\\AdminDashboard.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\AdminDashboard.cshtml",
-              "ToolTip": "F:\\sifat\\sifat\\Views\\Home\\AdminDashboard.cshtml",
-              "RelativeToolTip": "Views\\Home\\AdminDashboard.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-07T06:01:18.829Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Login.cshtml",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Views\\RegLog\\Login.cshtml",
-              "RelativeDocumentMoniker": "Views\\RegLog\\Login.cshtml",
-              "ToolTip": "F:\\sifat\\sifat\\Views\\RegLog\\Login.cshtml",
-              "RelativeToolTip": "Views\\RegLog\\Login.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-10-06T19:41:24.234Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "RegLogController.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Controllers\\RegLogController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RegLogController.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Controllers\\RegLogController.cs",
-              "RelativeToolTip": "Controllers\\RegLogController.cs",
-              "ViewState": "AgIAAEoAAAAAAAAAAAAqwF0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-06T19:33:46.702Z",
+              "WhenOpened": "2024-10-07T06:01:30.792Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AppDbContext.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Models\\AppDbContext.cs",
-              "RelativeDocumentMoniker": "Models\\AppDbContext.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Models\\AppDbContext.cs",
-              "RelativeToolTip": "Models\\AppDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAxAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-06T17:41:26.524Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Client.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Models\\Client.cs",
-              "RelativeDocumentMoniker": "Models\\Client.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Models\\Client.cs",
-              "RelativeToolTip": "Models\\Client.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-06T06:24:56.506Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Customer.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Models\\Customer.cs",
-              "RelativeDocumentMoniker": "Models\\Customer.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Models\\Customer.cs",
-              "RelativeToolTip": "Models\\Customer.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAmwBUAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-06T06:22:16.566Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Sell.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Models\\Sell.cs",
-              "RelativeDocumentMoniker": "Models\\Sell.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Models\\Sell.cs",
-              "RelativeToolTip": "Models\\Sell.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAmwD0AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T18:50:05.732Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Shop.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Models\\Shop.cs",
-              "RelativeDocumentMoniker": "Models\\Shop.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Models\\Shop.cs",
-              "RelativeToolTip": "Models\\Shop.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAA1wBgAAAAaAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T18:46:24.065Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Product.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Models\\Product.cs",
-              "RelativeDocumentMoniker": "Models\\Product.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Models\\Product.cs",
-              "RelativeToolTip": "Models\\Product.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAwwB4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T18:41:17.925Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Users.cs",
-              "DocumentMoniker": "F:\\sifat\\sifat\\Models\\Users.cs",
-              "RelativeDocumentMoniker": "Models\\Users.cs",
-              "ToolTip": "F:\\sifat\\sifat\\Models\\Users.cs",
-              "RelativeToolTip": "Models\\Users.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAowBcAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-05T18:42:55.906Z"
             }
           ]
         }

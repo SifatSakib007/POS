@@ -5,6 +5,38 @@
       "PackagePath": "staticwebassets\\POS.bundle.scp.css"
     },
     {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\analytics.png",
+      "PackagePath": "staticwebassets\\Image\\analytics.png"
+    },
+    {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\attendant-list.png",
+      "PackagePath": "staticwebassets\\Image\\attendant-list.png"
+    },
+    {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\customer-survey.png",
+      "PackagePath": "staticwebassets\\Image\\customer-survey.png"
+    },
+    {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\money-bag.png",
+      "PackagePath": "staticwebassets\\Image\\money-bag.png"
+    },
+    {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\money-flow.png",
+      "PackagePath": "staticwebassets\\Image\\money-flow.png"
+    },
+    {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\product-life-cycle.png",
+      "PackagePath": "staticwebassets\\Image\\product-life-cycle.png"
+    },
+    {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\sale.png",
+      "PackagePath": "staticwebassets\\Image\\sale.png"
+    },
+    {
+      "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\stock-chart.png",
+      "PackagePath": "staticwebassets\\Image\\stock-chart.png"
+    },
+    {
       "Id": "F:\\sifat\\sifat\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
