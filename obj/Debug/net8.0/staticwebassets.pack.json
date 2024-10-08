@@ -1,8 +1,13 @@
 {
   "Files": [
     {
+<<<<<<< HEAD
       "Id": "F:\\sifat\\sifat\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\POS.bundle.scp.css",
       "PackagePath": "staticwebassets\\POS.bundle.scp.css"
+=======
+      "Id": "E:\\POS_Sifat_Muhin\\POS\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\POS.bundle.scp.css",
+      "PackagePath": "staticwebassets\\POS.kvp5scpib8.bundle.scp.css"
+>>>>>>> 70a08b81ef68e51fa9c31d4a58c2e9c23fbb4d46
     },
     {
       "Id": "F:\\sifat\\sifat\\wwwroot\\Image\\analytics.png",
