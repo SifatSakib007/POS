@@ -40,7 +40,7 @@ namespace POS.Models
 
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? DeletedAt { get; set; }
-        public string? Status { get; set; } 
+        public string? Status { get; set; } = "Active";
 
 
         // Navigation property for the products added by the user

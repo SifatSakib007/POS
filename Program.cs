@@ -16,8 +16,8 @@ builder.Services.AddDbContext<AppDbContext>(
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Home/Login"; // Redirect to this path if the user is not authenticated
-        options.AccessDeniedPath = "/Account/AccessDenied"; // Handle access denied (optional)
+        options.LoginPath = "/RegLog/Login"; // Redirect to this path if the user is not authenticated
+        options.AccessDeniedPath = "/RegLog/Login"; // Handle access denied (optional)
     });
 
 // Add Authorization

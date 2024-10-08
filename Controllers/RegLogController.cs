@@ -43,7 +43,8 @@ namespace POS.Controllers
                 // Add the user to the database
                 _db.Users.Add(model);
                 await _db.SaveChangesAsync();
-
+                //Alert
+                TempData["success"] = "Successfullly login!.";
                 // Redirect to a confirmation page or login page after registration
                 return RedirectToAction("Login", "RegLog");
             }
@@ -98,14 +99,19 @@ namespace POS.Controllers
             // Redirect based on the role
             if (user.Role == "Admin")
             {
+                //Alert
+                TempData["success"] = "Successfullly login!.";
                 return RedirectToAction("AdminDashboard", "Home");
             }
             else if (user.Role == "Client")
             {
+                //Alert
+                TempData["success"] = "Successfullly login!.";
                 return RedirectToAction("ClientDashboard", "Home");
             }
-
-            return RedirectToAction("Index", "Home"); // Redirect to some home or dashboard page after successful login
+            //Alert
+            TempData["error"] = "Login failed!.";
+            return RedirectToAction("Login", "RegLog"); // Redirect to some home or dashboard page after successful login
         }
     
     
