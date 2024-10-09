@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using POS.Models;
@@ -15,6 +16,13 @@ namespace POS.Controllers
             _db = db;
         }
 
+        [Authorize(Roles = "Admin")]
+        public IActionResult AdminDashboard()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Client")]
         public IActionResult ClientDashboard()
         {
             return View();
@@ -57,6 +65,7 @@ namespace POS.Controllers
                 // Reload the necessary data if validation fails
                 ViewBag.Products = await _db.Product.ToListAsync();
                 ViewBag.Customers = await _db.Customer.ToListAsync();
+                TempData["error"] = "Something gone wrong!.";
                 return View(model);
             }
 
@@ -189,11 +198,13 @@ namespace POS.Controllers
                 // Add the customer data to the database
                 _db.Customer.Add(model);
                 await _db.SaveChangesAsync();
-
+                //success toaster alert
+                TempData["success"] = "Successfullly added customer details!.";
                 // Redirect to a confirmation page or customer list after successful addition
                 return RedirectToAction("CustomerList");  // Assuming you have a CustomerList page
             }
-
+            //success toaster alert
+            TempData["error"] = "Error saving customer details!.";
             // If the model state is invalid, return the view with validation errors
             return View(model);
         }
@@ -254,7 +265,8 @@ namespace POS.Controllers
                     // Update customer details in the database
                     _db.Customer.Update(customer);
                     _db.SaveChanges();
-
+                    //success toaster alert
+                    TempData["success"] = "Successfullly added customer due details!.";
                     return RedirectToAction("CustomerDue", new { id = customer.Id });
                 }
             }
@@ -284,9 +296,12 @@ namespace POS.Controllers
                 //product.CreatedAt = DateTime.UtcNow;
                 _db.Product.Add(product);
                 _db.SaveChanges();
-
+                //success toaster alert
+                TempData["success"] = "Successfullly added product details!.";
                 return View(); // This stays on the same page
             }
+            //success toaster alert
+            TempData["success"] = "Error adding product details!.";
             // If model state is not valid, return the form with validation errors
             return View(product);
 
@@ -298,30 +313,12 @@ namespace POS.Controllers
             return View(products);
         }
 
-        public ActionResult AddSeller()
-        {
-            return View();
-        }
-
-        public ActionResult SellerList()
-        {
-            return View();
-        }
-
-        public ActionResult AddProduct()
-        {
-            return View();
-        }
-
-        public ActionResult ProductList()
-        {
-            return View();
-        }
 
         public ActionResult OwnShopDue()
         {
             return View();
         }
+
         public ActionResult OwnShopHisab()
         {
             return View();
