@@ -1,0 +1,51 @@
+﻿@model POS.Models.Customer
+
+<h2 class="text-2xl font-bold mb-6">Add New Customer</h2>
+
+<form asp-action="AddCustomer" method="post" class="bg-white p-6 rounded-lg shadow-md">
+    @* This helps prevent CSRF attacks *@
+    @Html.AntiForgeryToken()
+
+    <div class="mb-4">
+        <label asp-for="Name" class="block text-gray-700 text-sm font-bold mb-2"></label>
+        <input asp-for="Name" class="border rounded-md w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <span asp-validation-for="Name" class="text-red-500 text-sm"></span>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="PhoneNo" class="block text-gray-700 text-sm font-bold mb-2"></label>
+        <input asp-for="PhoneNo" class="border rounded-md w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <span asp-validation-for="PhoneNo" class="text-red-500 text-sm"></span>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="Address" class="block text-gray-700 text-sm font-bold mb-2"></label>
+        <input asp-for="Address" class="border rounded-md w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <span asp-validation-for="Address" class="text-red-500 text-sm"></span>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="Due" class="block text-gray-700 text-sm font-bold mb-2"></label>
+        <input asp-for="Due" class="border rounded-md w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <span asp-validation-for="Due" class="text-red-500 text-sm"></span>
+    </div>
+
+    <div class="mb-4">
+        <label asp-for="DueClose" class="block text-gray-700 text-sm font-bold mb-2"></label>
+        <input asp-for="DueClose" class="border rounded-md w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <span asp-validation-for="DueClose" class="text-red-500 text-sm"></span>
+    </div>
+
+    <div class="flex justify-between mt-6">
+        <button type="reset" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
+            Clear
+        </button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Add Customer
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

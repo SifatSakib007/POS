@@ -1,0 +1,72 @@
+﻿@model POS.Models.Customer
+
+<div class="font-[sans-serif] bg-white">
+    <div class="max-w-4xl w-full h-max rounded-md px-4 py-8 mx-auto">
+        <h2 class="text-2xl font-semibold mb-4">Customer Due Payment</h2>
+
+        <form asp-action="UpdateCustomerDue" method="post" class="mt-8">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Customer Name (readonly) -->
+            <div>
+                <label for="Name" class="block text-sm text-gray-600">
+                    Customer Name
+                </label>
+                <input asp-for="Name" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
+            </div>
+
+            <!-- Due Amount (readonly) -->
+            <div class="mt-4">
+                <label for="Due" class="block text-sm text-gray-600">
+                    Current Due Amount
+                </label>
+                <input asp-for="Due" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
+            </div>
+
+            <!-- Date of Due (readonly) -->
+            <div class="mt-4">
+                <label for="CreatedAt" class="block text-sm text-gray-600">
+                    Date of Due
+                </label>
+                <input asp-for="CreatedAt" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
+            </div>
+
+            <!-- Amount to Pay (DueClose) -->
+            <div class="mt-4">
+                <label for="DueClose" class="block text-sm text-gray-600">
+                    Amount to Pay Now
+                </label>
+                <input asp-for="DueClose" type="number" placeholder="Enter amount to pay" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
+                <span asp-validation-for="DueClose" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Remaining Due (calculated) -->
+            <div class="mt-4">
+                <label class="block text-sm text-gray-600">
+                    Remaining Due
+                </label>
+                <input type="text" readonly value="@(Model.Due.HasValue && Model.DueClose.HasValue ? (Model.Due.Value - Model.DueClose.Value) : Model.Due)"
+                       class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex gap-4 max-md:flex-col mt-8">
+                <button type="submit"
+                        class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white">
+                    Update Due
+                </button>
+                <a href="@Url.Action("Index", "Home")"
+                   class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-transparent hover:bg-gray-100 border border-gray-300 text-gray-800 text-center">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

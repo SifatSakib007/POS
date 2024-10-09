@@ -1,0 +1,90 @@
+﻿@model IEnumerable<POS.Models.Sell>
+
+<div class="container mx-auto px-4">
+    <h2 class="text-2xl font-bold mb-6">Product Sell Report</h2>
+
+    <!-- Filter/Search inputs for each column -->
+    <div class="mb-4 grid grid-cols-5 gap-4">
+        <input type="text" id="productFilter" placeholder="Search Product" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="text" id="customerFilter" placeholder="Search Customer" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="text" id="quantityFilter" placeholder="Search Quantity" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="text" id="totalFilter" placeholder="Search Total" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="text" id="dateFilter" placeholder="Search Date" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <!-- Table for displaying the sell report -->
+    <table id="sellTable" class="min-w-full bg-white border">
+        <thead>
+            <tr class="bg-gray-800 text-white">
+                <th class="px-4 py-2">Product</th>
+                <th class="px-4 py-2">Customer</th>
+                <th class="px-4 py-2">Quantity</th>
+                <th class="px-4 py-2">Total</th>
+                <th class="px-4 py-2">Date</th>
+                <th class="px-4 py-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sell in Model)
+            {
+                <tr class="border-b">
+                    <td class="px-4 py-2">@sell.ProductName</td>
+                    <td class="px-4 py-2">@sell.CustomerName</td>
+                    <td class="px-4 py-2">@sell.Quantity</td>
+                    <td class="px-4 py-2">@sell.TotalPrice</td>
+                    <td class="px-4 py-2">@sell.CreatedAt.HasValue ? sell.Date.Value.ToString("dd/MM/yyyy") : "N/A"</td>
+
+                    <td class="px-4 py-2 flex space-x-4">
+                        <a asp-action="Details" asp-route-id="@sell.SellId" class="text-blue-500 hover:text-blue-700">
+                            <i class="fas fa-info-circle"></i> <!-- Details Icon -->
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@sell.SellId" class="text-yellow-500 hover:text-yellow-700">
+                            <i class="fas fa-edit"></i> <!-- Edit Icon -->
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@sell.SellId" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash-alt"></i> <!-- Delete Icon -->
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Include the necessary CSS and JS for DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<!-- FontAwesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- Initialize DataTables and add filter functionality -->
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        var table = $('#sellTable').DataTable({
+            "paging": true,
+            "info": true,
+            "ordering": true,
+            "dom": 'lrtip' // Remove default search box
+        });
+
+        // Apply search filters for each column
+        $('#productFilter').on('keyup', function() {
+            table.column(0).search(this.value).draw();
+        });
+        $('#customerFilter').on('keyup', function() {
+            table.column(1).search(this.value).draw();
+        });
+        $('#quantityFilter').on('keyup', function() {
+            table.column(2).search(this.value).draw();
+        });
+        $('#totalFilter').on('keyup', function() {
+            table.column(3).search(this.value).draw();
+        });
+        $('#dateFilter').on('keyup', function() {
+            table.column(4).search(this.value).draw();
+        });
+    });
+</script>
