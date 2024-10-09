@@ -12,7 +12,7 @@ namespace POS.Models
         public required string Name { get; set; }
 
         [StringLength(200, ErrorMessage = "ঠিকানা ২০০ অক্ষরের বেশি হতে পারবে না।")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
 
         [Phone(ErrorMessage = "ফোন নম্বর সঠিক নয়।")]
