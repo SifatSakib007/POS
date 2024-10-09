@@ -1,6 +1,62 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-CustomerList
+﻿@model IEnumerable<POS.Models.Customer>
+
+<h2 class="text-2xl font-bold mb-4">Customer List</h2>
+
+<div class="mb-4">
+    <input type="text" id="customerFilter" placeholder="Search by name..." class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+</div>
+
+<table id="customerTable" class="min-w-full bg-white table-auto">
+    <thead>
+        <tr class="bg-gray-800 text-white">
+            <th class="px-4 py-2 text-left">Customer Name</th>
+            <th class="px-4 py-2 text-left">Phone Number</th>
+            <th class="px-4 py-2 text-left">Address</th>
+            <th class="px-4 py-2 text-left">Due</th>
+            <th class="px-4 py-2 text-left">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr class="border-b border-gray-200">
+                <td class="px-4 py-2">@customer.Name</td>
+                <td class="px-4 py-2">@customer.PhoneNo</td>
+                <td class="px-4 py-2">@customer.Address</td>
+                <td class="px-4 py-2">@customer.Due</td>
+                <td class="px-4 py-2">
+                    <a asp-action="EditCustomer" asp-route-id="@customer.Id" class="text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-edit"></i> <!-- Edit Icon -->
+                    </a>
+                    |
+                    <a asp-action="DeleteCustomer" asp-route-id="@customer.Id" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash-alt"></i> <!-- Delete Icon -->
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Include the required DataTables JS and CSS for filtering functionality -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<!-- Initialize DataTables -->
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        var table = $('#customerTable').DataTable({
+            "paging": false,
+            "info": false, // Hide pagination and info
+            "dom": 'lrtip' // Hide default search input
+        });
+
+        // Custom filter input
+        $('#customerFilter').on('keyup', function() {
+            table.search(this.value).draw();
+        });
+    });
+</script>
+
