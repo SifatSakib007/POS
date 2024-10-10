@@ -52,7 +52,7 @@ namespace POS.Models
 
         [StringLength(50, ErrorMessage = "যোগ করা ব্যক্তির নাম ৫০ অক্ষরের বেশি হতে পারবে না।")]
         public string? AddedBy { get; set; }
-        public required decimal ShabekDue { get; set; } = 0; 
+        public  decimal ShabekDue { get; set; } = 0; 
 
         public int? UserId { get; set; }  // References the user who added the product
         public Users? User { get; set; }  // Navigation property to reference the user
