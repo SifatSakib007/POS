@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.IO.Pipelines;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -39,131 +40,190 @@ namespace POS.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-
-
-        // GET: ProductSell
-        public async Task<IActionResult> ProductSell()
+        // GET: ViewModelForProductCustomer - Loads products and customers for selection
+        public async Task<IActionResult> ViewModelForProductCustomer()
         {
-            // Load products and customers for selection in the view
             var products = await _db.Product.ToListAsync();
             var customers = await _db.Customer.ToListAsync();
 
-            // Return the view with data
-            ViewBag.Products = products;
-            ViewBag.Customers = customers;
-
-            return View();
-        }
-
-        // POST: ProductSell - Handles the sale transaction
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProductSell(Sell model)
-        {
-            if (!ModelState.IsValid)
+            var viewModel = new ProductCustomerViewModel
             {
-                // Reload the necessary data if validation fails
-                ViewBag.Products = await _db.Product.ToListAsync();
-                ViewBag.Customers = await _db.Customer.ToListAsync();
-                TempData["error"] = "Something gone wrong!.";
-                return View(model);
-            }
-
-            // Fetch the selected product to update stock and prices
-            var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == model.ProductId);
-            if (product == null)
-            {
-                ModelState.AddModelError("", "Invalid product selected.");
-                return View(model);
-            }
-
-            // Update the Sell model with product details
-            model.ProductName = product.ProductName;
-            model.BuyPrice = product.BuyPrice;
-            model.Stock = product.Stock;
-            model.TotalPrice = model.Quantity * model.SellingPrice;
-            model.TotalTotalPrice += model.TotalPrice; // Increment total price for multiple items
-
-            // Update the stock after selling
-            product.Stock -= model.Quantity;
-            if (product.Stock < 0)
-            {
-                ModelState.AddModelError("", "Insufficient stock for this product.");
-                return View(model);
-            }
-
-            // Fetch customer information
-            var customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == model.CustomerId);
-            if (customer == null)
-            {
-                ModelState.AddModelError("", "Invalid customer selected.");
-                return View(model);
-            }
-
-            // Update customer information in Sell model
-            model.CustomerName = customer.Name;
-            model.CustomerPhoneNo = customer.PhoneNo;
-            model.CustomerAddress = customer.Address;
-            model.DuePrice = customer.Due;  // Get customer's due amount
-
-            // Calculate total due after this transaction
-            model.TotalDuePrice = model.TotalTotalPrice - model.Deposit;
-
-            // Save the Sell transaction to the database
-            _db.Sell.Add(model);
-            await _db.SaveChangesAsync();
-
-            // Update the customer's due amount
-            customer.Due += model.TotalDuePrice;
-            await _db.SaveChangesAsync();
-            //Toaster alert
-            TempData["success"] = "Successfullly sold!.";
-            // Redirect after successful transaction
-            return RedirectToAction("ProductSell");
-        }
-
-        // Endpoint to fetch product details using ProductId (AJAX handler)
-        [HttpGet]
-        public async Task<JsonResult> GetProductDetails(int productId)
-        {
-            var product = await _db.Product
-                .Where(p => p.ProductId == productId)
-                .Select(p => new
+                Products = products,
+                Customers = customers,
+                Sells = new Sell
                 {
-                    p.BuyPrice,
-                    p.Stock
-                })
-                .FirstOrDefaultAsync();
+                    ProductName = string.Empty,
+                    Quantity = 0,
+                    TotalPrice = 0m,
+                    TotalTotalPrice = 0m
+                }
+            };
 
-            if (product == null)
-            {
-                return Json(new { success = false, message = "Product not found" });
-            }
-
-            return Json(new { success = true, data = product });
+            return View(viewModel);
         }
 
-        // Endpoint to fetch customer details using CustomerId (AJAX handler)
+        // GET: Fetches product details for a specific product ID (for AJAX)
+        [HttpGet]
+        public async Task<IActionResult> GetProductDetails(int productId)
+        {
+            var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == productId);
+            if (product != null)
+            {
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        ProductId = product.ProductId,
+                        ProductName = product.ProductName,
+                        BuyPrice = product.BuyPrice,
+                        Stock = product.Stock
+                    }
+                });
+            }
+            return Json(new { success = false, message = "Product not found." });
+        }
+
+        // AJAX call to fetch customer details
         [HttpGet]
         public async Task<JsonResult> GetCustomerDetails(int customerId)
         {
-            var customer = await _db.Customer
+            var customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == customerId);
+            if (customer != null) {
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        CustomerId = customer.Id,
+                        CustomerName = customer.Name,
+                        Address = customer.Address,
+                        PhoneNo = customer.PhoneNo,
+                        Due = customer.Due
+                    }
+                });
+            }
+            
+            /*var customer = await _db.Customer
                 .Where(c => c.Id == customerId)
                 .Select(c => new
                 {
-                    c.PhoneNo,
-                    c.Address,
-                    c.Due
+                    CustomerPhoneNo = c.PhoneNo,   // Phone number of the customer
+                    CustomerAddress = c.Address,   // Address of the customer
+                    ShobekDue = c.Due              // Previous due amount
                 })
                 .FirstOrDefaultAsync();
 
             if (customer == null)
             {
                 return Json(new { success = false, message = "Customer not found" });
+            }*/
+
+            return Json(new { success = false, message = "Customer not found!." });
+        }
+        // GET: ProductSell - Displays the sell page
+        public async Task<IActionResult> ProductSell()
+        {
+            // Load products and customers for selection in the view
+            var products = await _db.Product.ToListAsync();
+            var customers = await _db.Customer.ToListAsync();
+
+            // Create the ViewModel and populate it
+            var viewModel = new ProductCustomerViewModel
+            {
+                Products = products,
+                Customers = customers,
+                Sells = new Sell
+                {
+                    // Initialize required members
+                    ProductName = string.Empty,
+                    Quantity = 0,
+                    TotalPrice = 0m,
+                    TotalTotalPrice = 0m  // Initialize TotalTotalPrice
+                }
+            };
+
+            return View(viewModel);
+        }
+
+        // POST: ProductSell - Handles the sale transaction
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ProductSell(ProductCustomerViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Reload the products and customers if validation fails
+                viewModel.Products = await _db.Product.ToListAsync();
+                viewModel.Customers = await _db.Customer.ToListAsync();
+                TempData["error"] = "Something went wrong.";
+                return View(viewModel);
             }
 
-            return Json(new { success = true, data = customer });
+            // Fetch the selected product
+            var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == viewModel.SelectedProductId);
+            if (product == null)
+            {
+                ModelState.AddModelError("", "Invalid product selected.");
+                return View(viewModel);
+            }
+
+            // Update Sell model with product details
+            var sell = viewModel.Sells;
+            sell.ProductName = product.ProductName;
+            sell.BuyPrice = product.BuyPrice;
+
+            // Ensure Quantity is set before calculating total price
+            if (sell.Quantity <= 0)
+            {
+                ModelState.AddModelError("", "Invalid quantity.");
+                return View(viewModel);
+            }
+
+            sell.TotalPrice = sell.Quantity * sell.SellingPrice;
+
+            // Update stock after selling
+            product.Stock -= sell.Quantity;
+            if (product.Stock < 0)
+            {
+                ModelState.AddModelError("", "Insufficient stock for this product.");
+                return View(viewModel);
+            }
+
+            // Fetch customer information
+            var customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == viewModel.SelectedCustomerId);
+            if (customer == null)
+            {
+                ModelState.AddModelError("", "Invalid customer selected.");
+                return View(viewModel);
+            }
+
+            // Update customer info in Sell model
+            sell.CustomerName = customer.Name;
+            sell.CustomerPhoneNo = customer.PhoneNo;
+            sell.CustomerAddress = customer.Address;
+            sell.DuePrice = customer.Due;
+
+            // Calculate total due after this transaction
+            sell.TotalDuePrice = sell.TotalPrice - sell.Deposit;
+
+            // Save Sell transaction to the database
+            _db.Sell.Add(sell);
+            await _db.SaveChangesAsync();
+
+            // Update customer's due amount
+            customer.Due += sell.TotalDuePrice;
+            await _db.SaveChangesAsync();
+
+            TempData["success"] = "Successfully sold!";
+            return RedirectToAction("ProductSell");
         }
+
+
+
+       
+
+
 
         public async Task<IActionResult> ProductSellReport()
         {

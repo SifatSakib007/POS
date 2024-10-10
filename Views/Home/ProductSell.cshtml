@@ -1,11 +1,7 @@
-﻿@model POS.Models.Sell
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ProductCustomerViewModel
+
 <div class="p-4">
-    @* পণ্য বিক্রয় নিবন্ধন  *@
+    @* পণ্য বিক্রয় নিবন্ধন *@
     <p class="text-center text-xl mb-4">পণ্য বিক্রয় নিবন্ধন</p>
 
     <div class="font-[sans-serif] bg-white">
@@ -13,52 +9,61 @@
             <form class="mt-8">
                 <!-- পণ্য ফর্ম -->
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
-                    <!-- পূর্বের ফর্ম কোড -->
-                    <!-- পণ্যের নাম -->
+                    <!-- Product Selection -->
                     <div>
-                        <label asp-for="ProductName" class="block text-sm text-gray-600">পণ্যের নাম</label>
-                        <select id="productName" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600">
+                        <label asp-for="SelectedProductId" class="block text-sm text-gray-600">পণ্যের নাম</label>
+                        <select id="productSelect" onchange="getProductDetails(this.value)" asp-for="SelectedProductId" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
                             <option value="">পণ্যের নাম</option>
-                            <option value="rice">ধান</option>
-                            <option value="wheat">গম</option>
-                            <option value="potato">আলু</option>
-                            <option value="pointedGourd">পটল</option>
+                            @foreach (var product in Model.Products)
+                            {
+                                <option value="@product.ProductId">@product.ProductName</option>
+                            }
                         </select>
                     </div>
 
-                    <!-- ক্রয় মূল্য -->
+                   @*   <div>
+                         <label asp-for="ProductName" class="block text-sm text-gray-600">পণ্যের নাম</label>
+                         <input asp-for="ProductName" id="productName" readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
+                     </div> *@
+
                     <div>
-                        <label asp-for="BuyPrice" class="block text-sm text-gray-600">ক্রয় মূল্য</label>
-                        <input type="number" id="buyPrice" readonly placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
+                        <label asp-for="BuyPrice" class="block text-sm text-gray-600">ক্রয় মূল্য</label>
+                        <input asp-for="BuyPrice" id="buyPrice"  readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
                     </div>
 
-                    <!-- স্টক -->
                     <div>
                         <label asp-for="Stock" class="block text-sm text-gray-600">স্টক</label>
-                        <input type="number" id="stock" readonly value="0" placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
+                        <input type="number" id="stock" readonly  placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md" />
                     </div>
 
-                    <!-- পরিমাণ -->
+                    
+
+                   
+                    <!-- Quantity -->
                     <div>
-                        <label asp-for="Quantity" class="block text-sm text-gray-600">কতটুকু কিনবে পণ্য</label>
-                        <input type="number" id="quantity" placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
+                        <label asp-for="Sells.Quantity" class="block text-sm text-gray-600">পরিমাণ</label>
+                        <input asp-for="Sells.Quantity" id="quantity" class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
                     </div>
 
                     <!-- বিক্রয় মূল্য -->
                     <div>
-                        <label asp-for="SellingPrice" class="block text-sm text-gray-600">বিক্রয় মূল্য</label>
-                        <input type="number" id="sellPrice" placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
+                        <label asp-for="Sells.SellingPrice" class="block text-sm text-gray-600">বিক্রয় মূল্য</label>
+                        <input type="number" asp-for="Sells.SellingPrice" id="sellPrice" placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
                     </div>
 
                     <!-- মোট মূল্য -->
                     <div>
-                        <label asp-for="TotalTotalPrice" class="block text-sm text-gray-600">মোট মূল্য</label>
+                        <label asp-for="TotalPrice" class="block text-sm text-gray-600">মোট মূল্য</label>
                         <input type="number" id="totalPrice" readonly placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
                     </div>
                 </div>
 
+               
+
                 <!-- পণ্য যুক্ত করার বাটন -->
                 <button type="button" id="addProductBtn" class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white mt-4">যুক্ত করুন</button>
+
+
 
                 <!-- পণ্যের টেবিল -->
                 <div class="mt-8 overflow-x-auto">
@@ -82,42 +87,48 @@
         </div>
     </div>
 
+  
     @* {/* customer info */} *@
     <form class="font-[sans-serif] max-w-4xl mx-auto">
         <div class="grid sm:grid-cols-2 gap-6">
             <div class="relative flex items-center">
-                <input asp-for="TotalTotalPrice" readonly id="totalTotalPrice" type="text" placeholder="মোট টাকা"
+                <input asp-for="TotalTotalPrice" value="@Model.TotalTotalPrice" readonly id="totalTotalPrice" type="text" placeholder="মোট টাকা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
+
+            <!-- Customer Selection -->
             <div>
-                <label asp-for="CustomerName" class="block text-sm text-gray-600">ক্রেতার নাম</label>
-                <select id="customerName" class="px-4 py-3 bg-gray-100 fofcus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600">
+                <label asp-for="SelectedCustomerId" class="block text-sm text-gray-600">ক্রেতার নাম</label>
+                <select id="customerSelect" asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md">
                     <option value="">ক্রেতার নাম</option>
-                    <option value="sifat">সিফাত মিয়া</option>
-                    <option value="robiul">রবিউল আউয়াল</option>
-                    <option value="sabbir">সাব্বির রহমান</option>
-                    <option value="shabek">সাবেক মিয়া</option>
+                    @foreach (var customer in Model.Customers)
+                    {
+                        <option value="@customer.Id">@customer.Name</option>
+                    }
                 </select>
             </div>
 
-
             <div class="relative flex items-center">
-                <input asp-for="CustomerPhoneNo" id="customerPhoneNo" type="number" placeholder="ক্রেতার ফোন নাম্বার"
+                <input asp-for="CustomerPhoneNo" id="customerPhoneNo"  type="number" placeholder="ক্রেতার ফোন নাম্বার"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
 
             <div class="relative flex items-center">
-                <input asp-for="CustomerAddress" id="customerAddress" type="text" placeholder="ক্রেতার ঠিকানা"
+                <input asp-for="CustomerAddress" id="customerAddress"  type="text" placeholder="ক্রেতার ঠিকানা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
             <div class="relative flex items-center sm:col-span-2">
-                <input  id="shabek" type="number" readonly placeholder="সাবেক টাকা"
+                <input asp-for="ShabekDue" id="shabekDue" type="number" readonly placeholder="সাবেক টাকা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
             <div class="relative flex items-center sm:col-span-2">
                 <input id="shorboMotTaka" type="number" placeholder="সর্বমোট টাকা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
+         
+
+          
+
 
             <div class="relative flex items-center sm:col-span-2">
                 <input asp-for="Deposit" id="depositAmount" type="number" placeholder="পরিশোধক্রিত টাকা"
@@ -135,194 +146,135 @@
             Submit
         </button>
     </form>
+
 </div>
 
-
-
 <script>
-    const products = {
-        rice: { buyPrice: 50, stock: 100 },
-        wheat: { buyPrice: 40, stock: 80 },
-        potato: { buyPrice: 20, stock: 200 },
-        pointedGourd: { buyPrice: 30, stock: 150 }
-    };
+    
+                            // Function to fetch product details using AJAX
+        function getProductDetails(productId) {
+            fetch(`Home/GetProductDetails?productId=${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
 
-    const customernameProduct = {
-        sifat: { customerPhoneNo: 01763669824, customerAddress: "Dhaka", shabek: 1000 },
-        robiul: { customerPhoneNo: 015664654, customerAddress: "Dhaka", shabek: 1000 },
-        sabbir: { customerPhoneNo: 01545454, customerAddress: "Dhaka", shabek: 1000 },
-        shabek: { customerPhoneNo: 01465465465, customerAddress: "Dhaka", shabek: 1000 },
-    };
+                        // Update the view with the fetched product details
+                        //document.getElementById("productSelect").value = data.data.productName;
+                        document.getElementById("buyPrice").value = data.data.buyPrice;
+                        document.getElementById("stock").value = data.data.stock;
 
-    let grandTotal = 0;
+                        // Update the ViewModel properties (optional)
+                        //document.querySelector('input[name="ProductName"]').value = data.data.productName;
+                        document.querySelector('input[name="BuyPrice"]').value = data.data.buyPrice;
+                        document.querySelector('input[name="Stock"]').value = data.data.stock;
+                    } else {
+                        // Handle error case
+                        console.error(data.message);
+                    }
+                })
+                .catch(error => {
 
-    // পণ্য যোগ করার পরে সর্বমোট টাকার হিসাব আপডেট
-    function updateGrandTotal() {
-        const totalPriceElements = document.querySelectorAll("#productTable tbody tr td:nth-child(5)");
-        grandTotal = 0;
-        totalPriceElements.forEach(element => {
-            grandTotal += parseFloat(element.innerText);
-        });
-        document.getElementById("totalTotalPrice").value = grandTotal.toFixed(2);
-        updateDueAmount(); // Due হিসাব করার জন্য কল
-        updateShorboMotTaka(); // সর্বমোট টাকার হিসাব করার জন্য কল
-    }
+                    console.error(error);
+                });
+                            }
 
-    // সর্বমোট টাকার হিসাব
-    function updateShorboMotTaka() {
-        const shabek = parseFloat(document.getElementById("shabek").value) || 0;
-        const totalTotalPrice = parseFloat(document.getElementById("totalTotalPrice").value) || 0;
-        const shorboMotTaka = shabek + totalTotalPrice;
+    // Function to handle changes in the product selection dropdown
+    // $(document).on('change', '#productName', function() {
+    //     var productId = $(this).val();                             Get the selected product ID
+    //     fetchProductDetails(productId);                            Fetch product details
+    // });
 
-        document.getElementById("shorboMotTaka").value = shorboMotTaka.toFixed(2);
-    }
+    
+                        // Calculate total price whenever quantity or selling price changes
+        $(document).on('input', '#quantity, #sellPrice', function() {
+                            var quantity = parseFloat($('#quantity').val()) || 0;      // Get quantity
+        var sellingPrice = parseFloat($('#sellPrice').val()) || 0; // Get selling price
+        var totalPrice = (quantity * sellingPrice).toFixed(2);     // Calculate total price
+        $('#totalPrice').val(totalPrice);                          // Update total price field
+                        });
 
-    // বাকি টাকার হিসাব
-    function updateDueAmount() {
-        const deposit = parseFloat(document.getElementById("depositAmount").value) || 0;
-        const totalTotalPrice = parseFloat(document.getElementById("totalTotalPrice").value) || 0;
-        const shabek = parseFloat(document.getElementById("shabek").value) || 0;
 
-        // মোট টাকা হিসাব করুন
-        let totalPayable = shabek + totalTotalPrice; // সাবেক টাকা + মোট টাকা
-        let due = totalPayable - deposit; // বাকি টাকা
 
-        if (due < 0) {
-            due = 0; // যদি বাকি টাকা ঋণাত্মক হয় তবে সেটি 0 করুন
-        }
-
-        document.getElementById("dueAmount").value = due.toFixed(2);
-
-        // সাবেক টাকার হিসাব আপডেট করা
-        let shabekAmount = parseFloat(document.getElementById("shabek").value) || 0;
-        if (deposit > totalTotalPrice) {
-            const excessPayment = deposit - totalTotalPrice; // অতিরিক্ত টাকা
-            
-        }
-        document.getElementById("shabek").value = shabekAmount.toFixed(2);
-        updateShorboMotTaka(); // সর্বমোট টাকার হিসাব আপডেট করুন
-    }
-
-    // Deposit এর ইনপুটের পরিবর্তন ট্র্যাক করার জন্য
-    document.getElementById("depositAmount").addEventListener("input", function () {
-        // ঋণাত্মক মান প্রবেশ ঠেকানো
-        const depositInput = parseFloat(this.value) || 0;
-        if (depositInput < 0) {
-            this.value = 0; // ঋণাত্মক মান হলে সেটি 0 এ সেট করুন
-        }
-        updateDueAmount();
-    });
-
-    // পণ্যের দাম ও স্টক প্রদর্শনের জন্য
-    document.getElementById("productName").addEventListener("change", function () {
-        const selectedProduct = this.value;
-        if (products[selectedProduct]) {
-            document.getElementById("buyPrice").value = products[selectedProduct].buyPrice;
-            document.getElementById("stock").value = products[selectedProduct].stock;
-        } else {
-            document.getElementById("buyPrice").value = '';
-            document.getElementById("stock").value = 0;
-        }
-        calculateTotal();
-    });
-
-    // কাস্টমার তথ্য আপডেট
-    document.getElementById("customerName").addEventListener("change", function () {
-        const selectedProduct = this.value;
-        if (customernameProduct[selectedProduct]) {
-            document.getElementById("customerPhoneNo").value = customernameProduct[selectedProduct].customerPhoneNo;
-            document.getElementById("customerAddress").value = customernameProduct[selectedProduct].customerAddress;
-            document.getElementById("shabek").value = customernameProduct[selectedProduct].shabek;
-        } else {
-            document.getElementById("customerPhoneNo").value = '';
-            document.getElementById("customerAddress").value = '';
-            document.getElementById("shabek").value = 0;
-        }
-        updateShorboMotTaka();
-    });
-
-    // ইনপুটে ঋণাত্মক সংখ্যা ঠেকানো
-    const nonNegativeInputs = document.querySelectorAll("#quantity, #sellPrice");
-
-    nonNegativeInputs.forEach(input => {
-        input.addEventListener("input", function () {
-            // ইনপুটের মান পজিটিভ করতে হবে
-            const value = parseFloat(this.value);
-            if (value < 0) {
-                this.value = 0; // ঋণাত্মক মান হলে সেটি 0 এ সেট করুন
-            }
-            calculateTotal(); // Total হিসাব করার জন্য
-        });
-    });
-
-    function calculateTotal() {
-        const quantity = document.getElementById("quantity").value;
-        const sellPrice = document.getElementById("sellPrice").value;
-        if (quantity && sellPrice) {
-            document.getElementById("totalPrice").value = quantity * sellPrice;
-        } else {
-            document.getElementById("totalPrice").value = '';
-        }
-    }
-
-    // পণ্য যুক্ত করা এবং অ্যাকশন আইকন গুলি যোগ করা
-    document.getElementById("addProductBtn").addEventListener("click", function () {
-        const productName = document.getElementById("productName").value;
-        const buyPrice = document.getElementById("buyPrice").value;
-        const sellPrice = document.getElementById("sellPrice").value;
-        const quantity = document.getElementById("quantity").value;
-        const totalPrice = document.getElementById("totalPrice").value;
+            // Add product to the table when the "Add" button is clicked
+        $(document).on('click', '#addProductBtn', function() {
+                var productName = $('#productName option:selected').text();
+        var buyPrice = $('#buyPrice').val();
+        var sellPrice = $('#sellPrice').val();
+        var quantity = $('#quantity').val();
+        var totalPrice = $('#totalPrice').val();
 
         if (productName && buyPrice && sellPrice && quantity && totalPrice) {
-            const table = document.getElementById("productTable").querySelector("tbody");
-            const newRow = document.createElement("tr");
-
-            newRow.innerHTML = `
-                    <td class="px-4 py-2">${document.querySelector(`#productName option[value="${productName}"]`).innerText}</td>
-                    <td class="px-4 py-2">${buyPrice}</td>
-                    <td class="px-4 py-2">${sellPrice}</td>
-                    <td class="px-4 py-2">${quantity}</td>
-                    <td class="px-4 py-2">${totalPrice}</td>
-                    <td class="px-4 py-2">
-                        <button class="editBtn text-blue-600 hover:underline">আপডেট</button> |
-                        <button class="deleteBtn text-red-600 hover:underline">ডিলিট</button>
-                    </td>
-                `;
-
-            table.appendChild(newRow);
-
-            // Update the grand total
-            updateGrandTotal();
-
-            // ফর্ম ক্লিয়ার করা
-            document.getElementById("productName").value = '';
-            document.getElementById("buyPrice").value = '';
-            document.getElementById("stock").value = 0;
-            document.getElementById("quantity").value = '';
-            document.getElementById("sellPrice").value = '';
-            document.getElementById("totalPrice").value = '';
-
-            // ডিলিট ফাংশন
-            newRow.querySelector(".deleteBtn").addEventListener("click", function () {
-                table.removeChild(newRow);
-                updateGrandTotal(); // পণ্য ডিলিট করার পর মোট টাকা আপডেট করা
+                    var newRow = `<tr>
+            <td class="px-4 py-2">${productName}</td>
+            <td class="px-4 py-2">${buyPrice}</td>
+            <td class="px-4 py-2">${sellPrice}</td>
+            <td class="px-4 py-2">${quantity}</td>
+            <td class="px-4 py-2">${totalPrice}</td>
+            <td class="px-4 py-2">
+                <button type="button" class="delete-btn text-red-500">মুছে দিন</button>
+            </td>
+        </tr>`;
+        $('#productTable tbody').append(newRow);  // Append new row to the table
+        clearProductFields();                      // Clear the fields after adding
+        updateTotalAmount();                      // Update the total amount after adding
+                } else {
+            alert("অনুগ্রহ করে সব তথ্য পূরণ করুন!"); // Alert if fields are empty
+                }
             });
 
-            // আপডেট ফাংশন
-            newRow.querySelector(".editBtn").addEventListener("click", function () {
-                document.getElementById("productName").value = productName;
-                document.getElementById("buyPrice").value = buyPrice;
-                document.getElementById("sellPrice").value = sellPrice;
-                document.getElementById("quantity").value = quantity;
-                document.getElementById("totalPrice").value = totalPrice;
+        // Clear input fields for products
+        function clearProductFields() {
+            $('#productName').val('');
+        $('#buyPrice').val('');
+        $('#stock').val('');
+        $('#quantity').val('');
+        $('#sellPrice').val('');
+        $('#totalPrice').val('');
+            }
 
-                table.removeChild(newRow);
-                updateGrandTotal(); // পণ্য আপডেট করার পর মোট টাকা আপডেট করা
-            });
-        } else {
-            alert("দয়া করে সমস্ত তথ্য সঠিকভাবে পূরণ করুন!");
-        }
+  
+        function fetchCustomerDetails(customerId){
+            fetch(`Home/GetCustomerDetails?customerId=${customerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        //upload the view with the fetched customer details
+                        //document.getElementById("customerSelect").value = data.data.name;
+                        document.getElementById("customerAddress").value = data.data.address;
+                        document.getElementById("customerPhoneNo").value = data.data.phoneNo;
+                        document.getElementById("shabekDue").value = data.data.due;
+
+                        // Update the ViewModel properties (optional)
+                        // document.querySelector('input[name="CustomerName"]').value = data.data.name;
+                        document.querySelector('input[name="Address"]').value = data.data.address;
+                        document.querySelector('input[name="PhoneNo"]').value = data.data.phoneNo;
+                        document.querySelector('input[name="Due"]').value = data.data.due;
+
+                    } else {
+                        console.error(data.message);
+                    }
+                }
+                )
+                .catch(error => {
+                    console.error(error);
+                });
+                    }
+   
+                    // Update total amount in the form
+        function updateTotalAmount() {
+                        var totalAmount = 0;
+        $('#productTable tbody tr').each(function() {
+                            var rowTotal = parseFloat($(this).find('td:eq(4)').text()) || 0;  // Get the total price from the row
+        totalAmount += rowTotal;                                          // Accumulate the total amount
+                        });
+        $('#totalTotalPrice').val(totalAmount.toFixed(2));  // Update the total price field
+                    }
+
+
+
+    // Remove product from the table
+    $(document).on('click', '.delete-btn', function() {
+        $(this).closest('tr').remove();  // Remove the selected row
+        updateTotalAmount();             // Update the total amount after deletion
     });
 </script>
-
-
