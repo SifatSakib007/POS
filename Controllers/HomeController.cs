@@ -56,7 +56,11 @@ namespace POS.Controllers
                     Quantity = 0,
                     TotalPrice = 0m,
                     TotalTotalPrice = 0m,
+<<<<<<< HEAD
                     ShabekDue = 0
+=======
+                    ShabekDue = 0,
+>>>>>>> 9038c8fc7e4206b798038e0d7978f59b20a089b5
                 }
             };
 
@@ -141,7 +145,11 @@ namespace POS.Controllers
                     Quantity = 0,
                     TotalPrice = 0m,
                     TotalTotalPrice = 0m,
+<<<<<<< HEAD
                     ShabekDue = 0// Initialize TotalTotalPrice
+=======
+                    ShabekDue = 0 // Initialize TotalTotalPrice
+>>>>>>> 9038c8fc7e4206b798038e0d7978f59b20a089b5
                 }
             };
 
