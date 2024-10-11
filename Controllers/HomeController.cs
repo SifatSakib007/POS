@@ -55,7 +55,8 @@ namespace POS.Controllers
                     ProductName = string.Empty,
                     Quantity = 0,
                     TotalPrice = 0m,
-                    TotalTotalPrice = 0m
+                    TotalTotalPrice = 0m,
+                    ShabekDue = 0,
                 }
             };
 
@@ -89,7 +90,8 @@ namespace POS.Controllers
         public async Task<JsonResult> GetCustomerDetails(int customerId)
         {
             var customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == customerId);
-            if (customer != null) {
+            if (customer != null)
+            {
                 return Json(new
                 {
                     success = true,
@@ -103,6 +105,7 @@ namespace POS.Controllers
                     }
                 });
             }
+<<<<<<< Updated upstream
             
             /*var customer = await _db.Customer
                 .Where(c => c.Id == customerId)
@@ -118,6 +121,9 @@ namespace POS.Controllers
             {
                 return Json(new { success = false, message = "Customer not found" });
             }*/
+=======
+
+>>>>>>> Stashed changes
 
             return Json(new { success = false, message = "Customer not found!." });
         }
@@ -139,7 +145,8 @@ namespace POS.Controllers
                     ProductName = string.Empty,
                     Quantity = 0,
                     TotalPrice = 0m,
-                    TotalTotalPrice = 0m
+                    TotalTotalPrice = 0m,
+                    ShabekDue = 0 // Initialize TotalTotalPrice
                 }
             };
 
