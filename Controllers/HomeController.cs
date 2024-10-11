@@ -103,21 +103,7 @@ namespace POS.Controllers
                     }
                 });
             }
-            
-            /*var customer = await _db.Customer
-                .Where(c => c.Id == customerId)
-                .Select(c => new
-                {
-                    CustomerPhoneNo = c.PhoneNo,   // Phone number of the customer
-                    CustomerAddress = c.Address,   // Address of the customer
-                    ShobekDue = c.Due              // Previous due amount
-                })
-                .FirstOrDefaultAsync();
-
-            if (customer == null)
-            {
-                return Json(new { success = false, message = "Customer not found" });
-            }*/
+           
 
             return Json(new { success = false, message = "Customer not found!." });
         }

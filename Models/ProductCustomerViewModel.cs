@@ -24,5 +24,9 @@
         public string? CustomerPhoneNo { get; set; } // For customer phone number
         public string? CustomerAddress { get; set; } // For customer address
         public decimal Deposit { get; set; } // For deposit
+<<<<<<< HEAD
+=======
+        public decimal ShabekDue { get; set; } // For previous due amount
+>>>>>>> 81814901666671be2027da43336487e20f10b464
     }
 }
