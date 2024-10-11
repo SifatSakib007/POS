@@ -118,7 +118,7 @@
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
             <div class="relative flex items-center sm:col-span-2">
-                <input asp-for="ShabekDue" id="shabekDue" type="number" readonly placeholder="সাবেক টাকা"
+                <input  id="shabekDue" type="number" readonly placeholder="সাবেক টাকা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
             <div class="relative flex items-center sm:col-span-2">
@@ -134,7 +134,7 @@
             </div>
 
             <div class="relative flex items-center sm:col-span-2">
-                <input asp-for="DuePrice" readonly id="dueAmount" type="number" placeholder="বাকি টাকা"
+                <input  readonly id="dueAmount" type="number" placeholder="বাকি টাকা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
         </div>
@@ -153,23 +153,25 @@
         function getProductDetails(productId) {
             fetch(`Home/GetProductDetails?productId=${productId}`)
                 .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
+                .then(data => console.log(data)
+                //     {
+                //     if (data.success) {
 
-                        // Update the view with the fetched product details
-                        //document.getElementById("productSelect").value = data.data.productName;
-                        document.getElementById("buyPrice").value = data.data.buyPrice;
-                        document.getElementById("stock").value = data.data.stock;
+                //         Update the view with the fetched product details
+                //         document.getElementById("productSelect").value = data.data.productName;
+                //         document.getElementById("buyPrice").value = data.data.buyPrice;
+                //         document.getElementById("stock").value = data.data.stock;
 
-                        // Update the ViewModel properties (optional)
-                        //document.querySelector('input[name="ProductName"]').value = data.data.productName;
-                        document.querySelector('input[name="BuyPrice"]').value = data.data.buyPrice;
-                        document.querySelector('input[name="Stock"]').value = data.data.stock;
-                    } else {
-                        // Handle error case
-                        console.error(data.message);
-                    }
-                })
+                //         Update the ViewModel properties (optional)
+                //         document.querySelector('input[name="ProductName"]').value = data.data.productName;
+                //         document.querySelector('input[name="BuyPrice"]').value = data.data.buyPrice;
+                //         document.querySelector('input[name="Stock"]').value = data.data.stock;
+                //     } else {
+                //         Handle error case
+                //         console.error(data.message);
+                //     }
+                // }
+                )
                 .catch(error => {
 
                     console.error(error);
