@@ -55,7 +55,8 @@ namespace POS.Controllers
                     ProductName = string.Empty,
                     Quantity = 0,
                     TotalPrice = 0m,
-                    TotalTotalPrice = 0m
+                    TotalTotalPrice = 0m,
+                    ShabekDue = 0
                 }
             };
 
@@ -139,7 +140,8 @@ namespace POS.Controllers
                     ProductName = string.Empty,
                     Quantity = 0,
                     TotalPrice = 0m,
-                    TotalTotalPrice = 0m  // Initialize TotalTotalPrice
+                    TotalTotalPrice = 0m,
+                    ShabekDue = 0// Initialize TotalTotalPrice
                 }
             };
 
