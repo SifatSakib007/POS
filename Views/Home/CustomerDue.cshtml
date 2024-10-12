@@ -1,4 +1,7 @@
 ﻿@model POS.Models.Customer
+@{
+    ViewBag.Title = "Customer Due Payment";
+}
 
 <div class="font-[sans-serif] bg-white">
     <div class="max-w-4xl w-full h-max rounded-md px-4 py-8 mx-auto">
@@ -6,58 +9,52 @@
 
         <form asp-action="CustomerDue" method="post" class="mt-8">
             @Html.AntiForgeryToken()
-            <input type="hidden" asp-for="Id" />
 
-            <!-- Customer Name (readonly) -->
+            <!-- Customer Dropdown -->
             <div>
-                <label for="Name" class="block text-sm text-gray-600">
-                    Customer Name
+                <label asp-for="Id" class="block text-sm text-gray-600">
+                    Select Customer
                 </label>
-                <input asp-for="Name" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
+                <select asp-for="Id" class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" onchange="fetchCustomerDetails(this.value)">
+                    <option value="">Select a Customer</option>
+                    @foreach (var customer in (SelectList)ViewBag.CustomerList)
+                    {
+                        <option value="@customer.Value">@customer.Text</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Phone Number (readonly) -->
+            <div class="mt-4">
+                <label asp-for="PhoneNo" class="block text-sm text-gray-600">Phone Number</label>
+                <input asp-for="PhoneNo" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
             </div>
 
             <!-- Due Amount (readonly) -->
             <div class="mt-4">
-                <label for="Due" class="block text-sm text-gray-600">
-                    Current Due Amount
-                </label>
-                <input asp-for="Due" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
+                <label asp-for="Due" class="block text-sm text-gray-600">Current Due Amount</label>
+                <input asp-for="Due"  readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
             </div>
-
-            <!-- Date of Due (readonly) -->
-            <div class="mt-4">
-                <label for="CreatedAt" class="block text-sm text-gray-600">
-                    Date of Due
-                </label>
-                <input asp-for="CreatedAt" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
-            </div>
+     
 
             <!-- Amount to Pay (DueClose) -->
             <div class="mt-4">
-                <label for="DueClose" class="block text-sm text-gray-600">
-                    Amount to Pay Now
-                </label>
-                <input asp-for="DueClose" type="number" placeholder="Enter amount to pay" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
-                <span asp-validation-for="DueClose" class="text-red-500 text-sm"></span>
+                <label asp-for="DueClose" class="block text-sm text-gray-600">Amount to Pay Now</label>
+                <input asp-for="DueClose" type="number" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md" oninput="calculateRemainingDue()" />
             </div>
 
             <!-- Remaining Due (calculated) -->
             <div class="mt-4">
-                <label class="block text-sm text-gray-600">
-                    Remaining Due
-                </label>
-                <input type="text" readonlyvalue="@(Model.Due.HasValue && Model.DueClose.HasValue ? (Model.Due.Value - Model.DueClose.Value) : Model.Due)"
-                       class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
+                <label class="block text-sm text-gray-600">Remaining Due</label>
+                <input id="RemainingDue" type="text" readonly class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
             </div>
 
             <!-- Buttons -->
             <div class="flex gap-4 max-md:flex-col mt-8">
-                <button type="submit"
-                        class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white">
+                <button type="submit" class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white">
                     Update Due
                 </button>
-                <a href="@Url.Action("CustomerDue", "Home")"
-                   class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-transparent hover:bg-gray-100 border border-gray-300 text-gray-800 text-center">
+                <a href="@Url.Action("CustomerDue", "Home")" class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-transparent hover:bg-gray-100 border border-gray-300 text-gray-800 text-center">
                     Cancel
                 </a>
             </div>
@@ -66,7 +63,38 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@*     @await Html.PartialAsync("_ValidationScriptsPartial") *@
+
+    <script>
+        // Fetch customer details via AJAX
+        function fetchCustomerDetails(Id) {
+            if (!Id) {
+                // Clear all fields if no customer is selected
+                document.getElementById('PhoneNo').value = '';
+                document.getElementById('Due').value = '';
+                document.getElementById('DueClose').value = '';
+                document.getElementById('RemainingDue').value = '';
+                return;
+            }
+
+            fetch(`/Home/GetCustomerDetailsForDueCustomer?id=${Id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('PhoneNo').value = data.phoneNo || '';
+                        document.getElementById('Due').value = data.due || 0;
+                    } else {
+                        alert(data.message);
+                    }
+                });
+        }
+
+        // Calculate remaining due based on entered DueClose amount
+        function calculateRemainingDue() {
+            const due = parseFloat(document.getElementById('Due').value) || 0;
+            const dueClose = parseFloat(document.getElementById('DueClose').value) || 0;
+            const remainingDue = due - dueClose;
+            document.getElementById('RemainingDue').value = remainingDue >= 0 ? remainingDue.toFixed(2) : due;
+        }
+    </script>
 }

@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.IO.Pipelines;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using POS.Models;
 
@@ -261,63 +263,104 @@ namespace POS.Controllers
             return View(customers);
         }
 
-        // GET: CustomerDue
-        public IActionResult CustomerDue(int? id)
+        // GET: CustomerDue (Displays the dropdown with all customers)
+        public IActionResult CustomerDue()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            // Fetch all customers to populate the dropdown
+            var customers = _db.Customer.ToList();
+            ViewBag.CustomerList = new SelectList(customers, "Id", "Name"); // Passing customers to dropdown
+            return View();
+        }
 
-            // Fetch the customer details by ID
+        // GET: Get customer details by ID using AJAX
+        [HttpGet]
+        public JsonResult GetCustomerDetailsForDueCustomer(int id)
+        {
             var customer = _db.Customer.FirstOrDefault(c => c.Id == id);
             if (customer == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "Customer not found" });
             }
 
-            // Pass the customer details to the view
-            return View(customer);
+            // Return customer details
+            return Json(new
+            {
+                success = true,
+                phoneNo = customer.PhoneNo,
+                due = customer.Due
+        });
         }
 
-        // POST: CustomerDue
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CustomerDue(int id, decimal? dueClose)
+        public IActionResult CustomerDue(Customer model)
         {
-            var customer = _db.Customer.FirstOrDefault(c => c.Id == id);
+            var customer = _db.Customer.FirstOrDefault(c => c.Id == model.Id);
             if (customer == null)
             {
                 return NotFound();
             }
 
-            if (dueClose == null || dueClose <= 0)
+            // Validate the DueClose field
+            if (model.DueClose == null || model.DueClose <= 0)
             {
-                ModelState.AddModelError(nameof(dueClose), "Due Close amount must be greater than 0.");
+                ModelState.AddModelError(nameof(model.DueClose), "Due Close amount must be greater than 0.");
             }
 
-            if (ModelState.IsValid)
+            /*// Check if ModelState is valid
+            if (!ModelState.IsValid)
             {
-                // Deduct the dueClose amount from the actual Due
-                if (customer.Due.HasValue && dueClose.HasValue)
+                
+                // Log ModelState errors for debugging
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    customer.Due -= dueClose.Value;
-                    customer.DueClose = dueClose;
-                    customer.CreatedAt = DateTime.UtcNow;
-
-                    // Update customer details in the database
-                    _db.Customer.Update(customer);
-                    _db.SaveChanges();
-                    // success toaster alert
-                    TempData["success"] = "Successfully added customer due details!";
-                    return RedirectToAction("CustomerDue", new { id = customer.Id });
+                    
+                    Console.WriteLine(error.ErrorMessage); // Log the error
                 }
+
+                // Reload the dropdown in case of validation failure
+                var customers = _db.Customer.ToList();
+                ViewBag.CustomerList = new SelectList(customers, "Id", "Name");
+                return View(model); // Return the same view with the model and errors
+            }*/
+
+            // Proceed with updating the customer details if ModelState is valid
+            customer.Due -= model.DueClose.Value; // Ensure DueClose is not null with .Value
+            customer.DueClose = model.DueClose;
+
+            // Your existing code for updating PaymentDates and PaymentAmounts
+            // Get the current payment date and amount
+            string currentDate = DateTime.UtcNow.ToString("yyyy-MM-dd"); // Format the date
+            string currentAmount = model.DueClose.Value.ToString(); // Convert the paid amount to string
+
+            // Append the current date to the PaymentDates column
+            customer.PaymentDates = string.IsNullOrWhiteSpace(customer.PaymentDates)
+                ? currentDate
+                : customer.PaymentDates + "," + currentDate;
+
+            // Append the paid amount to the PaymentAmounts column
+            customer.PaymentAmounts = string.IsNullOrWhiteSpace(customer.PaymentAmounts)
+                ? currentAmount
+                : customer.PaymentAmounts + "," + currentAmount;
+
+            // Save changes to the database
+            _db.Customer.Update(customer);
+            try
+            {
+                _db.SaveChanges();
+                TempData["success"] = "Successfully updated customer due details!";
+                return RedirectToAction("CustomerDue");
             }
-
-            // If validation fails, redisplay the form
-            return View(customer);
+            catch (Exception ex)
+            {
+                TempData["error"] = "An error occurred while updating the database!";
+                ModelState.AddModelError("", "An error occurred while updating the database");
+                // Reload the dropdown
+                var customersList = _db.Customer.ToList();
+                ViewBag.CustomerList = new SelectList(customersList, "Id", "Name");
+                return View(model); // Return the view with errors
+            }
         }
-
 
 
         public ActionResult ShopHishab()
