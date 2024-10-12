@@ -92,7 +92,8 @@ namespace POS.Controllers
         public async Task<JsonResult> GetCustomerDetails(int customerId)
         {
             var customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == customerId);
-            if (customer != null) {
+            if (customer != null)
+            {
                 return Json(new
                 {
                     success = true,
@@ -106,7 +107,8 @@ namespace POS.Controllers
                     }
                 });
             }
-           
+
+          
 
             return Json(new { success = false, message = "Customer not found!." });
         }
