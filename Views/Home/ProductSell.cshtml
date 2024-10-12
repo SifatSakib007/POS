@@ -21,24 +21,24 @@
                         </select>
                     </div>
 
-                   @*   <div>
-                         <label asp-for="ProductName" class="block text-sm text-gray-600">পণ্যের নাম</label>
-                         <input asp-for="ProductName" id="productName" readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
-                     </div> *@
+                    @*   <div>
+                    <label asp-for="ProductName" class="block text-sm text-gray-600">পণ্যের নাম</label>
+                    <input asp-for="ProductName" id="productName" readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
+                    </div> *@
 
                     <div>
                         <label asp-for="BuyPrice" class="block text-sm text-gray-600">ক্রয় মূল্য</label>
-                        <input asp-for="BuyPrice" id="buyPrice"  readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
+                        <input asp-for="BuyPrice" id="buyPrice" readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
                     </div>
 
                     <div>
                         <label asp-for="Stock" class="block text-sm text-gray-600">স্টক</label>
-                        <input type="number" id="stock" readonly  placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md" />
+                        <input type="number" id="stock" readonly placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md" />
                     </div>
 
-                    
 
-                   
+
+
                     <!-- Quantity -->
                     <div>
                         <label asp-for="Sells.Quantity" class="block text-sm text-gray-600">পরিমাণ</label>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
 
-               
+
 
                 <!-- পণ্য যুক্ত করার বাটন -->
                 <button type="button" id="addProductBtn" class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white mt-4">যুক্ত করুন</button>
@@ -87,7 +87,7 @@
         </div>
     </div>
 
-  
+
     @* {/* customer info */} *@
     <form class="font-[sans-serif] max-w-4xl mx-auto">
         <div class="grid sm:grid-cols-2 gap-6">
@@ -98,9 +98,9 @@
 
             <!-- Customer Selection -->
             <div>
-                <label asp-for="SelectedCustomerId" class="block text-sm text-gray-600">ক্রেতার নাম</label>
-                <select id="customerSelect" asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md">
-                    <option value="">ক্রেতার নাম</option>
+                <label asp-for="SelectedCustomerId" class="block text-sm text-grey-600">BuyerName</label>
+                <select id="customerSelect" asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-grey-100 w-full text-sm rounded-md">
+                    <option value="">BuyerName</option>
                     @foreach (var customer in Model.Customers)
                     {
                         <option value="@customer.Id">@customer.Name</option>
@@ -109,24 +109,24 @@
             </div>
 
             <div class="relative flex items-center">
-                <input asp-for="CustomerPhoneNo" id="customerPhoneNo"  type="number" placeholder="ক্রেতার ফোন নাম্বার"
+                <input asp-for="CustomerPhoneNo" id="customerPhoneNo" type="number" placeholder="ক্রেতার ফোন নাম্বার"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
 
             <div class="relative flex items-center">
-                <input asp-for="CustomerAddress" id="customerAddress"  type="text" placeholder="ক্রেতার ঠিকানা"
+                <input asp-for="CustomerAddress" id="customerAddress" type="text" placeholder="ক্রেতার ঠিকানা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
+
             <div class="relative flex items-center sm:col-span-2">
-                <input  id="shabekDue" type="number" readonly placeholder="সাবেক টাকা"
+                <input asp-for="ShabekDue" id="shabekDue" type="number" readonly placeholder="সাবেক টাকা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
+
             <div class="relative flex items-center sm:col-span-2">
                 <input id="shorboMotTaka" type="number" placeholder="সর্বমোট টাকা"
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
-         
-
 
             <div class="relative flex items-center sm:col-span-2">
                 <input asp-for="Deposit" id="depositAmount" type="number" placeholder="পরিশোধক্রিত টাকা"
@@ -135,146 +135,226 @@
 
             <div class="relative flex items-center sm:col-span-2">
                 <input readonly id="dueAmount" type="number" placeholder="বাকি টাকা"
+                <input readonly id="dueAmount" type="number" placeholder="বাকি টাকা"
+>>>>>>>>> Temporary merge branch 2
                        class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
             </div>
         </div>
 
-        <button type="button"
+        <button type="button" id="submitButton"
                 class="mt-10 px-6 py-2.5 w-full text-sm bg-[#007bff] text-white hover:bg-[#006bff] rounded-sm">
             Submit
         </button>
     </form>
 
+
 </div>
 
 <script>
-    
-                            // Function to fetch product details using AJAX
-        function getProductDetails(productId) {
-            fetch(`Home/GetProductDetails?productId=${productId}`)
-                .then(response => response.json())
-                .then(data => console.log(data)
-                //     {
-                //     if (data.success) {
+    let previousDueAdded = false; // Track whether previous due has been added or not
+    let totalTotalPrice = 0; // Initialize totalTotalPrice
 
-                //         Update the view with the fetched product details
-                //         document.getElementById("productSelect").value = data.data.productName;
-                //         document.getElementById("buyPrice").value = data.data.buyPrice;
-                //         document.getElementById("stock").value = data.data.stock;
+    // Function to fetch product details using AJAX
+    function getProductDetails(productId) {
+        fetch(`GetProductDetails?productId=${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the view with the fetched product details
+                    document.getElementById("buyPrice").value = data.data.buyPrice;
+                    document.getElementById("stock").value = data.data.stock;
+                } else {
+                    console.error(data.message); // Handle error case
+                }
+            })
+            .catch(error => {
+                console.error(error); // Log any errors
+            });
+    }
 
-                //         Update the ViewModel properties (optional)
-                //         document.querySelector('input[name="ProductName"]').value = data.data.productName;
-                //         document.querySelector('input[name="BuyPrice"]').value = data.data.buyPrice;
-                //         document.querySelector('input[name="Stock"]').value = data.data.stock;
-                //     } else {
-                //         Handle error case
-                //         console.error(data.message);
-                //     }
-                // }
-                )
-                .catch(error => {
-
-                    console.error(error);
-                });
-                            }
-
-    // Function to handle changes in the product selection dropdown
-    // $(document).on('change', '#productName', function() {
-    //     var productId = $(this).val();                             Get the selected product ID
-    //     fetchProductDetails(productId);                            Fetch product details
-    // });
-
-    
-                        // Calculate total price whenever quantity or selling price changes
-        $(document).on('input', '#quantity, #sellPrice', function() {
-                            var quantity = parseFloat($('#quantity').val()) || 0;      // Get quantity
+    // Calculate total price whenever quantity or selling price changes
+    $(document).on('input', '#quantity, #sellPrice', function () {
+        var quantity = parseFloat($('#quantity').val()) || 0; // Get quantity
         var sellingPrice = parseFloat($('#sellPrice').val()) || 0; // Get selling price
-        var totalPrice = (quantity * sellingPrice).toFixed(2);     // Calculate total price
-        $('#totalPrice').val(totalPrice);                          // Update total price field
-                        });
+        var totalPrice = (quantity * sellingPrice).toFixed(2); // Calculate total price
 
+        $('#totalPrice').val(totalPrice); // Update total price field
+    });
 
+    // Function to fetch customer details using AJAX
+    function fetchCustomerDetails(customerId) {
+        fetch(`GetCustomerDetails?customerId=${customerId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("customerAddress").value = data.data.address;
+                    document.getElementById("customerPhoneNo").value = data.data.phoneNo;
+                    document.getElementById("shabekDue").value = data.data.due;
 
-            // Add product to the table when the "Add" button is clicked
-        $(document).on('click', '#addProductBtn', function() {
-                var productName = $('#productName option:selected').text();
+                    // Add previous due to total amount immediately
+                    updateTotalAmount(true); // Pass true to force adding previous due
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    // Calculate and update total amount
+    function updateTotalAmount(addShabekDue = false) {
+        var totalAmount = 0;
+
+        // Loop through the product table to sum up the total product prices
+        $('#productTable tbody tr').each(function () {
+            var rowTotal = parseFloat($(this).find('td:eq(4)').text()) || 0;
+            totalAmount += rowTotal;
+        });
+
+        // Get the previous due (shabekDue)
+        var previousDue = parseFloat($('#shabekDue').val()) || 0;
+
+        // Add previous due to totalAmount if not already added or forcefully adding
+        if (addShabekDue || !previousDueAdded) {
+            totalAmount += previousDue;
+            previousDueAdded = true; // Mark that previous due has been added
+        }
+
+        // Update total amounts in the form
+        $('#shorboMotTaka').val(totalAmount.toFixed(2));
+        $('#dueAmount').val(totalAmount.toFixed(2));
+
+        // Update remaining due after subtracting the paid amount
+        var paidAmount = parseFloat($('#paidAmount').val()) || 0;
+        var remainingDue = totalAmount - paidAmount;
+        $('#remainingDue').val(remainingDue.toFixed(2));
+
+        // Update totalTotalPrice by adding only the total product prices (excluding previous due)
+        totalTotalPrice = 0; // Reset totalTotalPrice before recalculating
+        $('#productTable tbody tr').each(function () {
+            var rowTotal = parseFloat($(this).find('td:eq(4)').text()) || 0;
+            totalTotalPrice += rowTotal;
+        });
+
+        // Set totalTotalPrice only if it is greater than zero
+        if (totalTotalPrice > 0) {
+            $('#totalTotalPrice').val(totalTotalPrice.toFixed(2)); // Update totalTotalPrice field
+        }
+    }
+
+    // Update total amount after adding a product
+    $(document).on('click', '#addProductBtn', function () {
+        var productName = $('#productSelect option:selected').text();
         var buyPrice = $('#buyPrice').val();
         var sellPrice = $('#sellPrice').val();
-        var quantity = $('#quantity').val();
+        var quantity = parseFloat($('#quantity').val());
+        var stock = parseFloat($('#stock').val());
         var totalPrice = $('#totalPrice').val();
 
-        if (productName && buyPrice && sellPrice && quantity && totalPrice) {
-                    var newRow = `<tr>
-            <td class="px-4 py-2">${productName}</td>
-            <td class="px-4 py-2">${buyPrice}</td>
-            <td class="px-4 py-2">${sellPrice}</td>
-            <td class="px-4 py-2">${quantity}</td>
-            <td class="px-4 py-2">${totalPrice}</td>
-            <td class="px-4 py-2">
-                <button type="button" class="delete-btn text-red-500">মুছে দিন</button>
-            </td>
-        </tr>`;
-        $('#productTable tbody').append(newRow);  // Append new row to the table
-        clearProductFields();                      // Clear the fields after adding
-        updateTotalAmount();                      // Update the total amount after adding
-                } else {
-            alert("অনুগ্রহ করে সব তথ্য পূরণ করুন!"); // Alert if fields are empty
-                }
-            });
+        if (quantity > stock) {
+            alert("আপনি স্টকের থেকে বেশি পণ্য যোগ করতে পারবেন না।");
+        } else if (quantity <= 0) {
+            alert("পণ্যের পরিমাণ শূন্য বা তার চেয়ে কম হতে পারবে না।");
+        } else {
+            if (productName && buyPrice && sellPrice && quantity && totalPrice) {
+                var newRow = `
+                            <tr>
+                                <td class="px-4 py-2">${productName}</td>
+                                <td class="px-4 py-2">${buyPrice}</td>
+                                <td class="px-4 py-2">${sellPrice}</td>
+                                <td class="px-4 py-2">${quantity}</td>
+                                <td class="px-4 py-2">${totalPrice}</td>
+                                <td class="px-4 py-2">
+                                    <button type="button" class="update-btn text-blue-500">আপডেট</button>
+                                    <button type="button" class="delete-btn text-red-500">মুছে দিন</button>
+                                </td>
+                            </tr>`;
+                $('#productTable tbody').append(newRow);
 
-        // Clear input fields for products
-        function clearProductFields() {
-            $('#productName').val('');
+                var updatedStock = stock - quantity;
+                $('#stock').val(updatedStock);
+
+                clearProductFields(); // Clear input fields after adding
+
+                // Recalculate total amount
+                updateTotalAmount();
+            } else {
+                alert("অনুগ্রহ করে সব তথ্য পূরণ করুন!");
+            }
+        }
+    });
+
+    // Clear input fields for products
+    function clearProductFields() {
+        $('#productSelect').val('');
         $('#buyPrice').val('');
         $('#stock').val('');
         $('#quantity').val('');
         $('#sellPrice').val('');
         $('#totalPrice').val('');
-            }
-
-  
-        function fetchCustomerDetails(customerId){
-            fetch(`Home/GetCustomerDetails?customerId=${customerId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        //upload the view with the fetched customer details
-                        //document.getElementById("customerSelect").value = data.data.name;
-                        document.getElementById("customerAddress").value = data.data.address;
-                        document.getElementById("customerPhoneNo").value = data.data.phoneNo;
-                        document.getElementById("shabekDue").value = data.data.due;
-
-                        // Update the ViewModel properties (optional)
-                        // document.querySelector('input[name="CustomerName"]').value = data.data.name;
-                        document.querySelector('input[name="Address"]').value = data.data.address;
-                        document.querySelector('input[name="PhoneNo"]').value = data.data.phoneNo;
-                        document.querySelector('input[name="Due"]').value = data.data.due;
-
-                    } else {
-                        console.error(data.message);
-                    }
-                }
-                )
-                .catch(error => {
-                    console.error(error);
-                });
-                    }
-   
-                    // Update total amount in the form
-        function updateTotalAmount() {
-                        var totalAmount = 0;
-        $('#productTable tbody tr').each(function() {
-                            var rowTotal = parseFloat($(this).find('td:eq(4)').text()) || 0;  // Get the total price from the row
-        totalAmount += rowTotal;                                          // Accumulate the total amount
-                        });
-        $('#totalTotalPrice').val(totalAmount.toFixed(2));  // Update the total price field
-                    }
-
-
+    }
 
     // Remove product from the table
-    $(document).on('click', '.delete-btn', function() {
-        $(this).closest('tr').remove();  // Remove the selected row
-        updateTotalAmount();             // Update the total amount after deletion
+    $(document).on('click', '.delete-btn', function () {
+        $(this).closest('tr').remove();
+        updateTotalAmount(); // Update the total amount after deletion
     });
+
+    // Update product fields in the form when clicking the "Update" button
+    $(document).on('click', '.update-btn', function () {
+        var row = $(this).closest('tr');
+        var productName = row.find('td:eq(0)').text();
+        var buyPrice = row.find('td:eq(1)').text();
+        var sellPrice = row.find('td:eq(2)').text();
+        var quantity = row.find('td:eq(3)').text();
+        var totalPrice = row.find('td:eq(4)').text();
+
+        $('#productSelect option').filter(function () {
+            return $(this).text() === productName;
+        }).prop('selected', true);
+        $('#buyPrice').val(buyPrice);
+        $('#sellPrice').val(sellPrice);
+        $('#quantity').val(quantity);
+        $('#totalPrice').val(totalPrice);
+
+        row.remove();
+        updateTotalAmount(); // Recalculate total amount
+    });
+
+    // Update remaining due when paid amount changes
+    $(document).on('input', '#paidAmount', function () {
+        updateTotalAmount();
+    });
+
+    // Function to handle button click
+    document.getElementById('submitButton').addEventListener('click', function () {
+        var depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
+        var dueAmount = parseFloat(document.getElementById('dueAmount').value) || 0;
+
+        // Check if depositAmount is greater than dueAmount
+        if (depositAmount > dueAmount) {
+            alert("আপনার দেওয়া জমার পরিমাণ বকেয়ার চেয়ে বেশি হতে পারবে না!");
+        } else {
+            // Update dueAmount
+            var newDueAmount = dueAmount - depositAmount;
+            document.getElementById('dueAmount').value = newDueAmount.toFixed(2);
+        }
+    });
+
+
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
