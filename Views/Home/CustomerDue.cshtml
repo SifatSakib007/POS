@@ -4,7 +4,7 @@
     <div class="max-w-4xl w-full h-max rounded-md px-4 py-8 mx-auto">
         <h2 class="text-2xl font-semibold mb-4">Customer Due Payment</h2>
 
-        <form asp-action="UpdateCustomerDue" method="post" class="mt-8">
+        <form asp-action="CustomerDue" method="post" class="mt-8">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
 
@@ -46,7 +46,7 @@
                 <label class="block text-sm text-gray-600">
                     Remaining Due
                 </label>
-                <input type="text" readonly value="@(Model.Due.HasValue && Model.DueClose.HasValue ? (Model.Due.Value - Model.DueClose.Value) : Model.Due)"
+                <input type="text" readonlyvalue="@(Model.Due.HasValue && Model.DueClose.HasValue ? (Model.Due.Value - Model.DueClose.Value) : Model.Due)"
                        class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md" />
             </div>
 
@@ -56,7 +56,7 @@
                         class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white">
                     Update Due
                 </button>
-                <a href="@Url.Action("Index", "Home")"
+                <a href="@Url.Action("CustomerDue", "Home")"
                    class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-transparent hover:bg-gray-100 border border-gray-300 text-gray-800 text-center">
                     Cancel
                 </a>

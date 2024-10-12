@@ -105,25 +105,8 @@ namespace POS.Controllers
                     }
                 });
             }
-<<<<<<< Updated upstream
-            
-            /*var customer = await _db.Customer
-                .Where(c => c.Id == customerId)
-                .Select(c => new
-                {
-                    CustomerPhoneNo = c.PhoneNo,   // Phone number of the customer
-                    CustomerAddress = c.Address,   // Address of the customer
-                    ShobekDue = c.Due              // Previous due amount
-                })
-                .FirstOrDefaultAsync();
 
-            if (customer == null)
-            {
-                return Json(new { success = false, message = "Customer not found" });
-            }*/
-=======
-
->>>>>>> Stashed changes
+          
 
             return Json(new { success = false, message = "Customer not found!." });
         }
@@ -227,11 +210,6 @@ namespace POS.Controllers
         }
 
 
-
-       
-
-
-
         public async Task<IActionResult> ProductSellReport()
         {
             // Fetch all the sell records along with related product and customer details
@@ -332,15 +310,16 @@ namespace POS.Controllers
                     // Update customer details in the database
                     _db.Customer.Update(customer);
                     _db.SaveChanges();
-                    //success toaster alert
-                    TempData["success"] = "Successfullly added customer due details!.";
+                    // success toaster alert
+                    TempData["success"] = "Successfully added customer due details!";
                     return RedirectToAction("CustomerDue", new { id = customer.Id });
                 }
             }
 
             // If validation fails, redisplay the form
-            return View("CustomerDue", customer);
+            return View(customer);
         }
+
 
 
         public ActionResult ShopHishab()
