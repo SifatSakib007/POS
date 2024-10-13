@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POS.Models;
 
@@ -11,9 +12,11 @@ using POS.Models;
 namespace POS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241013162122_ModelUpdate")]
+    partial class ModelUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -116,15 +119,6 @@ namespace POS.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
-
-                    b.Property<int?>("AddStock")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AddStockAmounts")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddStockDates")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AddedBy")
                         .HasColumnType("nvarchar(max)");

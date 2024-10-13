@@ -13,6 +13,8 @@
             <th class="px-4 py-2 text-left">Phone Number</th>
             <th class="px-4 py-2 text-left">Address</th>
             <th class="px-4 py-2 text-left">Due</th>
+            <th class="px-4 py-2 text-left">Installments</th> <!-- Modified header -->
+            <th class="px-4 py-2 text-left">CreatedAt</th>
             <th class="px-4 py-2 text-left">Actions</th>
         </tr>
     </thead>
@@ -24,6 +26,35 @@
                 <td class="px-4 py-2">@customer.PhoneNo</td>
                 <td class="px-4 py-2">@customer.Address</td>
                 <td class="px-4 py-2">@customer.Due</td>
+
+                <!-- Installments Section -->
+                <td class="px-4 py-2">
+                    @{
+                        var paymentAmounts = customer.PaymentAmounts?.Split(',') ?? new string[0];
+                        var paymentDates = customer.PaymentDates?.Split(',') ?? new string[0];
+
+                        if (paymentAmounts.Length > 0 && paymentDates.Length > 0)
+                        {
+                            for (int i = 0; i < paymentAmounts.Length; i++)
+                            {
+                                string installmentNumber = i == 0 ? "1st" : i == 1 ? "2nd" : i == 2 ? "3rd" : (i + 1) + "th";
+
+                                <p><strong>@installmentNumber installment:</strong> @paymentAmounts[i]</p>
+
+                                if (i < paymentDates.Length)
+                                {
+                                    <p><strong>@installmentNumber installment date:</strong> @paymentDates[i]</p>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <p>No payment history</p>
+                        }
+                    }
+                </td>
+
+                <td class="px-4 py-2">@customer.CreatedAt</td>
                 <td class="px-4 py-2">
                     <a asp-action="EditCustomer" asp-route-id="@customer.Id" class="text-blue-500 hover:text-blue-700">
                         <i class="fas fa-edit"></i> <!-- Edit Icon -->
@@ -59,4 +90,3 @@
         });
     });
 </script>
-

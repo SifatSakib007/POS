@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO.Pipelines;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -194,6 +195,15 @@ namespace POS.Controllers
             sell.CustomerName = customer.Name;
             sell.CustomerPhoneNo = customer.PhoneNo;
             sell.CustomerAddress = customer.Address;
+            if(customer.FirstDue == null)
+            {
+                customer.FirstDue = customer.Due;
+            }
+            else
+            {
+                customer.FirstDue = customer.FirstDue;
+            }
+            
             sell.DuePrice = customer.Due;
 
             // Calculate total due after this transaction
@@ -308,29 +318,25 @@ namespace POS.Controllers
             {
                 ModelState.AddModelError(nameof(model.DueClose), "Due Close amount must be greater than 0.");
             }
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int? userId = null;
 
-            /*// Check if ModelState is valid
-            if (!ModelState.IsValid)
+            if (int.TryParse(userIdString, out int parsedUserId))
             {
-                
-                // Log ModelState errors for debugging
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    
-                    Console.WriteLine(error.ErrorMessage); // Log the error
-                }
+                userId = parsedUserId; // Successfully parsed the string to an integer
+            }
+            else
+            {
+                userId = null; // Failed to parse the string to an integer
+            }
 
-                // Reload the dropdown in case of validation failure
-                var customers = _db.Customer.ToList();
-                ViewBag.CustomerList = new SelectList(customers, "Id", "Name");
-                return View(model); // Return the same view with the model and errors
-            }*/
+            // Now assign it to customer.UserId
+            customer.UserId = userId;
 
             // Proceed with updating the customer details if ModelState is valid
             customer.Due -= model.DueClose.Value; // Ensure DueClose is not null with .Value
             customer.DueClose = model.DueClose;
-
-            // Your existing code for updating PaymentDates and PaymentAmounts
+                        
             // Get the current payment date and amount
             string currentDate = DateTime.UtcNow.ToString("yyyy-MM-dd"); // Format the date
             string currentAmount = model.DueClose.Value.ToString(); // Convert the paid amount to string
@@ -376,6 +382,7 @@ namespace POS.Controllers
             return View();
         }
 
+
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public IActionResult ProductBuy(Product product)
@@ -393,7 +400,6 @@ namespace POS.Controllers
             TempData["success"] = "Error adding product details!.";
             // If model state is not valid, return the form with validation errors
             return View(product);
-
         }
 
         public ActionResult ProductBuyList()
@@ -401,6 +407,91 @@ namespace POS.Controllers
             var products = _db.Product.ToList();
             return View(products);
         }
+
+        [HttpGet]
+        public IActionResult UpdateProductStock(int id)
+        {
+            // Find the product by ID
+            var product = _db.Product.FirstOrDefault(p => p.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Pass the product details to the view
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateProductStock(Product model)
+        {
+            // Find the product by ID
+            var product = _db.Product.FirstOrDefault(p => p.ProductId == model.ProductId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Validate the AddStock field
+            if (model.AddStock == null || model.AddStock <= 0)
+            {
+                ModelState.AddModelError(nameof(model.AddStock), "Stock amount must be greater than 0.");
+            }
+
+            // Validate BuyPrice
+            if (model.BuyPrice <= 0)
+            {
+                ModelState.AddModelError(nameof(model.BuyPrice), "Buy price must be greater than 0.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Update stock
+            product.Stock += model.AddStock.Value;
+
+            // Get the current stock date and amount
+            string currentDate = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"); // Include time for more precision
+            string currentAmount = model.AddStock.Value.ToString(); // Convert the added stock to string
+
+            // Append the current date to the AddStockDates column
+            product.AddStockDates = string.IsNullOrWhiteSpace(product.AddStockDates)
+                ? currentDate
+                : product.AddStockDates + "," + currentDate;
+
+            // Append the added stock amount to the AddStockAmounts column
+            product.AddStockAmounts = string.IsNullOrWhiteSpace(product.AddStockAmounts)
+                ? currentAmount
+                : product.AddStockAmounts + "," + currentAmount;
+
+            // Optionally update the BuyPrice if needed
+            product.BuyPrice = model.BuyPrice;
+
+            // Save changes to the database with transaction
+            using (var transaction = _db.Database.BeginTransaction())
+            {
+                try
+                {
+                    _db.Product.Update(product);
+                    _db.SaveChanges();
+                    transaction.Commit(); // Commit transaction if everything is successful
+                    TempData["success"] = "Successfully updated product stock details!";
+                    return RedirectToAction("ProductBuyList"); // Or another page where you want to redirect
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback(); // Rollback in case of any failure
+                    TempData["error"] = "An error occurred while updating the database!";
+                    ModelState.AddModelError("", "An error occurred while updating the database");
+                    return View(model); // Return the view with errors
+                }
+            }
+        }
+
 
 
         public ActionResult OwnShopDue()
