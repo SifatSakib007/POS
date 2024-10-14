@@ -1,51 +1,67 @@
-﻿@model POS.Models.Product
+﻿@model POS.Models.ProductClientViewModel
 
-<div class="font-[sans-serif] bg-white">
+<div class="font-sans bg-white">
     <div class="max-w-4xl w-full h-max rounded-md px-4 py-8 mx-auto">
-        <h2 class="text-2xl font-bold mb-6">নতুন পণ্য যোগ করুন</h2>
+        <h2 class="text-2xl font-bold mb-6">নতুন পণ্য এবং ক্লায়েন্ট যোগ করুন</h2>
         <form asp-action="ProductBuy" method="post">
             @Html.AntiForgeryToken()
 
+            <!-- Product Section -->
+            <h3 class="text-xl font-semibold mb-4">পণ্যের বিবরণ</h3>
+
             <!-- Product Name -->
             <div class="mb-4">
-                <label for="ProductName" class="block text-sm text-gray-600">পণ্যের নাম</label>
-                <input asp-for="ProductName" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" placeholder="পণ্যের নাম লিখুন" />
-                <span asp-validation-for="ProductName" class="text-red-500 text-sm"></span>
+                <label for="Product_ProductName" class="block text-sm text-gray-600">পণ্যের নাম</label>
+                <input asp-for="Product.ProductName" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="পণ্যের নাম লিখুন" />
+                <span asp-validation-for="Product.ProductName" class="text-red-500 text-sm"></span>
             </div>
 
             <!-- Buy Price -->
             <div class="mb-4">
-                <label for="BuyPrice" class="block text-sm text-gray-600">ক্রয়মূল্য</label>
-                <input asp-for="BuyPrice" type="number" step="0.01" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" placeholder="ক্রয়মূল্য লিখুন" />
-                <span asp-validation-for="BuyPrice" class="text-red-500 text-sm"></span>
-            </div>
-
-            <!-- Previous Buy Price (optional) -->
-            <div class="mb-4">
-                <label for="PreviousBuyPrice" class="block text-sm text-gray-600">পূর্বের ক্রয়মূল্য</label>
-                <input asp-for="PreviousBuyPrice" type="number" step="0.01" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" placeholder="পূর্বের ক্রয়মূল্য লিখুন (ঐচ্ছিক)" />
-                <span asp-validation-for="PreviousBuyPrice" class="text-red-500 text-sm"></span>
+                <label for="Product_BuyPrice" class="block text-sm text-gray-600">ক্রয়মূল্য</label>
+                <input asp-for="Product.BuyPrice" type="number" step="0.01" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ক্রয়মূল্য লিখুন" />
+                <span asp-validation-for="Product.BuyPrice" class="text-red-500 text-sm"></span>
             </div>
 
             <!-- Stock -->
             <div class="mb-4">
-                <label for="Stock" class="block text-sm text-gray-600">স্টক সংখ্যা</label>
-                <input asp-for="Stock" type="number" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" placeholder="স্টক সংখ্যা লিখুন" />
-                <span asp-validation-for="Stock" class="text-red-500 text-sm"></span>
+                <label for="Product_Stock" class="block text-sm text-gray-600">স্টক সংখ্যা</label>
+                <input asp-for="Product.Stock" type="number" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="স্টক সংখ্যা লিখুন" />
+                <span asp-validation-for="Product.Stock" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Client Section -->
+            <h3 class="text-xl font-semibold mb-4">ক্লায়েন্টের বিবরণ</h3>
+
+            <!-- Client Name -->
+            <div class="mb-4">
+                <label for="Client_Name" class="block text-sm text-gray-600">ক্লায়েন্টের নাম</label>
+                <input asp-for="Client.Name" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ক্লায়েন্টের নাম লিখুন" />
+                <span asp-validation-for="Client.Name" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Client Address -->
+            <div class="mb-4">
+                <label for="Client_Address" class="block text-sm text-gray-600">ক্লায়েন্টের ঠিকানা</label>
+                <input asp-for="Client.Address" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ঠিকানা লিখুন" />
+                <span asp-validation-for="Client.Address" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Client Phone Number -->
+            <div class="mb-4">
+                <label for="Client_PhoneNo" class="block text-sm text-gray-600">ফোন নম্বর</label>
+                <input asp-for="Client.PhoneNo" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ফোন নম্বর লিখুন" />
+                <span asp-validation-for="Client.PhoneNo" class="text-red-500 text-sm"></span>
             </div>
 
             <!-- Submit Button -->
             <div class="flex justify-between items-center">
-                <button type="submit" class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white">
-                    পণ্য যোগ করুন
-                </button>
+                <button type="submit" class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white">পণ্য এবং ক্লায়েন্ট যোগ করুন</button>
             </div>
         </form>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

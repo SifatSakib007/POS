@@ -385,35 +385,48 @@ namespace POS.Controllers
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
-        public IActionResult ProductBuy(Product product)
+        public IActionResult ProductBuy(ProductClientViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                int? userId = null;
-                if (int.TryParse(userIdString, out int parsedUserId))
+                using (var transaction = _db.Database.BeginTransaction())
                 {
-                    userId = parsedUserId; // Successfully parsed the string to an integer
-                }
-                else
-                {
-                    userId = null; // Failed to parse the string to an integer
-                }
+                    try
+                    {
+                        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        int? userId = null;
+                        if (int.TryParse(userIdString, out int parsedUserId))
+                        {
+                            userId = parsedUserId;
+                        }
 
-                // Now assign it to customer.UserId
-                product.UserId = userId;
-                //product.CreatedAt = DateTime.UtcNow;
-                _db.Product.Add(product);
-                _db.SaveChanges();
-                //success toaster alert
-                TempData["success"] = "Successfullly added product details!.";
-                return View(); // This stays on the same page
+                        // Assign userId to both product and client
+                        viewModel.Product.UserId = userId;
+                        viewModel.Client.UserId = userId;
+
+                        // Save the product and client data
+                        _db.Product.Add(viewModel.Product);
+                        _db.Client.Add(viewModel.Client);
+
+                        _db.SaveChanges();
+                        transaction.Commit();
+
+                        TempData["success"] = "Successfully added product and client details!";
+                        return View(); // Stay on the same page
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        _logger.LogError(ex, "Error adding product and client details.");
+                        TempData["error"] = "Error adding product and client details!";
+                        return View(viewModel); // Return view with validation errors
+                    }
+                }
             }
-            //success toaster alert
-            TempData["success"] = "Error adding product details!.";
-            // If model state is not valid, return the form with validation errors
-            return View(product);
+            TempData["error"] = "Error adding product details! Please check the form for validation errors.";
+            return View(viewModel); // Return the form with validation errors
         }
+
 
         public ActionResult ProductBuyList()
         {
