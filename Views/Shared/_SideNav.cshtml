@@ -6,12 +6,15 @@
 
         <!-- Large screen navigation -->
         <nav class="max-sm:hidden sm:hidden md:hidden lg:flex max-xl:flex ml-auto space-x-6">
-            <a asp-controller="Home" asp-action="Index" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">Home</a>
-            <a asp-controller="RegLog" asp-action="Register" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Register</a>
-            <a asp-controller="RegLog" asp-action="Login" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Login</a>
-            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Blog</a>
-            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">About</a>
-            <a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Contact</a>
+              @* <a asp-controller="Home" asp-action="Index" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">হোম</a> *@
+            <a asp-controller="RegLog" asp-action="Register" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">রেজিস্টার</a>
+            <a asp-controller="RegLog" asp-action="Login" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">লগিন</a>
+            <a asp-controller="Home" asp-action="ProductSell" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">পণ্য বিক্রয়</a>
+            <a asp-controller="Home" asp-action="ProductSellReport" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বিক্রয় বিবরণী</a>
+            <a asp-controller="Home" asp-action="AddCustomer" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার যুক্ত করুন</a>
+            <a asp-controller="Home" asp-action="CustomerList" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার বিবরণী</a>
+            <a asp-controller="Home" asp-action="CustomerDue" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বাকি হিসাব</a>
+            <a asp-controller="Home" asp-action="ShopHishab" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">দোকান হিসাব</a>
         </nav>
 
         <!-- Hamburger Button for Small screens -->
@@ -30,12 +33,15 @@
             </button>
 
             <ul class="space-y-4 mt-10">
-                <li><a href="#" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">Home</a></li>
-                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Team</a></li>
-                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Feature</a></li>
-                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Blog</a></li>
-                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">About</a></li>
-                <li><a href="#" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">Contact</a></li>
+                @* <a asp-controller="Home" asp-action="Index" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">হোম</a> *@
+                <a asp-controller="RegLog" asp-action="Register" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">রেজিস্টার</a>
+                <a asp-controller="RegLog" asp-action="Login" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">লগিন</a>
+                <a asp-controller="Home" asp-action="ProductSell" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">পণ্য বিক্রয়</a>
+                <a asp-controller="Home" asp-action="ProductSellReport" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বিক্রয় বিবরণী</a>
+                <a asp-controller="Home" asp-action="AddCustomer" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার যুক্ত করুন</a>
+                <a asp-controller="Home" asp-action="CustomerList" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার বিবরণী</a>
+                <a asp-controller="Home" asp-action="CustomerDue" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বাকি হিসাব</a>
+                <a asp-controller="Home" asp-action="ShopHishab" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">দোকান হিসাব</a>
             </ul>
         </div>
     </div>
