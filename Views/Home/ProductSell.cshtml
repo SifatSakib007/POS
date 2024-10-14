@@ -9,9 +9,9 @@
             <form class="mt-8">
                 <!-- পণ্য ফর্ম -->
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
-                    <!-- Product Selection -->
-                    <div>
-                        <label asp-for="SelectedProductId" class="block text-sm text-gray-600">পণ্যের নাম</label>
+                    <!-- পণ্য সিলেক্ট করুন Dropdown -->
+                    <div >
+                        <label asp-for="SelectedProductId" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
                         <select id="productSelect" onchange="getProductDetails(this.value)" asp-for="SelectedProductId" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
                             <option value="">পণ্যের নাম</option>
                             @foreach (var product in Model.Products)
@@ -19,42 +19,44 @@
                                 <option value="@product.ProductId">@product.ProductName</option>
                             }
                         </select>
+                        <span  class="text-danger"></span>
                     </div>
 
-                    @*   <div>
-                    <label asp-for="ProductName" class="block text-sm text-gray-600">পণ্যের নাম</label>
-                    <input asp-for="ProductName" id="productName" readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
-                    </div> *@
-
-                    <div>
-                        <label asp-for="BuyPrice" class="block text-sm text-gray-600">ক্রয় মূল্য</label>
-                        <input asp-for="BuyPrice" id="buyPrice" readonly class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
-                    </div>
-
-                    <div>
-                        <label asp-for="Stock" class="block text-sm text-gray-600">স্টক</label>
-                        <input type="number" id="stock" readonly placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md" />
+                    <!-- ক্রয় মূল্য (readonly) -->
+                    <div class="relative flex items-center  mt-4">
+                        <label asp-for="BuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রয় মূল্য</label>
+                        <input asp-for="BuyPrice" id="buyPrice" readonly placeholder="ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span  class="text-danger"></span>
                     </div>
 
 
+                    <!-- স্টক (readonly) -->
+                    <div class="relative flex items-center  mt-4">
+                        <label asp-for="Stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">স্টক</label>
+                        <input asp-for="Stock" id="stock" readonly placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
+                    </div>
 
 
-                    <!-- Quantity -->
-                    <div>
-                        <label asp-for="Sells.Quantity" class="block text-sm text-gray-600">পরিমাণ</label>
-                        <input asp-for="Sells.Quantity" id="quantity" class="px-4 py-3 bg-gray-100 w-full text-sm rounded-md" />
+                    <!-- পরিমাণ  -->
+                    <div class="relative flex items-center  mt-4">
+                        <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
+                        <input  id="quantity" placeholder="পরিমাণ সংখ্যায় লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
                     </div>
 
                     <!-- বিক্রয় মূল্য -->
-                    <div>
-                        <label asp-for="Sells.SellingPrice" class="block text-sm text-gray-600">বিক্রয় মূল্য</label>
-                        <input type="number" asp-for="Sells.SellingPrice" id="sellPrice" placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
+                    <div class="relative flex items-center  mt-4">
+                        <label  class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বিক্রয় মূল্য</label>
+                        <input  id="sellPrice" placeholder="বিক্রয় মূল্য সংখ্যায় লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
                     </div>
 
                     <!-- মোট মূল্য -->
-                    <div>
-                        <label asp-for="TotalPrice" class="block text-sm text-gray-600">মোট মূল্য</label>
-                        <input type="number" id="totalPrice" readonly placeholder="সংখ্যায় লিখুন" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-blue-600" />
+                    <div class="relative flex items-center  mt-4">
+                        <label asp-for="TotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">মোট মূল্য</label>
+                        <input asp-for="TotalPrice" id="totalPrice" readonly placeholder="মোট মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
                     </div>
                 </div>
 
@@ -91,53 +93,67 @@
     @* {/* customer info */} *@
     <form class="font-[sans-serif] max-w-4xl mx-auto">
         <div class="grid sm:grid-cols-2 gap-6">
-            <div class="relative flex items-center">
+            @* মোট মূল্য *@
+            <div class="relative flex items-center  mt-4">
+                <label asp-for ="TotalTotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
+                    মোট মূল্য</label>
                 <input asp-for="TotalTotalPrice" value="@Model.TotalTotalPrice" readonly id="totalTotalPrice" type="text" placeholder="মোট টাকা"
-                       class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span class="text-danger"></span>
             </div>
-
-            <!-- Customer Selection -->
+            <!-- ক্রেতার নাম সিলেক্ট করুন Dropdown -->
             <div>
-                <label asp-for="SelectedCustomerId" class="block text-sm text-grey-600">BuyerName</label>
-                <select id="customerSelect" asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-grey-100 w-full text-sm rounded-md">
-                    <option value="">BuyerName</option>
+                <label asp-for="SelectedProductId" class="block text-sm text-gray-600">ক্রেতার নাম সিলেক্ট করুন</label>
+                <select id="customerSelect" asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
+                    <option value="">ক্রেতার নাম সিলেক্ট করুন</option>
                     @foreach (var customer in Model.Customers)
                     {
                         <option value="@customer.Id">@customer.Name</option>
                     }
                 </select>
+                <span class="text-danger"></span>
             </div>
 
-            <div class="relative flex items-center">
-                <input asp-for="CustomerPhoneNo" id="customerPhoneNo" type="number" placeholder="ক্রেতার ফোন নাম্বার"
-                       class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
+            <!-- ক্রেতার ফোন নাম্বার (readonly) -->
+            <div class="relative flex items-center  mt-4">
+                <label asp-for="CustomerPhoneNo" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রেতার ফোন নাম্বার</label>
+                <input asp-for="CustomerPhoneNo" id="customerPhoneNo" readonly placeholder="ক্রেতার ফোন নাম্বার" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span class="text-danger"></span>
             </div>
 
-            <div class="relative flex items-center">
-                <input asp-for="CustomerAddress" id="customerAddress" type="text" placeholder="ক্রেতার ঠিকানা"
-                       class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
+            <!-- ক্রেতার ঠিকানা (readonly) -->
+            <div class="relative flex items-center  mt-4">
+                <label asp-for="CustomerAddress" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রেতার ঠিকানা</label>
+                <input asp-for="CustomerAddress" readonly id="customerAddress" type="text" placeholder="ক্রেতার ঠিকানা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span class="text-danger"></span>
             </div>
 
-            <div class="relative flex items-center sm:col-span-2">
-                <input asp-for="ShabekDue" id="shabekDue" type="number" readonly placeholder="সাবেক টাকা"
-                       class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
+            <!-- সাবেক টাকা (readonly) -->
+            <div class="relative flex items-center  mt-4">
+                <label asp-for="ShabekDue" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সাবেক টাকা</label>
+                <input asp-for="ShabekDue" id="shabekDue" type="number" readonly placeholder="সাবেক টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span class="text-danger"></span>
             </div>
 
-            <div class="relative flex items-center sm:col-span-2">
-                <input id="shorboMotTaka" type="number" placeholder="সর্বমোট টাকা"
-                       class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
+            <!-- সর্বমোট টাকা (readonly) -->
+            <div class="relative flex items-center  mt-4">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সর্বমোট টাকা</label>
+                <input id="shorboMotTaka" type="number" placeholder="সর্বমোট টাকা" readonly  class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span class="text-danger"></span>
             </div>
 
-            <div class="relative flex items-center sm:col-span-2">
-                <input asp-for="Deposit" id="depositAmount" type="number" placeholder="পরিশোধক্রিত টাকা"
-                       class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
+            <!-- পরিশোধক্রিত টাকা  -->
+            <div class="relative flex items-center  mt-4">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিশোধক্রিত টাকা</label>
+                <input asp-for="Deposit" id="depositAmount" type="number" placeholder="পরিশোধক্রিত টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span class="text-danger"></span>
             </div>
 
-            <div class="relative flex items-center sm:col-span-2">
-                <input readonly id="dueAmount" type="number" placeholder="বাকি টাকা"
-                <input readonly id="dueAmount" type="number" placeholder="বাকি টাকা"
->>>>>>>>> Temporary merge branch 2
-                       class="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#007bff] outline-none" />
+            <!-- বাকি টাকা -->
+            <div class="relative flex items-center  mt-4">
+                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
+                <input readonly id="dueAmount" type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <span class="text-danger"></span>
             </div>
         </div>
 

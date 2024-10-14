@@ -7,58 +7,86 @@
     <p class="text-center font-bold md:text-3xl">রেজিস্ট্রেশন</p>
 
     <form asp-action="Register" method="post" class="font-[sans-serif] m-6 max-w-4xl mx-auto">
-        <div asp-validation-summary="All" class="text-danger"></div>
+             @* <div asp-validation-summary="All" class="text-danger"></div> *@
 
         <div class="grid sm:grid-cols-2 gap-10">
 
             <!-- UserName -->
-            <div class="relative flex items-center sm:col-span-2">
+            <div>
+                <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ব্যবহারকারীর নাম</label>
                 <input asp-for="UserName" placeholder="ব্যবহারকারীর নাম লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
+               
             </div>
+             <span asp-validation-for="UserName" class="text-red-500 "></span>
+            </div>
+            
 
             <!-- ShopName -->
-            <div class="relative flex items-center sm:col-span-2">
+            <div>
+                <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">দোকানের নাম</label>
                 <input asp-for="ShopName" placeholder="দোকানের নাম লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span asp-validation-for="ShopName" class="text-danger"></span>
+               
             </div>
+             <span asp-validation-for="ShopName" class="text-red-500 "></span>
+            </div>
+            
 
             <!-- Address -->
-            <div class="relative flex items-center sm:col-span-2">
+            <div>
+                 <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ঠিকানা</label>
                 <input asp-for="Address" placeholder="ঠিকানা লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span asp-validation-for="Address" class="text-danger"></span>
             </div>
+                <span asp-validation-for="Address" class="text-red-500 "></span>
+
+            </div>
+           
 
             <!-- Email -->
-            <div class="relative flex items-center sm:col-span-2">
+            <div>
+                  <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ইমেইল</label>
                 <input asp-for="Email" placeholder="ইমেইল লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                
             </div>
+              <span asp-validation-for="Email" class="text-red-500 "></span>
+            </div>
+          
 
             <!-- PhoneNo -->
-            <div class="relative flex items-center sm:col-span-2">
+            <div>
+                 <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ফোন নম্বর</label>
                 <input asp-for="PhoneNo" type="number" placeholder="ফোন নম্বর লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span asp-validation-for="PhoneNo" class="text-danger"></span>
+          
             </div>
+                  <span asp-validation-for="PhoneNo" class="text-red-500 "></span>
+            </div>
+           
 
             <!-- Password -->
-            <div class="relative flex items-center sm:col-span-2">
+            <div>
+                 <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পাসওয়ার্ড</label>
                 <input asp-for="Password" type="password" placeholder="পাসওয়ার্ড লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+               
             </div>
+             <span asp-validation-for="Password" class="text-red-500 "></span>
+            </div>
+           
 
             <!-- Confirm Password -->
-            <div class="relative flex items-center sm:col-span-2">
+            <div>
+                <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পাসওয়ার্ড নিশ্চিত করুন</label>
                 <input asp-for="ConfirmPassword" type="password" placeholder="পাসওয়ার্ড নিশ্চিত করুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+               
             </div>
+             <span asp-validation-for="ConfirmPassword" class="text-red-500 "></span>
+            </div>
+            
 
         </div>
 
