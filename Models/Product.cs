@@ -27,6 +27,12 @@ namespace POS.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string? AddedBy { get; set; }
+        public int? AddStock { get; set; }
+        
+        // New properties to store payment dates and amounts as comma-separated strings
+        public string? AddStockDates { get; set; }  // Stores the dates in "yyyy-MM-dd" format
+        public string? AddStockAmounts { get; set; } // Stores the amounts paid
+
         public string? ClientName { get; set; }
 
         // Foreign key relationship with Shop

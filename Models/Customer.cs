@@ -18,12 +18,13 @@ namespace POS.Models
         [Phone(ErrorMessage = "ফোন নম্বর সঠিক নয়।")]
         public string? PhoneNo { get; set; }
 
+        public decimal? FirstDue { get; set; } = 0;
         public decimal? Due { get; set; }
         public decimal? DueClose { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         // New properties to store payment dates and amounts as comma-separated strings
-        public string PaymentDates { get; set; }  // Stores the dates in "yyyy-MM-dd" format
-        public string PaymentAmounts { get; set; } // Stores the amounts paid
+        public string? PaymentDates { get; set; }  // Stores the dates in "yyyy-MM-dd" format
+        public string? PaymentAmounts { get; set; } // Stores the amounts paid
 
         // Navigation property for the purchases made by this customer
         public ICollection<Sell> Purchases { get; set; } = new List<Sell>();

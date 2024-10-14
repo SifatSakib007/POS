@@ -84,7 +84,8 @@ namespace POS.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.Role) // Add role claim
+                new Claim(ClaimTypes.Role, user.Role), // Add role claim
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()) // Add user ID claim
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
