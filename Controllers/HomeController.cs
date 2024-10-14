@@ -389,6 +389,19 @@ namespace POS.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                int? userId = null;
+                if (int.TryParse(userIdString, out int parsedUserId))
+                {
+                    userId = parsedUserId; // Successfully parsed the string to an integer
+                }
+                else
+                {
+                    userId = null; // Failed to parse the string to an integer
+                }
+
+                // Now assign it to customer.UserId
+                product.UserId = userId;
                 //product.CreatedAt = DateTime.UtcNow;
                 _db.Product.Add(product);
                 _db.SaveChanges();
