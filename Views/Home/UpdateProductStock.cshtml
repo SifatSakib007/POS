@@ -1,27 +1,69 @@
 ﻿@model POS.Models.Product
 
-<h2>Update Stock for @Model.ProductName</h2>
+<h2 class="text-2xl font-bold mb-4">Update Stock for @Model.ProductName</h2>
 
-<form asp-action="UpdateProductStock" method="post">
-    <div class="form-group">
-        <label for="ProductName">Product Name</label>
-        <input type="text" class="form-control" id="ProductName" value="@Model.ProductName" readonly />
+<form asp-action="UpdateProductStock" method="post" class="space-y-6">
+
+    <!-- Product Name (Read-Only) -->
+    <div class="mb-4">
+        <label for="ProductName" class="block text-sm font-medium text-gray-700">Product Name</label>
+        <input type="text" id="ProductName" name="ProductName" value="@Model.ProductName"
+               class="w-full px-4 py-2 border rounded-md bg-gray-100" readonly />
     </div>
 
-    <div class="form-group">
-        <label for="Stock">Current Stock</label>
-        <input type="text" class="form-control" id="Stock" value="@Model.Stock" readonly />
+    <!-- Previous Buy Price (Read-Only) -->
+    <div class="mb-4">
+        <label for="PreviousBuyPrice" class="block text-sm font-medium text-gray-700">Previous Buy Price</label>
+        <input type="text" id="PreviousBuyPrice" name="PreviousBuyPrice" value="@Model.PreviousBuyPrice"
+               class="w-full px-4 py-2 border rounded-md bg-gray-100" readonly />
     </div>
 
-    <div class="form-group">
-        <label for="AddStock">Add Stock</label>
-        <input type="number" class="form-control" id="AddStock" name="AddStock" min="1" required />
+    <!-- New Buy Price -->
+    <div class="mb-4">
+        <label for="BuyPrice" class="block text-sm font-medium text-gray-700">New Buy Price</label>
+        <input type="number" id="BuyPrice" name="BuyPrice" step="0.01" value="@Model.BuyPrice"
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+               required />
+        <span asp-validation-for="BuyPrice" class="text-red-500 text-sm"></span>
     </div>
 
-    <div class="form-group">
-        <label for="BuyPrice">Buy Price</label>
-        <input type="number" class="form-control" id="BuyPrice" name="BuyPrice" value="@Model.BuyPrice" required />
+    <!-- Stock -->
+    <div class="mb-4">
+        <label for="Stock" class="block text-sm font-medium text-gray-700">Stock</label>
+        <input type="number" id="Stock" name="Stock" value="@Model.Stock"
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+               readonly />
+        <span asp-validation-for="Stock" class="text-red-500 text-sm"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Update Stock</button>
+    <!-- Add Stock -->
+    <div class="mb-4">
+        <label for="AddStock" class="block text-sm font-medium text-gray-700">Add Stock</label>
+        <input type="number" id="AddStock" name="AddStock" value="@Model.AddStock" min="1"
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+               required />
+        <span asp-validation-for="AddStock" class="text-red-500 text-sm"></span>
+    </div>
+
+    <!-- Client Name -->
+    <div class="mb-4">
+        <label for="ClientName" class="block text-sm font-medium text-gray-700">Client Name</label>
+        <input type="text" id="ClientName" name="ClientName" value="@Model.ClientName"
+               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <!-- Submit and Back Buttons -->
+    <div class="flex justify-between">
+        <a href="@Url.Action("ProductList")" class="text-blue-500 hover:text-blue-700">Back to Product List</a>
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Update Stock
+        </button>
+    </div>
+
 </form>
+
+@section Scripts {
+    <!-- Validation Summary and Input Validation Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.11/dist/jquery.validate.unobtrusive.min.js"></script>
+}
