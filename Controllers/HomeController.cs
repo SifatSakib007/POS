@@ -431,7 +431,6 @@ namespace POS.Controllers
             {
                 return NotFound();
             }
-
             // Pass the product details to the view
             return View(product);
         }
