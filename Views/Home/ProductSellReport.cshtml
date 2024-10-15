@@ -2,7 +2,7 @@
 
 <body class="bg-gray-100">
     <div class="container mx-auto px-4 mt-8">
-        <h2 class="text-2xl font-bold mb-6">Product Sell Report</h2>
+        <h2 class="text-2xl font-bold mb-6">পণ্য বিক্রয় বিবরণী  </h2>
 
         <!-- Date Range Filter -->
         <div class="md:flex justify-start space-x-4 mb-4">
@@ -19,8 +19,10 @@
         </div>
 
         <!-- Total Sell Amount -->
-        <div class="mb-6">
-            <h3 class="text-xl font-semibold">Total Sell Amount: <span id="totalSellAmount">0</span> Taka</h3>
+        <div class="mb-6 bg-white h-28 sm:h-32 md:h-36 flex items-center justify-center rounded-xl p-6 shadow-md border border-gray-200 transition-all duration-300 ease-in-out">
+            <h3 class="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800" style="text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">
+                মোট বিক্রয়: <span id="totalSellAmount" class="font-bold text-indigo-600">0</span> টাকা
+            </h3>
         </div>
     </div>
 
@@ -31,28 +33,37 @@
         <table id="sellTable" class="min-w-full bg-white">
             <thead class="bg-gray-100 whitespace-nowrap">
                 <tr>
-                    
                     <th class="p-4 text-left text-sm font-semibold text-black text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-gray-500 inline mr-3" viewBox="0 0 512 512">
-                            <path d="M337.711 241.3a16 16 0 0 0-11.461 3.988c-18.739 16.561-43.688 25.682-70.25 25.682s-51.511-9.121-70.25-25.683a16.007 16.007 0 0 0-11.461-3.988c-78.926 4.274-140.752 63.672-140.752 135.224v107.152C33.537 499.293 46.9 512 63.332 512h385.336c16.429 0 29.8-12.707 29.8-28.325V376.523c-.005-71.552-61.831-130.95-140.757-135.223zM446.463 480H65.537V376.523c0-52.739 45.359-96.888 104.351-102.8C193.75 292.63 224.055 302.97 256 302.97s62.25-10.34 86.112-29.245c58.992 5.91 104.351 50.059 104.351 102.8zM256 234.375a117.188 117.188 0 1 0-117.188-117.187A117.32 117.32 0 0 0 256 234.375zM256 32a85.188 85.188 0 1 1-85.188 85.188A85.284 85.284 0 0 1 256 32z"
-                                  data-original="#000000"></path>
-                        </svg>
-                       কাস্টমার নাম
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-gray-500 inline mr-3" viewBox="0 0 512 512">
+                                <path d="M337.711 241.3a16 16 0 0 0-11.461 3.988c-18.739 16.561-43.688 25.682-70.25 25.682s-51.511-9.121-70.25-25.683a16.007 16.007 0 0 0-11.461-3.988c-78.926 4.274-140.752 63.672-140.752 135.224v107.152C33.537 499.293 46.9 512 63.332 512h385.336c16.429 0 29.8-12.707 29.8-28.325V376.523c-.005-71.552-61.831-130.95-140.757-135.223zM446.463 480H65.537V376.523c0-52.739 45.359-96.888 104.351-102.8C193.75 292.63 224.055 302.97 256 302.97s62.25-10.34 86.112-29.245c58.992 5.91 104.351 50.059 104.351 102.8zM256 234.375a117.188 117.188 0 1 0-117.188-117.187A117.32 117.32 0 0 0 256 234.375zM256 32a85.188 85.188 0 1 1-85.188 85.188A85.284 85.284 0 0 1 256 32z" data-original="#000000"></path>
+                            </svg>
+                            <input placeholder="কাস্টমার নাম" type="text" class="border border-gray-300 rounded-lg px-4 py-2 w-52 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200" oninput="filterTable()" />
+                        </div>
                     </th>
+
+                    @* // পণের *@
                     <th class="p-4 text-left text-sm font-semibold text-black text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-gray-500 inline mr-3" viewBox="0 0 24 24">
-                            <path d="m14 9.09 8.81 1.75c.71.15 1.19.75 1.19 1.46v10.2c0 .83-.67 1.5-1.5 1.5h-9c.28 0 .5-.22.5-.5V23h8.5c.27 0 .5-.22.5-.5V12.3c0-.23-.16-.44-.39-.49L14 10.11z"
-                                  data-original="#000000" />
-                            <path d="M19.5 14c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zM14 23.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5v-14c0-.15.07-.29.18-.39.12-.09.27-.13.42-.1l.4.08V23z"
-                                  data-original="#000000" />
-                            <path d="M13 23v.5c0 .28.22.5.5.5h-4c.28 0 .5-.22.5-.5V23zM10.5 5c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm.5 3.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h2c.28 0 .5.22.5.5zm-.5 2.5c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm-4.5.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h2c.28 0 .5.22.5.5zM5.5 5c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zM9 18.5c0-.28-.23-.5-.5-.5h-3c-.28 0-.5.22-.5.5V23H4v-4.5c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5.67 1.5 1.5V23H9z"
-                                  data-original="#000000" />
-                            <path d="M5 23h5v.5c0 .28-.22.5-.5.5h-5c-.28 0-.5-.22-.5-.5V23z" data-original="#000000" />
-                            <path d="m1.75.2 10.99 1.67c.73.12 1.26.74 1.26 1.48v5.74l-.4-.08c-.15-.03-.3.01-.42.1-.11.1-.18.24-.18.39V3.35c0-.25-.18-.46-.42-.5L1.59 1.19c-.03-.01-.06-.01-.09-.01-.12 0-.23.04-.32.12-.12.1-.18.23-.18.38V22.5c0 .28.23.5.5.5H4v.5c0 .28.22.5.5.5h-3C.67 24 0 23.33 0 22.5V1.68C0 1.24.19.82.53.54.87.25 1.31.13 1.75.2z"
-                                  data-original="#000000" />
-                        </svg>
-                        পণ্যের নাম
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-gray-500 inline mr-3" viewBox="0 0 24 24">
+                                <path d="m14 9.09 8.81 1.75c.71.15 1.19.75 1.19 1.46v10.2c0 .83-.67 1.5-1.5 1.5h-9c.28 0 .5-.22.5-.5V23h8.5c.27 0 .5-.22.5-.5V12.3c0-.23-.16-.44-.39-.49L14 10.11z"
+                                      data-original="#000000" />
+                                <path d="M19.5 14c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zM14 23.5c0 .28-.22.5-.5.5s-.5-.22-.5-.5v-14c0-.15.07-.29.18-.39.12-.09.27-.13.42-.1l.4.08V23z"
+                                      data-original="#000000" />
+                                <path d="M13 23v.5c0 .28.22.5.5.5h-4c.28 0 .5-.22.5-.5V23zM10.5 5c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm.5 3.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h2c.28 0 .5.22.5.5zm-.5 2.5c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm-4.5.5c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h2c.28 0 .5.22.5.5zM5.5 5c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zm0 3c.28 0 .5.22.5.5s-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5s.22-.5.5-.5zM9 18.5c0-.28-.23-.5-.5-.5h-3c-.28 0-.5.22-.5.5V23H4v-4.5c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5.67 1.5 1.5V23H9z"
+                                      data-original="#000000" />
+                                <path d="M5 23h5v.5c0 .28-.22.5-.5.5h-5c-.28 0-.5-.22-.5-.5V23z" data-original="#000000" />
+                                <path d="m1.75.2 10.99 1.67c.73.12 1.26.74 1.26 1.48v5.74l-.4-.08c-.15-.03-.3.01-.42.1-.11.1-.18.24-.18.39V3.35c0-.25-.18-.46-.42-.5L1.59 1.19c-.03-.01-.06-.01-.09-.01-.12 0-.23.04-.32.12-.12.1-.18.23-.18.38V22.5c0 .28.23.5.5.5H4v.5c0 .28.22.5.5.5h-3C.67 24 0 23.33 0 22.5V1.68C0 1.24.19.82.53.54.87.25 1.31.13 1.75.2z"
+                                      data-original="#000000" />
+                            </svg>
+                            <input placeholder="পণ্যের নাম" type="text" class="border border-gray-300 rounded-lg px-4 py-2 w-52 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200" oninput="filterTablePonno()" />
+                        </div>
+                        <div id="no-results-message" style="display: none; color: red;">
+                            কোনো নাম পাওয়া যায়নি।
+                        </div>
                     </th>
+
+                   
                     <th class="p-4 text-left text-sm font-semibold text-black text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 fill-gray-500 inline mr-3" viewBox="0 0 24 24">
                             <path d="m14 9.09 8.81 1.75c.71.15 1.19.75 1.19 1.46v10.2c0 .83-.67 1.5-1.5 1.5h-9c.28 0 .5-.22.5-.5V23h8.5c.27 0 .5-.22.5-.5V12.3c0-.23-.16-.44-.39-.49L14 10.11z"
@@ -157,7 +168,7 @@
         </table>
 
         <div class="md:flex m-4">
-            <p class="text-sm text-gray-500 flex-1">Showing <span id="from-entry">1</span> to <span id="to-entry">5</span> of @Model.Count() entries</p>
+            <p class="text-base text-gray-500 flex-1    justify-content-center">দেখাচ্ছে <span id="from-entry">1</span> টি থেকে <span id="to-entry">5 </span> টি @Model.Count() টির মধ্যে</p>
 
             <div class="flex items-center max-md:mt-4">
                 <p class="text-sm text-gray-500">Display</p>
@@ -313,5 +324,44 @@
 
             updateTable(); // Initial table update
         });
+
+        function filterTable() {
+            const input = document.querySelector('input[placeholder="কাস্টমার নাম"]').value.toLowerCase();
+            const rows = document.querySelectorAll('#table-body tr');
+            let hasVisibleRow = false; // ফ্ল্যাগ তৈরি করুন কোন রো দেখা যাচ্ছে কিনা
+
+            rows.forEach(row => {
+                const customerNameCell = row.cells[0].textContent.toLowerCase();
+                if (customerNameCell.includes(input)) {
+                    row.style.display = ''; // রোটি দেখান
+                    hasVisibleRow = true; // কোনো রো দেখা যাচ্ছে
+                } else {
+                    row.style.display = 'none'; // রোটি লুকান
+                }
+            });
+
+            // বার্তা এলিমেন্ট
+            const message = document.getElementById('no-results-message');
+
+            if (!hasVisibleRow) {
+                message.style.display = 'block'; // বার্তা দেখান
+            } else {
+                message.style.display = 'none'; // বার্তা লুকান
+            }
+        }
+
+        function filterTablePonno() {
+            const input = document.querySelector('input[placeholder="পণ্যের নাম"]').value.toLowerCase();
+            const rows = document.querySelectorAll('#table-body tr');
+
+            rows.forEach(row => {
+                const customerNameCell = row.cells[1].textContent.toLowerCase();
+                row.style.display = customerNameCell.includes(input) ? '' : 'none';
+            });
+        }
+        // Check if there are any rows left in the table, if not show the 'No matching records found' message
+        if ($('#ProductServiceTable tbody tr').length == 0) {
+            $('#ProductServiceTable tbody').append('<tr id="noRecordsRow"><td colspan="4" class="text-center">No matching records found</td></tr>');
+        }
     </script>
 </body>

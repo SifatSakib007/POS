@@ -15,7 +15,7 @@
                 <input asp-for="Product.ProductName" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="পণ্যের নাম লিখুন" />
                 <span asp-validation-for="Product.ProductName" class="text-red-500 text-sm"></span>
             </div>
-            <span asp-validation-for="ProductName" class="text-red-500 text-sm"></span>
+            <span asp-validation-for="Product.ProductName" class="text-red-500 text-sm"></span>
            
 
             <!-- Buy Price -->
@@ -41,7 +41,7 @@
                 <input asp-for="Client.Name" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ক্লায়েন্টের নাম লিখুন" />
                 <span asp-validation-for="Client.Name" class="text-red-500 text-sm"></span>
             </div>
-            <span asp-validation-for="BuyPrice" class="text-red-500 text-sm"></span>
+            <span asp-validation-for="Product.BuyPrice" class="text-red-500 text-sm"></span>
 
             <!-- Client Address -->
             <div class="mb-4">
@@ -56,8 +56,8 @@
                 <input asp-for="Client.PhoneNo" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ফোন নম্বর লিখুন" />
                 <span asp-validation-for="Client.PhoneNo" class="text-red-500 text-sm"></span>
             </div>
-            <span asp-validation-for="Stock" class="text-red-500 text-sm mb-4"></span>
 
+            <span asp-validation-for="Client.PhoneNo" class="text-red-500 text-sm"></span>
 
             <!-- Submit Button -->
             <div class="flex justify-between items-center">

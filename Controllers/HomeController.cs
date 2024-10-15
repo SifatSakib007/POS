@@ -221,7 +221,7 @@ namespace POS.Controllers
             return RedirectToAction("ProductSell");
         }
 
-
+        //Product sell report
         public async Task<IActionResult> ProductSellReport()
         {
             // Fetch all the sell records along with related product and customer details
