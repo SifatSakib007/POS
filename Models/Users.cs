@@ -31,14 +31,15 @@ namespace POS.Models
         [Required(ErrorMessage = "পাসওয়ার্ড আবশ্যক।")]
         [DataType(DataType.Password)]
         [StringLength(100, ErrorMessage = "পাসওয়ার্ড ১০০ অক্ষরের বেশি হতে পারবে না।")]
+        [MinLength(6, ErrorMessage = "পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে।")]
         public required string Password { get; set; }
 
-        [Required(ErrorMessage = "অনুগ্রহ করে আপনার পাসওয়ার্ড নিশ্চিত করুন।")]
+        [Required(ErrorMessage = "পাসওয়ার্ড নিশ্চিত করুন।")]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "পাসওয়ার্ডগুলি মেলেনি।")]
         public required string ConfirmPassword { get; set; }
 
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public DateTime? DeletedAt { get; set; }
         public string? Status { get; set; } = "Active";
 

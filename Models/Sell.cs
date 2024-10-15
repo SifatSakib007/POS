@@ -7,6 +7,7 @@ namespace POS.Models
     {
         [Key]
         public int SellId { get; set; }
+        public int? Invoice { get; set; }
 
         [ForeignKey("Product")]
         public int? ProductId { get; set; }
@@ -15,24 +16,39 @@ namespace POS.Models
         public required string ProductName { get; set; }
         public Product? Product { get; set; }  // Navigation property
 
+        [Column(TypeName = "decimal(18, 2)")]
+
         public decimal? BuyPrice { get; set; }
         public int? Stock { get; set; }
 
         [Required(ErrorMessage = "পরিমাণ আবশ্যক।")]
         public required int Quantity { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
+
         [Required(ErrorMessage = "বিক্রয়মূল্য আবশ্যক।")]
         public decimal SellingPrice { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
+
         [Required(ErrorMessage = "মোট মূল্য আবশ্যক।")]
         public decimal TotalPrice { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public required decimal TotalTotalPrice { get; set; }
+        [StringLength(20, ErrorMessage = "পণ্যের একক 2০ অক্ষরের বেশি হতে পারবে না।")]
+        public string? Unit { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
 
         public decimal? DuePrice { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
 
         [Required(ErrorMessage = "ডিপোজিট আবশ্যক।")]
         public decimal Deposit { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? TotalDuePrice { get; set; }
 
         [StringLength(100, ErrorMessage = "গ্রাহকের নাম ১০০ অক্ষরের বেশি হতে পারবে না।")]
@@ -48,10 +64,12 @@ namespace POS.Models
         public int? CustomerId { get; set; }
         public Customer? Customer { get; set; }  // Navigation property
 
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
         [StringLength(50, ErrorMessage = "যোগ করা ব্যক্তির নাম ৫০ অক্ষরের বেশি হতে পারবে না।")]
         public string? AddedBy { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public  decimal ShabekDue { get; set; } = 0; 
 
         public int? UserId { get; set; }  // References the user who added the product

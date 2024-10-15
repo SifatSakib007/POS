@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POS.Models;
 
@@ -11,9 +12,11 @@ using POS.Models;
 namespace POS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015065543_FixDecimalPrecisionAndFK2")]
+    partial class FixDecimalPrecisionAndFK2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,11 +52,10 @@ namespace POS.Migrations
                     b.Property<decimal?>("Debt")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<int?>("Invoice")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNo")
                         .HasColumnType("nvarchar(max)");
@@ -91,9 +93,6 @@ namespace POS.Migrations
 
                     b.Property<decimal?>("FirstDue")
                         .HasColumnType("decimal(18, 2)");
-
-                    b.Property<int?>("Invoice")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -140,7 +139,7 @@ namespace POS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("BuyPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ClientId")
                         .HasColumnType("int");
@@ -149,9 +148,6 @@ namespace POS.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Invoice")
                         .HasColumnType("int");
 
                     b.Property<decimal>("PreviousBuyPrice")
@@ -167,10 +163,6 @@ namespace POS.Migrations
 
                     b.Property<decimal?>("TotalPrice")
                         .HasColumnType("decimal(18, 2)");
-
-                    b.Property<string>("Unit")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
@@ -219,13 +211,10 @@ namespace POS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Deposit")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("DuePrice")
                         .HasColumnType("decimal(18, 2)");
-
-                    b.Property<int?>("Invoice")
-                        .HasColumnType("int");
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
@@ -254,10 +243,6 @@ namespace POS.Migrations
 
                     b.Property<decimal>("TotalTotalPrice")
                         .HasColumnType("decimal(18, 2)");
-
-                    b.Property<string>("Unit")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");

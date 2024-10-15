@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POS.Models
 {
@@ -6,6 +7,7 @@ namespace POS.Models
     {
         [Key]
         public int Id { get; set; }
+        public int? Invoice { get; set; }
 
         [Required(ErrorMessage = "গ্রাহকের নাম আবশ্যক।")]
         [StringLength(100, ErrorMessage = "গ্রাহকের নাম ১০০ অক্ষরের বেশি হতে পারবে না।")]
@@ -18,10 +20,15 @@ namespace POS.Models
         [Phone(ErrorMessage = "ফোন নম্বর সঠিক নয়।")]
         public string? PhoneNo { get; set; }
 
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? FirstDue { get; set; } = 0;
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? Due { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? DueClose { get; set; }
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         // New properties to store payment dates and amounts as comma-separated strings
         public string? PaymentDates { get; set; }  // Stores the dates in "yyyy-MM-dd" format
         public string? PaymentAmounts { get; set; } // Stores the amounts paid
