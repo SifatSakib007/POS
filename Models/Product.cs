@@ -17,10 +17,6 @@ namespace POS.Models
         [Range(0.01, double.MaxValue, ErrorMessage = "ক্রয়মূল্য ০.০১ এর বেশি হতে হবে।")]
         public required decimal BuyPrice { get; set; }
 
-/*        [Required(ErrorMessage = "বিক্রয়মূল্য আবশ্যক।")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "বিক্রয়মূল্য ০.০১ এর বেশি হতে হবে।")]
-        public required decimal SellPrice { get; set; }*/
-
         [Required(ErrorMessage = "স্টক সংখ্যা আবশ্যক।")]
         [Range(0, int.MaxValue, ErrorMessage = "স্টক সংখ্যা অবশ্যই শূন্য বা তার বেশি হতে হবে।")]
         public required int Stock { get; set; } 
@@ -34,10 +30,13 @@ namespace POS.Models
         public string? AddStockAmounts { get; set; } // Stores the amounts paid
 
         public string? ClientName { get; set; }
+        // Foreign key relationship with Shop
+        [ForeignKey("Client")]
+        public string? ClientId { get; set; }
 
         // Foreign key relationship with Shop
         [ForeignKey("Shop")]
-        public int? ClintId { get; set; }
+        public int? EmployeeId { get; set; }
         public Shop? Shop { get; set; }   // Navigation property
 
         // Foreign key relationship with Users
