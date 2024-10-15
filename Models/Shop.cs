@@ -21,7 +21,7 @@ namespace POS.Models
         [StringLength(300, ErrorMessage = "ঠিকানা ৩০০ অক্ষরের বেশি হতে পারবে না।")]
         public string? ShopAddress { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int? UserId { get; set; }  // References the user who added the product
         public Users? User { get; set; }  // Navigation property to reference the user
         // Navigation property to track the products in this shop

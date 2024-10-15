@@ -379,7 +379,39 @@ namespace POS.Controllers
         public ActionResult ProductBuy()
         {
 
-            return View();
+            // Fetch the list of clients from the database
+            var clientList = _db.Client.ToList();
+
+            // Check if the client list is not empty
+            if (clientList == null || !clientList.Any())
+            {
+                // Return an empty list or handle the case where no clients are found
+                clientList = new List<Client>();
+            }
+
+            // Pass the client list to the view using ViewBag
+            ViewBag.ClientList = clientList;
+
+            return View(new ProductClientViewModel());
+        }
+        [HttpGet]
+        public IActionResult GetClientDetails(int id)
+        {
+            var client = _db.Client.FirstOrDefault(c => c.Id == id);
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            var clientDetails = new
+            {
+                Name = client.Name,
+                Address = client.Address,
+                PhoneNo = client.PhoneNo,
+                Debt = client.Debt
+            };
+
+            return Json(clientDetails);
         }
 
 
@@ -404,11 +436,29 @@ namespace POS.Controllers
                         viewModel.Product.UserId = userId;
                         viewModel.Client.UserId = userId;
 
-                        // Save the product and client data
-                        _db.Product.Add(viewModel.Product);
-                        _db.Client.Add(viewModel.Client);
+                        // Check if the client already exists, or add a new client
+                        var existingClient = _db.Client
+                            .FirstOrDefault(c => c.Name == viewModel.Client.Name && c.PhoneNo == viewModel.Client.PhoneNo);
 
+                        if (existingClient == null)
+                        {
+                            // Save new client data if no matching client exists
+                            _db.Client.Add(viewModel.Client);
+                            _db.SaveChanges();
+                        }
+                        else
+                        {
+                            // Use the existing client
+                            viewModel.Client = existingClient;
+                        }
+
+                        // Assign the ClientId to the product
+                        viewModel.Product.ClientId = viewModel.Client.Id;
+
+                        // Save the product data
+                        _db.Product.Add(viewModel.Product);
                         _db.SaveChanges();
+
                         transaction.Commit();
 
                         TempData["success"] = "Successfully added product and client details!";
@@ -423,9 +473,11 @@ namespace POS.Controllers
                     }
                 }
             }
+
             TempData["error"] = "Error adding product details! Please check the form for validation errors.";
             return View(viewModel); // Return the form with validation errors
         }
+
 
 
         public ActionResult ProductBuyList()
@@ -516,7 +568,6 @@ namespace POS.Controllers
                 }
             }
         }
-
 
 
         public ActionResult OwnShopDue()

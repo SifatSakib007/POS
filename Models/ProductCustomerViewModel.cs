@@ -1,4 +1,6 @@
-﻿namespace POS.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace POS.Models
 {
     public class ProductCustomerViewModel
     {
@@ -17,13 +19,26 @@
         public string ProductName { get; set; }
         public string Name { get; set; }
         public int Stock { get; set; } // For stock details
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal BuyPrice { get; set; } // For selling price
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal SellingPrice { get; set; } // For selling price
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; } // For calculation of total price
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalTotalPrice { get; set; } // For total price
+
         public string? CustomerPhoneNo { get; set; } // For customer phone number
         public string? CustomerAddress { get; set; } // For customer address
+
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Deposit { get; set; } // For deposit
+
+        [Column(TypeName = "decimal(18, 2)")]
 
         public decimal ShabekDue { get; set; } // For previous due amount
     }

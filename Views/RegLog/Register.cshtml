@@ -16,9 +16,9 @@
                 <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ব্যবহারকারীর নাম</label>
                 <input asp-for="UserName" placeholder="ব্যবহারকারীর নাম লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-               
+                   
             </div>
-             <span asp-validation-for="UserName" class="text-red-500 "></span>
+                <span asp-validation-for="UserName" class="text-red-500 "></span>
             </div>
             
 
@@ -27,9 +27,9 @@
                 <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">দোকানের নাম</label>
                 <input asp-for="ShopName" placeholder="দোকানের নাম লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-               
+                    
             </div>
-             <span asp-validation-for="ShopName" class="text-red-500 "></span>
+                <span asp-validation-for="ShopName" class="text-red-500 "></span>
             </div>
             
 
@@ -38,7 +38,8 @@
                  <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ঠিকানা</label>
                 <input asp-for="Address" placeholder="ঠিকানা লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-            </div>
+                    
+                </div>
                 <span asp-validation-for="Address" class="text-red-500 "></span>
 
             </div>
@@ -49,20 +50,21 @@
                   <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ইমেইল</label>
                 <input asp-for="Email" placeholder="ইমেইল লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                
+                    
             </div>
-              <span asp-validation-for="Email" class="text-red-500 "></span>
+                <span asp-validation-for="Email" class="text-red-500 "></span>
             </div>
           
 
             <!-- PhoneNo -->
             <div>
-                 <div class="relative flex items-center sm:col-span-2">
-                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ফোন নম্বর</label>
-                <input asp-for="PhoneNo" type="number" placeholder="ফোন নম্বর লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-          
-            </div>
-                  <span asp-validation-for="PhoneNo" class="text-red-500 "></span>
+                <div class="relative flex items-center sm:col-span-2">
+                    <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ফোন নম্বর</label>
+                    <input asp-for="PhoneNo" id="PhoneNo" type="number" placeholder="ফোন নম্বর লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                    <span asp-validation-for="PhoneNo" class="text-red-500 "></span>
+                   
+                </div>
+                <span id="phoneNoError" class="text-red-500 "></span>
             </div>
            
 
@@ -71,9 +73,8 @@
                  <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পাসওয়ার্ড</label>
                 <input asp-for="Password" type="password" placeholder="পাসওয়ার্ড লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-               
-            </div>
-             <span asp-validation-for="Password" class="text-red-500 "></span>
+
+                </div>             <span asp-validation-for="Password" class="text-red-500 "></span>
             </div>
            
 
@@ -82,19 +83,41 @@
                 <div class="relative flex items-center sm:col-span-2">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পাসওয়ার্ড নিশ্চিত করুন</label>
                 <input asp-for="ConfirmPassword" type="password" placeholder="পাসওয়ার্ড নিশ্চিত করুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-               
+                    
             </div>
-             <span asp-validation-for="ConfirmPassword" class="text-red-500 "></span>
+                <span asp-validation-for="ConfirmPassword" class="text-red-500 "></span>
             </div>
             
 
         </div>
 
         <!-- Register Button -->
-        <button type="submit" class="mt-8 px-6 py-2.5 w-full text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">রেজিস্টার</button>
+        <button type="submit" id="registerBtn" class="mt-8 px-6 py-2.5 w-full text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">রেজিস্টার</button>
     </form>
 </div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#PhoneNo').on('blur', function() {
+                var phoneNo = $('#PhoneNo').val();
+                if (phoneNo.length > 0) {
+                    $.ajax({
+                        url: '@Url.Action("IsPhoneNumberUnique", "RegLog")',
+                        data: { phoneNo: phoneNo },
+                        success: function(result) {
+                            if (!result) {
+                                $('#phoneNoError').text("This phone number is already registered.");
+                                $('#registerBtn').prop('disabled', true);  // Disable the register button
+                            } else {
+                                $('#phoneNoError').text("");  // Clear the error message
+                                $('#registerBtn').prop('disabled', false);  // Enable the register button
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 }

@@ -22,6 +22,13 @@ namespace POS.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public async Task<IActionResult> IsPhoneNumberUnique(string phoneNo)
+        {
+            var isPhoneTaken = await _db.Users.AnyAsync(u => u.PhoneNo == phoneNo);
+            return Json(!isPhoneTaken); // Return true if phone number is unique, false otherwise
+        }
+
 
         // POST: Register - Handle form submission
         [HttpPost]
@@ -36,6 +43,13 @@ namespace POS.Controllers
                     ModelState.AddModelError("ConfirmPassword", "Passwords do not match.");
                     return View(model);
                 }
+                // Check if the phone number is already in use
+                var existingUser = await _db.Users.FirstOrDefaultAsync(u => u.PhoneNo == model.PhoneNo);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("PhoneNumber", "This phone number is already registered.");
+                    return View(model);
+                }
 
                 // Set default role as "Client"
                 model.Role = "Client";  // Assign "Client" as the default role
@@ -44,7 +58,7 @@ namespace POS.Controllers
                 _db.Users.Add(model);
                 await _db.SaveChangesAsync();
                 //Alert
-                TempData["success"] = "Successfullly login!.";
+                TempData["success"] = "Successfullly registered!.";
                 // Redirect to a confirmation page or login page after registration
                 return RedirectToAction("Login", "RegLog");
             }
@@ -101,7 +115,7 @@ namespace POS.Controllers
             if (user.Role == "Admin")
             {
                 //Alert
-                TempData["success"] = "Successfullly login!.";
+                TempData["error"] = "Successfullly login!.";
                 return RedirectToAction("AdminDashboard", "Home");
             }
             else if (user.Role == "Client")
