@@ -12,7 +12,7 @@
                     <!-- পণ্য সিলেক্ট করুন Dropdown -->
                     <div >
                         <label asp-for="SelectedProductId" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
-                        <select id="productSelect" onchange="getProductDetails(this.value)" asp-for="SelectedProductId" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
+                        <select asp-for="SelectedProductId"  onchange="getProductDetails(this.value)" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
                             <option value="">পণ্যের নাম</option>
                             @foreach (var product in Model.Products)
                             {
@@ -25,47 +25,47 @@
                     <!-- ক্রয় মূল্য (readonly) -->
                     <div class="relative flex items-center  mt-4">
                         <label asp-for="BuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রয় মূল্য</label>
-                        <input asp-for="BuyPrice" id="buyPrice" readonly placeholder="ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <input asp-for="BuyPrice" readonly placeholder="ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span  class="text-danger"></span>
                     </div>
-
 
                     <!-- স্টক (readonly) -->
                     <div class="relative flex items-center  mt-4">
                         <label asp-for="Stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">স্টক</label>
-                        <input asp-for="Stock" id="stock" readonly placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <input asp-for="Stock" readonly placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
-
 
                     <!-- পরিমাণ  -->
                     <div class="relative flex items-center  mt-4">
                         <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input  id="quantity" placeholder="পরিমাণ সংখ্যায় লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <input asp-for="Quantity" placeholder="পরিমাণ সংখ্যায় লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
+                    </div>
+                     <!-- পণ্যের একক  -->
+                    <div class="relative flex items-center  mt-4">
+                        <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পণ্যের একক</label>
+                        <input type="text" asp-for="Unit" placeholder="পণ্যের একক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
                     <!-- বিক্রয় মূল্য -->
                     <div class="relative flex items-center  mt-4">
                         <label  class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বিক্রয় মূল্য</label>
-                        <input  id="sellPrice" placeholder="বিক্রয় মূল্য সংখ্যায় লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <input asp-for="SellingPrice" placeholder="বিক্রয় মূল্য সংখ্যায় লিখুন" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
                     <!-- মোট মূল্য -->
                     <div class="relative flex items-center  mt-4">
                         <label asp-for="TotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">মোট মূল্য</label>
-                        <input asp-for="TotalPrice" id="totalPrice" readonly placeholder="মোট মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <input asp-for="TotalPrice" readonly placeholder="মোট মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
                 </div>
 
-
-
                 <!-- পণ্য যুক্ত করার বাটন -->
                 <button type="button" id="addProductBtn" class="rounded-md px-6 py-3 w-full text-sm tracking-wide bg-blue-600 hover:bg-blue-700 text-white mt-4">যুক্ত করুন</button>
-
-
 
                 <!-- পণ্যের টেবিল -->
                 <div class="mt-8 overflow-x-auto">
@@ -89,7 +89,6 @@
         </div>
     </div>
 
-
     @* {/* customer info */} *@
     <form class="font-[sans-serif] max-w-4xl mx-auto">
         <div class="grid sm:grid-cols-2 gap-6">
@@ -97,14 +96,14 @@
             <div class="relative flex items-center  mt-4">
                 <label asp-for ="TotalTotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
                     মোট মূল্য</label>
-                <input asp-for="TotalTotalPrice" value="@Model.TotalTotalPrice" readonly id="totalTotalPrice" type="text" placeholder="মোট টাকা"
+                <input asp-for="TotalTotalPrice" value="@Model.TotalTotalPrice" readonly type="text" placeholder="মোট টাকা"
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
             <!-- ক্রেতার নাম সিলেক্ট করুন Dropdown -->
             <div>
                 <label asp-for="SelectedProductId" class="block text-sm text-gray-600">ক্রেতার নাম সিলেক্ট করুন</label>
-                <select id="customerSelect" asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
+                <select asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
                     <option value="">ক্রেতার নাম সিলেক্ট করুন</option>
                     @foreach (var customer in Model.Customers)
                     {
@@ -117,21 +116,21 @@
             <!-- ক্রেতার ফোন নাম্বার (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label asp-for="CustomerPhoneNo" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রেতার ফোন নাম্বার</label>
-                <input asp-for="CustomerPhoneNo" id="customerPhoneNo" readonly placeholder="ক্রেতার ফোন নাম্বার" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="CustomerPhoneNo" readonly placeholder="ক্রেতার ফোন নাম্বার" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
             <!-- ক্রেতার ঠিকানা (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label asp-for="CustomerAddress" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রেতার ঠিকানা</label>
-                <input asp-for="CustomerAddress" readonly id="customerAddress" type="text" placeholder="ক্রেতার ঠিকানা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="CustomerAddress" readonly type="text" placeholder="ক্রেতার ঠিকানা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
             <!-- সাবেক টাকা (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label asp-for="ShabekDue" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সাবেক টাকা</label>
-                <input asp-for="ShabekDue" id="shabekDue" type="number" readonly placeholder="সাবেক টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="ShabekDue" type="number" readonly placeholder="সাবেক টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
@@ -145,7 +144,7 @@
             <!-- পরিশোধক্রিত টাকা  -->
             <div class="relative flex items-center  mt-4">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিশোধক্রিত টাকা</label>
-                <input asp-for="Deposit" id="depositAmount" type="number" placeholder="পরিশোধক্রিত টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="Deposit" type="number" placeholder="পরিশোধক্রিত টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
@@ -162,8 +161,6 @@
             Submit
         </button>
     </form>
-
-
 </div>
 
 <script>
@@ -172,51 +169,58 @@
 
     // Function to fetch product details using AJAX
     function getProductDetails(productId) {
-        fetch(`GetProductDetails?productId=${productId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the view with the fetched product details
-                    document.getElementById("buyPrice").value = data.data.buyPrice;
-                    document.getElementById("stock").value = data.data.stock;
-                } else {
-                    console.error(data.message); // Handle error case
-                }
-            })
-            .catch(error => {
-                console.error(error); // Log any errors
-            });
+    if (!productId) {
+        // If no product is selected, reset the fields
+        document.getElementById("BuyPrice").value = '';
+        document.getElementById("Stock").value = '';
+        return;
     }
 
-    // Calculate total price whenever quantity or selling price changes
-    $(document).on('input', '#quantity, #sellPrice', function () {
-        var quantity = parseFloat($('#quantity').val()) || 0; // Get quantity
-        var sellingPrice = parseFloat($('#sellPrice').val()) || 0; // Get selling price
+    fetch(`/Home/GetProductDetails?productId=${productId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the view with the fetched product details
+                document.getElementById("BuyPrice").value = data.data.buyPrice;
+                document.getElementById("Stock").value = data.data.stock;
+            } else {
+                console.error(data.message); // Handle error case
+            }
+        })
+        .catch(error => {
+            console.error(error); // Log any errors
+        });
+}
+
+    $(document).on('input', 'input[name="Quantity"], input[name="SellingPrice"]', function () {
+        var quantity = parseFloat($('input[name="Quantity"]').val()) || 0; // Get quantity
+        var sellingPrice = parseFloat($('input[name="SellingPrice"]').val()) || 0; // Get selling price
         var totalPrice = (quantity * sellingPrice).toFixed(2); // Calculate total price
 
-        $('#totalPrice').val(totalPrice); // Update total price field
+        $('input[name="TotalPrice"]').val(totalPrice); // Update total price field
     });
 
-    // Function to fetch customer details using AJAX
-    function fetchCustomerDetails(customerId) {
-        fetch(`GetCustomerDetails?customerId=${customerId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById("customerAddress").value = data.data.address;
-                    document.getElementById("customerPhoneNo").value = data.data.phoneNo;
-                    document.getElementById("shabekDue").value = data.data.due;
 
-                    // Add previous due to total amount immediately
-                    updateTotalAmount(true); // Pass true to force adding previous due
-                } else {
-                    console.error(data.message);
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
+    // Function to fetch customer details using AJAX
+   function fetchCustomerDetails(customerId) {
+    fetch(`/Home/GetCustomerDetails?customerId=${customerId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById("CustomerAddress").value = data.data.address;
+                document.getElementById("CustomerPhoneNo").value = data.data.phoneNo;
+                document.getElementById("ShabekDue").value = data.data.shabekDue; // Ensure correct key
+
+                // Add previous due to total amount immediately
+                updateTotalAmount(true); // Pass true to force adding previous due
+            } else {
+                console.error(data.message);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
 
     // Calculate and update total amount
     function updateTotalAmount(addShabekDue = false) {
@@ -229,7 +233,7 @@
         });
 
         // Get the previous due (shabekDue)
-        var previousDue = parseFloat($('#shabekDue').val()) || 0;
+        var previousDue = parseFloat($('#ShabekDue').val()) || 0;
 
         // Add previous due to totalAmount if not already added or forcefully adding
         if (addShabekDue || !previousDueAdded) {
@@ -255,31 +259,32 @@
 
         // Set totalTotalPrice only if it is greater than zero
         if (totalTotalPrice > 0) {
-            $('#totalTotalPrice').val(totalTotalPrice.toFixed(2)); // Update totalTotalPrice field
+            $('#TotalTotalPrice').val(totalTotalPrice.toFixed(2)); // Update totalTotalPrice field
         }
     }
-
     // Update total amount after adding a product
     $(document).on('click', '#addProductBtn', function () {
-        var productName = $('#productSelect option:selected').text();
-        var buyPrice = $('#buyPrice').val();
-        var sellPrice = $('#sellPrice').val();
-        var quantity = parseFloat($('#quantity').val());
-        var stock = parseFloat($('#stock').val());
-        var totalPrice = $('#totalPrice').val();
-
+        var productName = $('#SelectedProductId option:selected').text();
+        var buyPrice = $('#BuyPrice').val();
+        var sellingPrice = $('#SellingPrice').val();
+        var quantity = parseFloat($('#Quantity').val());
+        var unit = parseFloat($('#Unit').val());
+        var stock = parseFloat($('#Stock').val());
+        var totalPrice = $('#TotalPrice').val();
+        // Concatenate quantity and unit
+    var quantityWithUnit = quantity + ' ' + unit;
         if (quantity > stock) {
             alert("আপনি স্টকের থেকে বেশি পণ্য যোগ করতে পারবেন না।");
         } else if (quantity <= 0) {
             alert("পণ্যের পরিমাণ শূন্য বা তার চেয়ে কম হতে পারবে না।");
         } else {
-            if (productName && buyPrice && sellPrice && quantity && totalPrice) {
+            if (productName && buyPrice && sellingPrice && quantity && totalPrice) {
                 var newRow = `
                             <tr>
                                 <td class="px-4 py-2">${productName}</td>
                                 <td class="px-4 py-2">${buyPrice}</td>
-                                <td class="px-4 py-2">${sellPrice}</td>
-                                <td class="px-4 py-2">${quantity}</td>
+                                <td class="px-4 py-2">${sellingPrice}</td>
+                                <td>${quantityWithUnit}</td>
                                 <td class="px-4 py-2">${totalPrice}</td>
                                 <td class="px-4 py-2">
                                     <button type="button" class="update-btn text-blue-500">আপডেট</button>
@@ -289,7 +294,7 @@
                 $('#productTable tbody').append(newRow);
 
                 var updatedStock = stock - quantity;
-                $('#stock').val(updatedStock);
+                $('#Stock').val(updatedStock);
 
                 clearProductFields(); // Clear input fields after adding
 
@@ -300,77 +305,63 @@
             }
         }
     });
-
     // Clear input fields for products
     function clearProductFields() {
-        $('#productSelect').val('');
-        $('#buyPrice').val('');
-        $('#stock').val('');
-        $('#quantity').val('');
-        $('#sellPrice').val('');
-        $('#totalPrice').val('');
+        $('#SelectedProductId').val('');
+        $('#BuyPrice').val('');
+        $('#Stock').val('');
+        $('#Quantity').val('');
+        $('#SellingPrice').val('');
+        $('#TotalPrice').val('');
     }
-
     // Remove product from the table
     $(document).on('click', '.delete-btn', function () {
         $(this).closest('tr').remove();
         updateTotalAmount(); // Update the total amount after deletion
     });
-
     // Update product fields in the form when clicking the "Update" button
     $(document).on('click', '.update-btn', function () {
         var row = $(this).closest('tr');
         var productName = row.find('td:eq(0)').text();
         var buyPrice = row.find('td:eq(1)').text();
-        var sellPrice = row.find('td:eq(2)').text();
+        var sellingPrice = row.find('td:eq(2)').text();
         var quantity = row.find('td:eq(3)').text();
         var totalPrice = row.find('td:eq(4)').text();
 
-        $('#productSelect option').filter(function () {
+        $('#SelectedProductId option').filter(function () {
             return $(this).text() === productName;
         }).prop('selected', true);
-        $('#buyPrice').val(buyPrice);
-        $('#sellPrice').val(sellPrice);
-        $('#quantity').val(quantity);
-        $('#totalPrice').val(totalPrice);
+        $('#BuyPrice').val(buyPrice);
+        $('#SellingPrice').val(sellingPrice);
+        $('#Quantity').val(quantity);
+        $('#TotalPrice').val(totalPrice);
 
         row.remove();
         updateTotalAmount(); // Recalculate total amount
     });
-
     // Update remaining due when paid amount changes
     $(document).on('input', '#paidAmount', function () {
         updateTotalAmount();
     });
 
     // Function to handle button click
-    document.getElementById('submitButton').addEventListener('click', function () {
-        var depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
-        var dueAmount = parseFloat(document.getElementById('dueAmount').value) || 0;
+    // Function to handle real-time calculation of dueAmount when typing in deposit field
+document.getElementById('Deposit').addEventListener('input', function () {
+    var depositAmount = parseFloat(this.value) || 0; // Get deposit amount or default to 0
+    var totalAmount = parseFloat(document.getElementById('shorboMotTaka').value) || 0; // Get total amount
+    var dueAmount = parseFloat(document.getElementById('dueAmount').value) || 0; // Get current due amount (if applicable)
 
-        // Check if depositAmount is greater than dueAmount
-        if (depositAmount > dueAmount) {
-            alert("আপনার দেওয়া জমার পরিমাণ বকেয়ার চেয়ে বেশি হতে পারবে না!");
-        } else {
-            // Update dueAmount
-            var newDueAmount = dueAmount - depositAmount;
-            document.getElementById('dueAmount').value = newDueAmount.toFixed(2);
-        }
-    });
+    // Calculate the new due amount
+    var newDueAmount = totalAmount - depositAmount;
 
+    // Ensure the due amount doesn't go below 0
+    if (newDueAmount < 0) {
+        alert("আপনার দেওয়া জমার পরিমাণ বকেয়ার চেয়ে বেশি হতে পারবে না!");
+        newDueAmount = dueAmount; // Keep the due amount unchanged if deposit exceeds
+        this.value = ''; // Clear the deposit field
+    }
 
-
+    // Update the due amount in real time
+    document.getElementById('dueAmount').value = newDueAmount.toFixed(2);
+});
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-

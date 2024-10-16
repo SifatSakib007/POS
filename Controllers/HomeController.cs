@@ -81,7 +81,8 @@ namespace POS.Controllers
                         ProductId = product.ProductId,
                         ProductName = product.ProductName,
                         BuyPrice = product.BuyPrice,
-                        Stock = product.Stock
+                        Stock = product.Stock,
+                        Unit = product.Unit
                     }
                 });
             }
@@ -104,7 +105,7 @@ namespace POS.Controllers
                         CustomerName = customer.Name,
                         Address = customer.Address,
                         PhoneNo = customer.PhoneNo,
-                        Due = customer.Due
+                        ShabekDue = customer.Due
                     }
                 });
             }
@@ -234,7 +235,119 @@ namespace POS.Controllers
             return View(sellReport);
         }
 
+        // GET: Sell/Edit/{id}
+        [HttpGet]
+        public async Task<IActionResult> EditProductSell(int id)
+        {
+            // Retrieve the sell entry by ID
+            var sell = await _db.Sell
+                .Include(s => s.Customer)
+                .Include(s => s.Product)
+                .FirstOrDefaultAsync(s => s.SellId == id);
 
+            if (sell == null)
+            {
+                return NotFound();
+            }
+            // Fetch the list of products and customers from the database
+            var products = _db.Product.ToList();
+            var customers = _db.Customer.ToList();
+
+            if (products == null || customers == null)
+            {
+                // Handle the error when either list is null or empty
+                ModelState.AddModelError("", "Products or Customers data is missing.");
+                return View();
+            }
+            // Prepare the ViewModel with the existing data
+            var viewModel = new ProductCustomerViewModel
+            {
+                Sells = sell,
+                Products = products,
+                Customers = customers
+            };
+
+            return View(viewModel);
+        }
+
+        // POST: Sell/Edit/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProductSell(int id, ProductCustomerViewModel model)
+        {
+            if (id != model.Sells?.SellId)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Retrieve the existing sell entry
+                var sellToUpdate = await _db.Sell.FindAsync(id);
+                if (sellToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                // Retrieve the associated customer and product
+                var customerToUpdate = await _db.Customer.FindAsync(sellToUpdate.CustomerId);
+                var productToUpdate = await _db.Product.FindAsync(sellToUpdate.ProductId);
+
+                if (customerToUpdate == null || productToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                // Update the Sell details
+                sellToUpdate.ProductName = model.ProductName;
+                sellToUpdate.Quantity = model.Quantity;
+                sellToUpdate.BuyPrice = model.BuyPrice;
+                sellToUpdate.SellingPrice = model.SellingPrice;
+                sellToUpdate.TotalPrice = model.TotalPrice;
+                sellToUpdate.TotalTotalPrice = model.TotalTotalPrice;
+                sellToUpdate.Deposit = model.Deposit;
+                sellToUpdate.ShabekDue = model.ShabekDue;
+                sellToUpdate.CustomerPhoneNo = model.CustomerPhoneNo;
+                sellToUpdate.CustomerAddress = model.CustomerAddress;
+
+                // Update the Customer details if necessary
+                customerToUpdate.Name = model.Name;
+                customerToUpdate.PhoneNo = model.CustomerPhoneNo;
+                customerToUpdate.Address = model.CustomerAddress;
+
+                // Save the changes to the database
+                try
+                {
+                    _db.Update(sellToUpdate);
+                    _db.Update(customerToUpdate);
+                    await _db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!SellExists(sellToUpdate.SellId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return RedirectToAction(nameof(Index)); // Redirect to the index or another view after editing
+            }
+
+            // Re-populate the ViewModel if the model state is invalid
+            model.Products = await _db.Product.ToListAsync();
+            model.Customers = await _db.Customer.ToListAsync();
+
+            return View(model);
+        }
+
+        private bool SellExists(int id)
+        {
+            return _db.Sell.Any(e => e.SellId == id);
+        }
         // GET: AddCustomer - Display the form for adding a new customer
         public IActionResult AddCustomer()
         {
@@ -370,7 +483,6 @@ namespace POS.Controllers
             }
         }
 
-
         public ActionResult ShopHishab()
         {
             return View();
@@ -413,7 +525,6 @@ namespace POS.Controllers
 
             return Json(clientDetails);
         }
-
 
         [HttpPost]
         [IgnoreAntiforgeryToken]
@@ -477,8 +588,6 @@ namespace POS.Controllers
             TempData["error"] = "Error adding product details! Please check the form for validation errors.";
             return View(viewModel); // Return the form with validation errors
         }
-
-
 
         public ActionResult ProductBuyList()
         {
@@ -568,7 +677,6 @@ namespace POS.Controllers
                 }
             }
         }
-
 
         public ActionResult OwnShopDue()
         {

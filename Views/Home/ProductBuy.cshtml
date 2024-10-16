@@ -38,6 +38,13 @@
                         <span class="text-danger"></span>
                     </div>
 
+                    <!-- পরিমাণ  -->
+                    <div class="relative flex items-center  mt-4">
+                        <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পণ্যের একক</label>
+                        <input type="text" asp-for="Product.Unit" placeholder="পণ্যের একক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
+                    </div>
+
                     <!-- মোট মূল্য -->
                     <div class="relative flex items-center  mt-4">
                         <label for="totalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">মোট মূল্য</label>
@@ -57,6 +64,7 @@
                                 <th class="px-4 py-2">পূর্ববর্তী ক্রয় মূল্য</th>
                                 <th class="px-4 py-2">ক্রয় মূল্য</th>
                                 <th class="px-4 py-2">পরিমাণ</th>
+                                <th class="px-4 py-2">একক</th>
                                 <th class="px-4 py-2">মোট মূল্য</th>
                                 <th class="px-4 py-2">অ্যাকশন</th>
                             </tr>
@@ -138,25 +146,18 @@
                     <div class="mb-4 px-4">
                         <label asp-for="Client.PhoneNo" class="block text-sm text-gray-600">ফোন নম্বর</label>
                         <input asp-for="Client.PhoneNo" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ফোন নম্বর লিখুন" />
-                    </div>            
+                    </div>         
+                    <!-- বাকি টাকা -->
+                    <div class="relative flex items-center  mt-4">
+                        <label asp-for="Client.Debt" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
+                        <input asp-for="Client.Debt" readonly type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
+                    </div>
 
             <!-- সর্বমোট টাকা (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সর্বমোট টাকা</label>
                 <input id="shorboMotTaka" type="number" placeholder="সর্বমোট টাকা" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span class="text-danger"></span>
-            </div>
-
-            <!-- বাকি টাকা -->
-            <div class="relative flex items-center  mt-4">
-                <label for="debt" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
-                <input for="debt" readonly type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span class="text-danger"></span>
-            </div>
-            <!-- Total সর্বমোট টাকা (readonly) -->
-            <div class="relative flex items-center  mt-4">
-                <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সর্বমোট টাকা</label>
-                <input id="totalSum" type="number" placeholder="সর্বমোট টাকা" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
@@ -169,8 +170,8 @@
                         
             <!-- Total বাকি টাকা -->
             <div class="relative flex items-center  mt-4">
-                <label asp-for="Client.Debt" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
-                <input asp-for="Client.Debt" readonly id="totaldueAmount" type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <label id="debt" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
+                <input id="debt" readonly id="totaldueAmount" type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
         </div>
@@ -212,7 +213,8 @@
         });
         }
         // Toggle dropdown visibility
-        document.getElementById('dropdownButton').onclick = function() {
+        document.getElementById('dropdownButton').onclick = function(e) {
+            e.preventDefault()
             const dropdownContent = document.getElementById('dropdownContent');
             dropdownContent.classList.toggle('hidden');
         }
