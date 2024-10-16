@@ -17,8 +17,11 @@ namespace POS.Models
         public int SelectedProductId { get; set; } // Stores selected product
         public int SelectedCustomerId { get; set; } // Stores selected customer
         public string ProductName { get; set; }
+        public int? Invoice { get; set; }
         public string Name { get; set; }
+        public string Unit { get; set; }
         public int Stock { get; set; } // For stock details
+        public int Quantity { get; set; } // For stock details
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal BuyPrice { get; set; } // For selling price

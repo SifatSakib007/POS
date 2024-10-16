@@ -6,7 +6,8 @@
         {
             ProductName = string.Empty,
             BuyPrice = 0.0m,
-            Stock = 0
+            Stock = 0,
+            Unit = string.Empty
         };
         public Client Client { get; set; } = new Client
         {
