@@ -13,33 +13,43 @@
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
                     <!-- পণ্য সিলেক্ট করুন -->
                     <div>
-                        <label asp-for="Product.ProductName" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
-                        <input asp-for="Product.ProductName" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="পণ্যের নাম লিখুন" />
-                        <span asp-validation-for="Product.ProductName" class="text-red-500 text-sm"></span>
+                        <label for="productName" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
+                        <input id="productName"
+                               class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                               placeholder="পণ্যের নাম লিখুন"
+                               onfocus="showAllSuggestions()"
+                               oninput="showSuggestions(this.value)"
+                               autocomplete="off" />
+
+                        <!-- Suggestions List -->
+                        <ul id="suggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-80"></ul>
+
+                        <span id="error-message" class="text-red-500 text-sm"></span>
                     </div>
 
-                   <!-- Previous Buy Price -->
-                    <div class="relative flex items-center  mt-4">
-                        <label asp-for="Product.PreviousBuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্ববর্তী ক্রয় মূল্য</label>
-                        <input asp-for="Product.BuyPrice" id="buyPrice" type="number" placeholder="পূর্ববর্তী ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                    <!-- Previous Buy Price -->
+                    <div class="relative flex items-center mt-4">
+                        <label for="previousBuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্ববর্তী ক্রয় মূল্য</label>
+                        <input id="previousBuyPrice" type="number" placeholder="পূর্ববর্তী ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
+
                     <!-- Buy Price -->
-                    <div class="relative flex items-center  mt-4">
-                        <label asp-for="Product.BuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রয় মূল্য</label>
-                        <input asp-for="Product.BuyPrice" id="buyPrice" type="number" placeholder="ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                    <div class="relative flex items-center mt-4">
+                        <label for="buyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রয় মূল্য</label>
+                        <input id="buyPrice" type="number" placeholder="ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
                     <!-- স্টক (readonly) -->
-                    <div class="relative flex items-center  mt-4">
-                        <label asp-for="Product.Stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input asp-for="Product.Stock" id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                    <div class="relative flex items-center mt-4">
+                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
+                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
                     <!-- মোট মূল্য -->
-                    <div class="relative flex items-center  mt-4">
+                    <div class="relative flex items-center mt-4">
                         <label for="totalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">মোট মূল্য</label>
                         <input id="totalPrice" readonly placeholder="মোট মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
@@ -173,12 +183,12 @@
                 <input asp-for="Client.Debt" readonly id="totaldueAmount" type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
-        </div>
 
         <button type="button" id="submitButton"
                 class="mt-10 px-6 py-2.5 w-full text-sm bg-[#007bff] text-white hover:bg-[#006bff] rounded-sm">
             পণ্য এবং ক্লায়েন্ট যোগ করুন
         </button>
+      </div>
     </form>
 
 
@@ -188,6 +198,200 @@
 <script>
         let previousDueAdded = false; // Track whether previous due has been added or not
         let totalTotalPrice = 0; // Initialize totalTotalPrice
+        // start
+        // Existing product data
+        let existingProducts = {
+            "দুধ": 50,
+            "চাল": 60,
+            "ডাল": 70,
+            "তেল": 80,
+            "চিনি": 90
+        };
+
+        // Function to show all suggestions
+        function showAllSuggestions() {
+            const suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = '';
+            if (Object.keys(existingProducts).length > 0) {
+                suggestionsBox.classList.remove('hidden');
+                for (const product in existingProducts) {
+                    const li = document.createElement('li');
+                    li.textContent = product;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = () => selectProduct(product);
+                    suggestionsBox.appendChild(li);
+                }
+            } else {
+                suggestionsBox.classList.add('hidden');
+            }
+        }
+
+        // Function to show suggestions based on input
+        function showSuggestions(value) {
+            const suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = '';
+            if (value.length === 0) {
+                showAllSuggestions();
+                return;
+            }
+            const filteredProducts = Object.keys(existingProducts).filter(product => product.includes(value));
+            if (filteredProducts.length > 0) {
+                suggestionsBox.classList.remove('hidden');
+                filteredProducts.forEach(product => {
+                    const li = document.createElement('li');
+                    li.textContent = product;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = () => selectProduct(product);
+                    suggestionsBox.appendChild(li);
+                });
+            } else {
+                suggestionsBox.classList.add('hidden');
+            }
+        }
+
+        // Function to select a product
+        function selectProduct(product) {
+            document.getElementById('productName').value = product;
+            document.getElementById('suggestions').classList.add('hidden');
+            document.getElementById('previousBuyPrice').value = existingProducts[product];
+        }
+
+        // Event listener for input on product name
+        document.getElementById('productName').addEventListener('input', function () {
+            const productName = this.value;
+            if (!existingProducts.hasOwnProperty(productName)) {
+                document.getElementById('previousBuyPrice').value = '';
+            } else {
+                document.getElementById('previousBuyPrice').value = existingProducts[productName];
+            }
+        });
+
+        // Event listener to hide suggestions when clicking outside
+        document.addEventListener('click', function (event) {
+            const suggestionsBox = document.getElementById('suggestions');
+            const productInput = document.getElementById('productName');
+            if (!productInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.classList.add('hidden');
+            }
+        });
+
+        // Function to calculate total price
+        function calculateTotalPrice() {
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
+            const stock = parseFloat(document.getElementById('stock').value) || 0;
+            const totalPrice = buyPrice * stock;
+            document.getElementById('totalPrice').value = totalPrice.toFixed(2);
+        }
+
+        // Add event listeners for buyPrice and stock inputs
+        document.getElementById('buyPrice').addEventListener('input', calculateTotalPrice);
+        document.getElementById('stock').addEventListener('input', calculateTotalPrice);
+
+        // Function to add product
+        function addProduct() {
+            const productName = document.getElementById('productName').value;
+            const previousBuyPrice = parseFloat(document.getElementById('previousBuyPrice').value) || null;
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
+            const stock = parseFloat(document.getElementById('stock').value) || 0;
+            const totalPrice = buyPrice * stock;
+
+            if (!productName || stock <= 0) {
+                alert('পণ্য নাম এবং পরিমাণ ফিল্ড পূর্ণ করুন');
+                return;
+            }
+
+            addProductToSuggestions(productName);
+
+            const finalPreviousBuyPrice = previousBuyPrice !== null ? previousBuyPrice : buyPrice;
+
+            const productTableBody = document.getElementById('productTable').querySelector('tbody');
+            const newRow = productTableBody.insertRow();
+            newRow.innerHTML = `
+                <td class="px-4 py-2">${productName}</td>
+                <td class="px-4 py-2">${finalPreviousBuyPrice.toFixed(2)}</td>
+                <td class="px-4 py-2">${buyPrice.toFixed(2)}</td>
+                <td class="px-4 py-2">${stock}</td>
+                <td class="px-4 py-2">${totalPrice.toFixed(2)}</td>
+                <td class="px-4 py-2">
+                    <button class="text-red-500" onclick="removeProduct(this)">মুছুন</button>
+                    <button class="text-blue-500" onclick="updateProduct(this)">আপডেট</button>
+                </td>
+            `;
+
+            clearInputFields();
+            updateTotalPrice(); // Update total price after adding product
+        }
+
+        // Function to update total price
+        function updateTotalPrice() {
+            const productTableBody = document.getElementById('productTable').querySelector('tbody');
+            const rows = productTableBody.getElementsByTagName('tr');
+            let total = 0;
+
+            for (let row of rows) {
+                const priceCell = row.cells[4]; // Total price cell (5th column)
+                const price = parseFloat(priceCell.textContent) || 0;
+                total += price;
+            }
+
+            // Display total price in the readonly input field
+            document.getElementById('totalTotalPrice').value = total.toFixed(2);
+        }
+
+        // Function to add the product to the suggestions
+        function addProductToSuggestions(productName) {
+            const suggestions = document.getElementById('suggestions');
+            const suggestionItem = document.createElement('li');
+            suggestionItem.textContent = productName;
+            suggestionItem.classList.add('px-4', 'py-2', 'cursor-pointer');
+            suggestionItem.onclick = () => {
+                document.getElementById('productName').value = productName;
+                suggestions.innerHTML = '';
+            };
+            suggestions.appendChild(suggestionItem);
+        }
+
+        // Function to clear input fields
+        function clearInputFields() {
+            document.getElementById('productName').value = '';
+            document.getElementById('previousBuyPrice').value = '';
+            document.getElementById('buyPrice').value = '';
+            document.getElementById('stock').value = '';
+            document.getElementById('totalPrice').value = '';
+        }
+
+        // Function to remove product from the table
+        function removeProduct(button) {
+            const row = button.closest('tr');
+            row.remove();
+            updateTotalPrice(); // Update total price after removal
+        }
+
+        // Function to update product in the table
+        function updateProduct(button) {
+            const row = button.closest('tr');
+            const productName = row.cells[0].textContent;
+            const previousBuyPrice = parseFloat(row.cells[1].textContent);
+            const buyPrice = parseFloat(row.cells[2].textContent);
+            const stock = parseFloat(row.cells[3].textContent);
+
+            // Fill the input fields with the current row data for editing
+            document.getElementById('productName').value = productName;
+            document.getElementById('previousBuyPrice').value = previousBuyPrice;
+            document.getElementById('buyPrice').value = buyPrice;
+            document.getElementById('stock').value = stock;
+
+            // Remove the current row
+            row.remove();
+            updateTotalPrice(); // Update total price after updating
+        }
+
+        // Add event listener to the Add Product button
+        document.getElementById('addProductBtn').addEventListener('click', addProduct);
+
+        // end
+
+
 
         // Function to fetch product details using AJAX
         function fetchClientDetails(clientId) {
@@ -212,12 +416,14 @@
         });
         }
         // Toggle dropdown visibility
-        document.getElementById('dropdownButton').onclick = function() {
+        document.getElementById('dropdownButton').onclick = function(e) {
+            e.preventDefault()
             const dropdownContent = document.getElementById('dropdownContent');
             dropdownContent.classList.toggle('hidden');
         }
 
         function togglePreviousClientDropdown() {
+        
             const newClient = document.getElementById('newClient').checked;
             const previousClientDiv = document.getElementById('previousClientDiv');
             previousClientDiv.classList.toggle('hidden', newClient);
@@ -314,9 +520,7 @@
 
                     // Recalculate total amount
                     updateTotalAmount();
-                } else {
-                    alert("অনুগ্রহ করে সব তথ্য পূরণ করুন!");
-                }
+                } 
             }
         });
 
