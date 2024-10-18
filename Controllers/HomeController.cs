@@ -120,95 +120,81 @@ namespace POS.Controllers
 
             return Json(new { success = false, message = "Customer not found!" });
         }
-
+        [Authorize(Roles = "Client")]
         // GET: ProductSell - Displays the sell page
         public async Task<IActionResult> ProductSell()
         {
             var viewModel = await LoadProductCustomerViewModelAsync();
             return View(viewModel);
         }
-        // GET: ProductSell - Displays the sell page
-        /*        public async Task<IActionResult> ProductSell()
-                {
-                    // Load products and customers for selection in the view
-                    var products = await _db.Product.ToListAsync();
-                    var customers = await _db.Customer.ToListAsync();
-
-                    // Create the ViewModel and populate it
-                    var viewModel = new ProductCustomerViewModel
-                    {
-                        Products = products,
-                        Customers = customers,
-                        Sells = new Sell
-                        {
-                            // Initialize required members
-                            ProductName = string.Empty,
-                            Quantity = 0,
-                            TotalPrice = 0m,
-                            TotalTotalPrice = 0m,
-                            ShabekDue = 0 // Initialize TotalTotalPrice
-                        }
-                    };
-
-                    return View(viewModel);
-                }*/
-
+        
         [IgnoreAntiforgeryToken]
         [HttpPost]
         public async Task<IActionResult> ProductSell([FromForm] ProductCustomerViewModel viewModel)
-            {
-
-            // Check if the viewModel is null
+        {
             if (viewModel == null)
             {
                 return BadRequest("ViewModel is null");
             }
 
-            // Check if the Products or Customers lists are null
             if (viewModel.Products == null || !viewModel.Products.Any())
             {
                 return BadRequest("Products list is null or empty.");
             }
 
-            // Start a database transaction
             using (var transaction = await _db.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    // Loop through each product in the list
                     foreach (var productSell in viewModel.Products)
                     {
+                        // Fetch the selected product
                         var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == viewModel.SelectedProductId);
                         if (product == null)
                         {
-                            ModelState.AddModelError("", $"Invalid product selected");
-                            return BadRequest(ModelState); // Return BadRequest if the product is invalid
+                            ModelState.AddModelError("", "Invalid product selected.");
+                            return BadRequest(ModelState);
                         }
 
+                        // Fetch the selected customer, if applicable
                         Customer customer = null;
-                        if (viewModel.SelectedCustomerId > 0)  // Assuming 'SelectedCustomerId' is an int
+                        if (viewModel.SelectedCustomerId > 0)
                         {
                             customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == viewModel.SelectedCustomerId);
-
                             if (customer == null)
                             {
                                 ModelState.AddModelError("", "Invalid customer selected.");
-                                return BadRequest(ModelState); // Return BadRequest if the customer is invalid
+                                return BadRequest(ModelState);
                             }
                         }
 
-                        if (product.Stock <= 0) // Corrected to check for stock being less than or equal to zero
+                        // Update product stock
+                        if (product.Stock < viewModel.Quantity)
                         {
                             ModelState.AddModelError("", $"Insufficient stock for product '{product.ProductName}'");
-                            return BadRequest(ModelState); // Return BadRequest if there is insufficient stock
+                            return BadRequest(ModelState);
                         }
-                        product.Stock = product.Stock - viewModel.Quantity;                         
 
-                        // Create a new Sell object and populate details
+                        product.Stock -= viewModel.Quantity;
+
+
+                        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                        int? userId = null;
+
+                        if (int.TryParse(userIdString, out int parsedUserId))
+                        {
+                            userId = parsedUserId; // Successfully parsed the string to an integer
+                        }
+                        else
+                        {
+                            userId = null; // Failed to parse the string to an integer
+                        }
+
+                        // Create and populate the Sell entity
                         var sell = new Sell
                         {
                             ProductId = product.ProductId,
-                            CustomerId = customer.Id,
+                            CustomerId = customer?.Id,
                             ProductName = productSell.ProductName,
                             BuyPrice = product.BuyPrice,
                             Stock = product.Stock,
@@ -216,20 +202,39 @@ namespace POS.Controllers
                             SellingPrice = viewModel.SellingPrice,
                             TotalPrice = viewModel.TotalPrice,
                             TotalTotalPrice = viewModel.TotalTotalPrice,
-                            CustomerName = customer?.Name ?? "Walk-in Customer",  // If no customer is selected, use a default value
-                            CustomerPhoneNo = customer?.PhoneNo ?? "N/A",         // Handle customer-related fields
+                            CustomerName = customer?.Name ?? "Walk-in Customer",
+                            CustomerPhoneNo = customer?.PhoneNo ?? "N/A",
                             CustomerAddress = customer?.Address ?? "N/A",
-                            DuePrice = customer?.Due ?? 0,                       // No due if no customer
-                            Deposit = viewModel.Deposit,                       // No due if no customer
-                            TotalDuePrice = customer != null ? productSell.TotalPrice - viewModel.Deposit : 0  // Only calculate due if customer exists
+                            DuePrice = viewModel.ShabekDue,
+                            Deposit = viewModel.Deposit,
+                            ShabekDue = viewModel.ShabekDue,
+                            TotalDuePrice = viewModel.TotalTotalPrice + viewModel.ShabekDue - viewModel.Deposit,
+                            UserId = userId
                         };
 
                         _db.Sell.Add(sell);
 
-                        // Only update customer due if a customer is selected
+                        // Update customer due if customer is selected
                         if (customer != null)
                         {
                             customer.Due += sell.TotalDuePrice;
+
+                            // Update payment information for the customer
+                            customer.PaymentDates = string.IsNullOrEmpty(customer.PaymentDates)
+                                ? DateTime.Now.ToString("yyyy-MM-dd")
+                                : $"{customer.PaymentDates},{DateTime.Now:yyyy-MM-dd}";
+
+                            customer.PaymentAmounts = string.IsNullOrEmpty(customer.PaymentAmounts)
+                                ? viewModel.Deposit.ToString()
+                                : $"{customer.PaymentAmounts},{viewModel.Deposit}";
+                        }
+                        
+                        
+                        // Save the product and customer changes
+                        _db.Product.Update(product);
+                        if (customer != null)
+                        {
+                            _db.Customer.Update(customer);
                         }
                     }
 
@@ -243,89 +248,10 @@ namespace POS.Controllers
                 {
                     await transaction.RollbackAsync();
                     ModelState.AddModelError("", "An error occurred while saving data: " + ex.Message);
-                    return BadRequest(ModelState); // Return BadRequest with model state in case of exception
+                    return BadRequest(ModelState);
                 }
             }
         }
-
-
-
-        /*// POST: ProductSell - Handles the sale transaction
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProductSell(ProductCustomerViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                viewModel.Products = await _db.Product.ToListAsync();
-                viewModel.Customers = await _db.Customer.ToListAsync();
-                TempData["error"] = "Something went wrong.";
-                return View(viewModel);
-            }
-
-            using (var transaction = await _db.Database.BeginTransactionAsync())
-            {
-                try
-                {
-                    var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == viewModel.SelectedProductId);
-                    if (product == null)
-                    {
-                        ModelState.AddModelError("", "Invalid product selected.");
-                        return View(viewModel);
-                    }
-
-                    var sell = viewModel.Sells;
-                    sell.ProductName = product.ProductName;
-                    sell.BuyPrice = product.BuyPrice;
-
-                    if (sell.Quantity <= 0)
-                    {
-                        ModelState.AddModelError("", "Invalid quantity.");
-                        return View(viewModel);
-                    }
-
-                    sell.TotalPrice = sell.Quantity * sell.SellingPrice;
-
-                    if (product.Stock < sell.Quantity)
-                    {
-                        ModelState.AddModelError("", "Insufficient stock for this product.");
-                        return View(viewModel);
-                    }
-
-                    product.Stock -= sell.Quantity;
-
-                    var customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == viewModel.SelectedCustomerId);
-                    if (customer == null)
-                    {
-                        ModelState.AddModelError("", "Invalid customer selected.");
-                        return View(viewModel);
-                    }
-
-                    sell.CustomerName = customer.Name;
-                    sell.CustomerPhoneNo = customer.PhoneNo;
-                    sell.CustomerAddress = customer.Address;
-
-                    sell.DuePrice = customer.Due;
-                    sell.TotalDuePrice = sell.TotalPrice - sell.Deposit;
-
-                    _db.Sell.Add(sell);
-                    customer.Due += sell.TotalDuePrice;
-
-                    await _db.SaveChangesAsync();
-                    await transaction.CommitAsync();
-
-                    TempData["success"] = "Successfully sold!";
-                    return RedirectToAction("ProductSell");
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    ModelState.AddModelError("", "An error occurred while saving data: " + ex.Message);
-                    return View(viewModel);
-                }
-            }
-        }
-*/
 
 
         public async Task<IActionResult> ProductSellReport()

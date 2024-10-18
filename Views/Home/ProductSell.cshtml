@@ -135,7 +135,7 @@
             <!-- সাবেক টাকা (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label asp-for="ShabekDue" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সাবেক টাকা</label>
-                <input asp-for="ShabekDue" type="number" readonly placeholder="সাবেক টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="ShabekDue" type="number" readonly placeholder="সাবেক বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
@@ -240,7 +240,7 @@
 
         // Loop through the product table to sum up the total product prices
         $('#productTable tbody tr').each(function() {
-            var rowTotal = parseFloat($(this).find('td:eq(4)').text()) || 0;
+            var rowTotal = parseFloat($(this).find('td:eq(5)').text()) || 0;
             totalAmount += rowTotal;
         });
 
@@ -360,7 +360,7 @@
         updateTotalAmount();
     });
 
-    // Function to handle button click
+    
     // Function to handle real-time calculation of dueAmount when typing in deposit field
     document.getElementById('Deposit').addEventListener('input', function() {
         var depositAmount = parseFloat(this.value) || 0; // Get deposit amount or default to 0
@@ -405,11 +405,15 @@
         // 3. Get total total price
         var totalTotalPrice = parseFloat($('#TotalTotalPrice').val());
         formData.append('TotalTotalPrice', totalTotalPrice);
+        // 3. Get total total price
+        var totalDuePrice = parseFloat($('#dueAmount').val());
+        formData.append('TotalDuePrice', totalDuePrice);
 
         // 5. Get customer details from user input
         var customerPhoneNo = $('#CustomerPhoneNo').val();
         var customerAddress = $('#CustomerAddress').val();
-        var deposit = parseFloat($('#Deposit').val());
+
+        var deposit = $('#Deposit').val();
         var shabekDue = parseFloat($('#ShabekDue').val());
 
         formData.append('CustomerPhoneNo', customerPhoneNo);
@@ -431,6 +435,7 @@
             formData.append(`Products[${index}].BuyPrice`, buyPrice);
 
             formData.append('Stock', stock);
+            formData.append('SellingPrice', sellingPrice);
             formData.append('Quantity', quantity);
             formData.append('TotalPrice', totalPrice);
 
