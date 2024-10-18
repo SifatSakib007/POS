@@ -42,7 +42,6 @@ namespace POS.Models
         public decimal Deposit { get; set; } // For deposit
 
         [Column(TypeName = "decimal(18, 2)")]
-
         public decimal ShabekDue { get; set; } // For previous due amount
     }
 }
