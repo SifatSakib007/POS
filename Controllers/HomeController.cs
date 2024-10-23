@@ -127,10 +127,10 @@ namespace POS.Controllers
             var viewModel = await LoadProductCustomerViewModelAsync();
             return View(viewModel);
         }
-        
+
         [IgnoreAntiforgeryToken]
         [HttpPost]
-        public async Task<IActionResult> ProductSell([FromForm] ProductCustomerViewModel viewModel)
+        public async Task<IActionResult> ProductSell([FromForm] ProductCustomerViewModel viewModel, [FromForm] int[] SelectedProductIds)
         {
             if (viewModel == null)
             {
@@ -142,113 +142,168 @@ namespace POS.Controllers
                 return BadRequest("Products list is null or empty.");
             }
 
+            if (SelectedProductIds == null || !SelectedProductIds.Any())
+            {
+                return BadRequest("No products were selected.");
+            }
+
             using (var transaction = await _db.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    foreach (var productSell in viewModel.Products)
+                    // Fetch the selected customer, if applicable
+                    Customer customer = null;
+                    if (viewModel.SelectedCustomerId > 0)
                     {
-                        // Fetch the selected product
-                        var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == viewModel.SelectedProductId);
-                        if (product == null)
+                        customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == viewModel.SelectedCustomerId);
+                        if (customer == null)
                         {
-                            ModelState.AddModelError("", "Invalid product selected.");
+                            ModelState.AddModelError("", "Invalid customer selected.");
                             return BadRequest(ModelState);
                         }
+                    }
+                    //creating a unique invoice number
+                    string invoice = $"INV{DateTime.Now:yyyyMMddHHmmss}"; // Generate a unique invoice number
+                    // Initialize variables to store combined product information
+                    string totalSellingPrice = "";
+                    decimal totalTotalPrice = 0;
+                    string productNames = "";
+                    string totalQuantity = "";
+                    string productIds = "";
 
-                        // Fetch the selected customer, if applicable
-                        Customer customer = null;
-                        if (viewModel.SelectedCustomerId > 0)
+                    // Split the received comma-separated values into arrays
+                    var quantities = viewModel.Quantities?.Split(',').Select(int.Parse).ToList();
+                    var sellingPrices = viewModel.SellingPrices?.Split(',').Select(decimal.Parse).ToList();
+
+                    if (quantities == null || sellingPrices == null || quantities.Count != sellingPrices.Count)
+                    {
+                        ModelState.AddModelError("", "Invalid data received for quantities or selling prices.");
+                        return BadRequest(ModelState);
+                    }
+                    // Loop through all selected products and accumulate information
+                    for (int i = 0; i < viewModel.Products.Count; i++)
+                    {
+                        var productSell = viewModel.Products[i]; // Now includes Quantity, TotalPrice, etc.
+                        int selectedProductId = SelectedProductIds[i];
+
+                        var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == selectedProductId);
+                        if (product == null)
                         {
-                            customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == viewModel.SelectedCustomerId);
-                            if (customer == null)
-                            {
-                                ModelState.AddModelError("", "Invalid customer selected.");
-                                return BadRequest(ModelState);
-                            }
+                            ModelState.AddModelError("", $"Invalid product selected for Product ID: {selectedProductId}.");
+                            return BadRequest(ModelState);
                         }
-
-                        // Update product stock
-                        if (product.Stock < viewModel.Quantity)
+                        // Check stock availability                            
+                        if (product.Stock < productSell.Stock)
                         {
                             ModelState.AddModelError("", $"Insufficient stock for product '{product.ProductName}'");
                             return BadRequest(ModelState);
                         }
 
-                        product.Stock -= viewModel.Quantity;
+                        // Reduce stock
+                        product.Stock = productSell.Stock; 
 
-
-                        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                        int? userId = null;
-
-                        if (int.TryParse(userIdString, out int parsedUserId))
-                        {
-                            userId = parsedUserId; // Successfully parsed the string to an integer
-                        }
-                        else
-                        {
-                            userId = null; // Failed to parse the string to an integer
-                        }
-
-                        // Create and populate the Sell entity
-                        var sell = new Sell
-                        {
-                            ProductId = product.ProductId,
-                            CustomerId = customer?.Id,
-                            ProductName = productSell.ProductName,
-                            BuyPrice = product.BuyPrice,
-                            Stock = product.Stock,
-                            Quantity = viewModel.Quantity,
-                            SellingPrice = viewModel.SellingPrice,
-                            TotalPrice = viewModel.TotalPrice,
-                            TotalTotalPrice = viewModel.TotalTotalPrice,
-                            CustomerName = customer?.Name ?? "Walk-in Customer",
-                            CustomerPhoneNo = customer?.PhoneNo ?? "N/A",
-                            CustomerAddress = customer?.Address ?? "N/A",
-                            DuePrice = viewModel.ShabekDue,
-                            Deposit = viewModel.Deposit,
-                            ShabekDue = viewModel.ShabekDue,
-                            TotalDuePrice = viewModel.TotalTotalPrice + viewModel.ShabekDue - viewModel.Deposit,
-                            UserId = userId
-                        };
-
-                        _db.Sell.Add(sell);
-
-                        // Update customer due if customer is selected
-                        if (customer != null)
-                        {
-                            customer.Due += sell.TotalDuePrice;
-
-                            // Update payment information for the customer
-                            customer.PaymentDates = string.IsNullOrEmpty(customer.PaymentDates)
-                                ? DateTime.Now.ToString("yyyy-MM-dd")
-                                : $"{customer.PaymentDates},{DateTime.Now:yyyy-MM-dd}";
-
-                            customer.PaymentAmounts = string.IsNullOrEmpty(customer.PaymentAmounts)
-                                ? viewModel.Deposit.ToString()
-                                : $"{customer.PaymentAmounts},{viewModel.Deposit}";
-                        }
-                        
-                        
-                        // Save the product and customer changes
+                        //======== Update the product table in the database ========
                         _db.Product.Update(product);
-                        if (customer != null)
-                        {
-                            _db.Customer.Update(customer);
-                        }
+
+                        // Combine product details for a single row
+                        productIds += $"{product.ProductId}, "; // Concatenate product IDs
+                        totalSellingPrice += $"{sellingPrices[i]}, ";
+                        totalQuantity += $"{quantities[i]}, ";
+                        totalTotalPrice += viewModel.TotalPrice;                      
+                        productNames += $"{productSell.ProductName}, "; // Concatenate product names
                     }
+
+                    // Trim the trailing comma and space from the product names
+                    productNames = productNames.TrimEnd(',', ' ');
+                    productIds = productIds.TrimEnd(',', ' ');
+                    totalSellingPrice = totalSellingPrice.TrimEnd(',', ' ');
+                    totalQuantity = totalQuantity.TrimEnd(',', ' ');
+
+
+                    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    int? userId = null;
+
+                    if (int.TryParse(userIdString, out int parsedUserId))
+                    {
+                        userId = parsedUserId; // Successfully parsed the string to an integer
+                    }
+
+                    // Create and populate the Sell entity with combined product data
+                    var sell = new Sell
+                    {
+                        CustomerId = customer?.Id,
+                        ProductName = productNames,
+                        Quantity = 0,
+                        SellingPrice = 0,
+                        TotalPrice = totalTotalPrice,
+                        TotalTotalPrice = viewModel.TotalTotalPrice, // This is the overall total price including any extra charges or adjustments
+                        CustomerName = customer?.Name ?? "Walk-in Customer",
+                        CustomerPhoneNo = customer?.PhoneNo ?? "N/A",
+                        CustomerAddress = customer?.Address ?? "N/A",
+                        DuePrice = viewModel.ShabekDue,
+                        Deposit = viewModel.Deposit,
+                        ShabekDue = viewModel.ShabekDue,
+                        TotalDuePrice = viewModel.TotalTotalPrice + viewModel.ShabekDue - viewModel.Deposit,
+                        UserId = userId,
+                        ProductIds = productIds,
+                        ProductNames = productNames,
+                        Quantities = totalQuantity,
+                        TotalPricePerProduct = totalSellingPrice,
+                        Invoice = invoice
+                    };
+                    //======== Add data to Sell table ========
+                    _db.Sell.Add(sell);
+
+                    // Update customer due if customer is selected
+                    if (customer != null)
+                    {
+                        customer.Due = sell.TotalDuePrice;
+
+                        // Update payment information for the customer
+                        customer.PaymentDates = string.IsNullOrEmpty(customer.PaymentDates)
+                            ? DateTime.Now.ToString("yyyy-MM-dd")
+                            : $"{customer.PaymentDates},{DateTime.Now:yyyy-MM-dd}";
+
+                        customer.PaymentAmounts = string.IsNullOrEmpty(customer.PaymentAmounts)
+                            ? viewModel.Deposit.ToString()
+                            : $"{customer.PaymentAmounts},{viewModel.Deposit}";
+                        
+                        
+                        //======== Update data to Customer table ========
+                        _db.Customer.Update(customer);
+                    }
+                    else if (customer == null && sell.TotalDuePrice > 0)
+                    {
+                        customer = new Customer
+                        {
+                            Name = "Walk-in Customer",
+                            PhoneNo = "N/A",
+                            Address = "N/A",
+                            Due = sell.TotalDuePrice,
+                            UserId = userId,
+                            FirstDue = sell.TotalDuePrice,
+                            Invoice = invoice
+                        };
+                        //======== Add data to Customer table ========
+                        _db.Customer.Add(customer);
+                        }
+                       
 
                     await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
 
                     TempData["success"] = "Successfully sold!";
-                    return RedirectToAction("ProductSell");
+                    //return RedirectToAction("ProductSell");
+                    // If successful
+                    return Json(new { success = true, message = "Successfully sold!" });
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
                     ModelState.AddModelError("", "An error occurred while saving data: " + ex.Message);
-                    return BadRequest(ModelState);
+                    //return BadRequest(ModelState);
+                    // In case of failure
+                    return Json(new { success = false, message = "An error occurred." });
                 }
             }
         }

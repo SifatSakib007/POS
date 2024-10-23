@@ -7,7 +7,7 @@ namespace POS.Models
     {
         [Key]
         public int Id { get; set; }
-        public int? Invoice { get; set; }
+        public string? Invoice { get; set; }
 
         [Required(ErrorMessage = "গ্রাহকের নাম আবশ্যক।")]
         [StringLength(100, ErrorMessage = "গ্রাহকের নাম ১০০ অক্ষরের বেশি হতে পারবে না।")]

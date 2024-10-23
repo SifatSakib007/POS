@@ -81,6 +81,7 @@
                                 <th class="px-4 py-2">পরিমাণ</th>
                                 <th class="px-4 py-2">মোট মূল্য</th>
                                 <th class="px-4 py-2">অ্যাকশন</th>
+                                <th class="px-4 py-2" type="hidden" ></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -274,39 +275,47 @@
             $('#TotalTotalPrice').val(totalTotalPrice.toFixed(2)); // Update totalTotalPrice field
         }
     }
+    // Array to store all selected product IDs
+    let selectedProductIds = [];
     // Update total amount after adding a product
     $(document).on('click', '#addProductBtn', function() {
         var productName = $('#SelectedProductId option:selected').text();
         var buyPrice = $('#BuyPrice').val();
         var sellingPrice = $('#SellingPrice').val();
         var quantity = parseFloat($('#Quantity').val());
-        var unit = parseFloat($('#Unit').val());
+        //var unit = parseFloat($('#Unit').val());
         var stock = parseFloat($('#Stock').val());
         var totalPrice = $('#TotalPrice').val();
+        var selectedProductId = $('#SelectedProductId').val();
 
-        stock = stock - quantity;
+        
         // $('#Stock').val(stock);
 
         // Concatenate quantity and unit
-        var quantityWithUnit = quantity + ' ' + unit;
+        //var quantityWithUnit = quantity + ' ' + unit;
         if (quantity > stock) {
             alert("আপনি স্টকের থেকে বেশি পণ্য যোগ করতে পারবেন না।");
         } else if (quantity <= 0) {
             alert("পণ্যের পরিমাণ শূন্য বা তার চেয়ে কম হতে পারবে না।");
         } else {
+            
             if (productName && buyPrice && stock && sellingPrice && quantity && totalPrice) {
+                // Add the selected product ID to the array
+                selectedProductIds.push(selectedProductId);
+                stock = stock - quantity;
                 var newRow = `
                                         <tr>
                                             <td class="px-4 py-2">${productName}</td>
                                             <td class="px-4 py-2">${buyPrice}</td>
                                                 <td class="px-4 py-2">${stock}</td>
                                             <td class="px-4 py-2">${sellingPrice}</td>                                            
-                                            <td>${quantityWithUnit}</td>
+                                            <td>${quantity}</td>
                                             <td class="px-4 py-2">${totalPrice}</td>
                                             <td class="px-4 py-2">
                                                 <button type="button" class="update-btn text-blue-500">আপডেট</button>
                                                 <button type="button" class="delete-btn text-red-500">মুছে দিন</button>
                                             </td>
+                                            
                                         </tr>`;
                 $('#productTable tbody').append(newRow);
 
@@ -387,32 +396,20 @@
         // Create a new FormData object
         var formData = new FormData();
 
-        // 1. Get selected product ID from user input
-        var selectedProductId = parseInt($('#SelectedProductId').val());
-
-        // Check if a product is selected
-        if (selectedProductId !== "") {
-            selectedProductId = parseInt(selectedProductId); // Convert to integer if not empty
-            formData.append('SelectedProductId', selectedProductId);
-        } else {
-            console.log("No product selected"); // Log or handle empty selection
-        }
-
-        // 2. Get selected customer ID from user input
+        // 1. Get selected customer ID from user input
         var selectedCustomerId = parseInt($('#SelectedCustomerId').val());
         formData.append('SelectedCustomerId', selectedCustomerId);
 
-        // 3. Get total total price
+        // 2. Get total total price
         var totalTotalPrice = parseFloat($('#TotalTotalPrice').val());
         formData.append('TotalTotalPrice', totalTotalPrice);
-        // 3. Get total total price
+
         var totalDuePrice = parseFloat($('#dueAmount').val());
         formData.append('TotalDuePrice', totalDuePrice);
 
-        // 5. Get customer details from user input
+        // 3. Get customer details from user input
         var customerPhoneNo = $('#CustomerPhoneNo').val();
         var customerAddress = $('#CustomerAddress').val();
-
         var deposit = $('#Deposit').val();
         var shabekDue = parseFloat($('#ShabekDue').val());
 
@@ -421,34 +418,47 @@
         formData.append('Deposit', deposit);
         formData.append('ShabekDue', shabekDue);
 
-        // 6. Get product data from the table and format it as array indices
+
+        // 4. Send the array of selectedProductIds
+        // Append each selectedProductId to formData as an array
+        selectedProductIds.forEach(function(productId, index) {
+            formData.append(`SelectedProductIds[${index}]`, productId);
+        });
+
+        // Initialize variables to store concatenated values
+        var quantities = [];
+        var sellingPrices = [];
+        // 5. Get product data from the table (this assumes your table has the data in the correct columns)
         $('#productTable tbody tr').each(function(index) {
             var productName = $(this).find('td:eq(0)').text();
             var buyPrice = parseFloat($(this).find('td:eq(1)').text());
-            var stock = parseInt($(this).find('td:eq(2)').text()); //yet to send ---------------------------------
-            var sellingPrice = parseFloat($(this).find('td:eq(3)').text());           
-            var quantity = parseInt($(this).find('td:eq(4)').text());
+            var stock = parseInt($(this).find('td:eq(2)').text());
+            var sellingPrice = parseFloat($(this).find('td:eq(3)').text());
+            var quantity = $(this).find('td:eq(4)').text();
             var totalPrice = parseFloat($(this).find('td:eq(5)').text());
 
             // Append each product's data into the formData object using proper array index notation
             formData.append(`Products[${index}].ProductName`, productName);
             formData.append(`Products[${index}].BuyPrice`, buyPrice);
+            formData.append(`Products[${index}].Stock`, stock);
+            // formData.append(`SellingPrice`, sellingPrice);
+            // formData.append(`Quantity`, quantity);
+            formData.append(`TotalPrice`, totalPrice);
 
-            formData.append('Stock', stock);
-            formData.append('SellingPrice', sellingPrice);
-            formData.append('Quantity', quantity);
-            formData.append('TotalPrice', totalPrice);
-
-            // formData.append(`Products[${index}].SellingPrice`, sellingPrice);
-            formData.append(`Products[${index}].Quantity`, quantity);
-            formData.append(`Products[${index}].TotalPrice`, totalPrice);
+            // Collect quantity and sellingPrice into arrays
+            quantities.push(quantity);
+            sellingPrices.push(sellingPrice);
         });
-        
+        // Join arrays into comma-separated strings and append to formData
+        formData.append('Quantities', quantities.join(',')); // E.g., "1,2,4"
+        formData.append('SellingPrices', sellingPrices.join(',')); // E.g., "100,250,320"
+
         // Log the formData content for verification
         for (var pair of formData.entries()) {
             console.log(pair[0] + ': ' + pair[1]);
         }
-        // 7. Send the formData in an AJAX request
+
+        // 6. Send the formData in an AJAX request
         $.ajax({
             type: 'POST',
             url: '/Home/ProductSell', // Your server endpoint
@@ -456,10 +466,17 @@
             contentType: false, // Important for FormData
             processData: false, // Important for FormData
             success: function(response) {
-                console.log("Form submitted successfully!", response);
+                if (response.success) {
+                    // Trigger toastr success message
+                    toastr.success(response.message);
+                } else {
+                    // Trigger toastr error message
+                    toastr.error(response.message);
+                }
             },
             error: function(xhr, status, error) {
-                console.error("Error submitting form data:", xhr.responseText);
+                // Handle any server errors
+                toastr.error('An error occurred: ' + error);
             }
         });
     });

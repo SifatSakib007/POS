@@ -43,5 +43,10 @@ namespace POS.Models
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal ShabekDue { get; set; } // For previous due amount
+
+
+        // New fields for quantities and selling prices (comma-separated)
+        public string Quantities { get; set; } // Stores comma-separated quantities
+        public string SellingPrices { get; set; } // Stores comma-separated selling prices
     }
 }

@@ -38,10 +38,10 @@
                 @foreach (var sell in Model)
                 {
                     <tr class="border-b">
-                        <td class="px-4 py-2">@sell.ProductName</td>
+                        <td class="px-4 py-2">@sell.ProductNames</td>
                         <td class="px-4 py-2">@sell.CustomerName</td>
-                        <td class="px-4 py-2">@sell.Quantity</td>
-                        <td class="px-4 py-2 sell-price">@sell.TotalPrice</td>
+                        <td class="px-4 py-2">@sell.Quantities</td>
+                        <td class="px-4 py-2 sell-price">@sell.TotalPricePerProduct</td>
                         <td class="px-4 py-2">
                             @if (sell.CreatedAt.HasValue)
                             {
