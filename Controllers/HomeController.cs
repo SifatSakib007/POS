@@ -46,8 +46,20 @@ namespace POS.Controllers
         // Private method to load products and customers
         private async Task<ProductCustomerViewModel> LoadProductCustomerViewModelAsync()
         {
-            var products = await _db.Product.ToListAsync();
-            var customers = await _db.Customer.ToListAsync();
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int? userId = null;
+
+            if(int.TryParse(userIdString, out int parsedUserId))
+            {
+                userId = parsedUserId; // Successfully parsed the string to an integer
+            }
+            if(userId == null)
+            {
+                return null; // Return null if the userId is not valid
+            }
+
+            var products = await _db.Product.Where(p => p.UserId == userId).ToListAsync();
+            var customers = await _db.Customer.Where(c => c.UserId == userId).ToListAsync();
 
             return new ProductCustomerViewModel
             {
@@ -67,6 +79,10 @@ namespace POS.Controllers
         public async Task<IActionResult> ViewModelForProductCustomer()
         {
             var viewModel = await LoadProductCustomerViewModelAsync();
+            if (viewModel == null)
+            {
+                return BadRequest("Unable to load products and customers.");
+            }
             return View(viewModel);
         }
 
@@ -120,11 +136,17 @@ namespace POS.Controllers
 
             return Json(new { success = false, message = "Customer not found!" });
         }
-        [Authorize(Roles = "Client")]
+        
         // GET: ProductSell - Displays the sell page
+        [Authorize(Roles = "Client")]
+        [HttpGet]
         public async Task<IActionResult> ProductSell()
         {
             var viewModel = await LoadProductCustomerViewModelAsync();
+            if (viewModel == null)
+            {
+                return BadRequest("Unable to load products and customers.");
+            }
             return View(viewModel);
         }
 
@@ -308,7 +330,6 @@ namespace POS.Controllers
             }
         }
 
-        //Product sell report
         public async Task<IActionResult> ProductSellReport()
         {
             // Fetch all the sell records along with related product and customer details
