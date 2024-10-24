@@ -13,28 +13,38 @@
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
                     <!-- পণ্য সিলেক্ট করুন -->
                     <div>
-                        <label asp-for="Product.ProductName" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
-                        <input asp-for="Product.ProductName" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="পণ্যের নাম লিখুন" />
-                        <span asp-validation-for="Product.ProductName" class="text-red-500 text-sm"></span>
+                        <label for="productName" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
+                        <input id="productName"
+                               class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                               placeholder="পণ্যের নাম লিখুন"
+                               onfocus="showAllSuggestions()"
+                               oninput="showSuggestions(this.value)"
+                               autocomplete="off" />
+
+                        <!-- Suggestions List -->
+                        <ul id="suggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-80"></ul>
+
+                        <span id="error-message" class="text-red-500 text-sm"></span>
                     </div>
 
-                   <!-- Previous Buy Price -->
-                    <div class="relative flex items-center  mt-4">
-                        <label asp-for="Product.PreviousBuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্ববর্তী ক্রয় মূল্য</label>
-                        <input asp-for="Product.BuyPrice" id="buyPrice" type="number" placeholder="পূর্ববর্তী ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                    <!-- Previous Buy Price -->
+                    <div class="relative flex items-center mt-4">
+                        <label for="previousBuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্ববর্তী ক্রয় মূল্য</label>
+                        <input id="previousBuyPrice" type="number" placeholder="পূর্ববর্তী ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
+
                     <!-- Buy Price -->
-                    <div class="relative flex items-center  mt-4">
-                        <label asp-for="Product.BuyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রয় মূল্য</label>
-                        <input asp-for="Product.BuyPrice" id="buyPrice" type="number" placeholder="ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                    <div class="relative flex items-center mt-4">
+                        <label for="buyPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রয় মূল্য</label>
+                        <input id="buyPrice" type="number" placeholder="ক্রয় মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
                     <!-- স্টক (readonly) -->
-                    <div class="relative flex items-center  mt-4">
-                        <label asp-for="Product.Stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input asp-for="Product.Stock" id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                    <div class="relative flex items-center mt-4">
+                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
+                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
@@ -46,7 +56,7 @@
                     </div>
 
                     <!-- মোট মূল্য -->
-                    <div class="relative flex items-center  mt-4">
+                    <div class="relative flex items-center mt-4">
                         <label for="totalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">মোট মূল্য</label>
                         <input id="totalPrice" readonly placeholder="মোট মূল্য" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
@@ -79,101 +89,77 @@
     </div>
 
 
-    @* {/* customer info */} *@
-    <form id="" class="font-[sans-serif] max-w-4xl mx-auto">
-        <div class="grid sm:grid-cols-2 gap-6">
-            @* মোট মূল্য *@
+    @* responsive form start *@
+    <form class="font-[sans-serif] m-6 max-w-4xl mx-auto">
+
+        <div class="grid sm:grid-cols-2 gap-10">
+
             <div class="relative flex items-center  mt-4">
                 <label for="totalTotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
-                    মোট মূল্য
+                    মোট টাকা
                 </label>
                 <input readonly id="totalTotalPrice" type="text" placeholder="মোট টাকা"
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
-            <div class="mb-4">
-                <button id="dropdownButton" class="w-full text-left bg-gray-200 px-4 py-3 rounded-md focus:outline-none flex items-center justify-between">
-                    ক্লায়েন্ট শাখা
-                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 10l5 5 5-5H7z" />
-                    </svg>
-                </button>
-                <div id="dropdownContent" class="hidden mt-2 bg-white shadow-md rounded-md">
-                    <!-- Client Selection: New or Previous -->
-                    <h3 class="text-xl font-semibold mb-4 px-4">ক্লায়েন্টের ধরণ নির্বাচন করুন</h3>
-                    <div class="mb-4 px-4">
-                        <label class="block text-sm text-gray-600 mb-2">ক্লায়েন্ট নির্বাচন করুন</label>
-                        <div class="flex space-x-6">
-                            <div class="flex items-center">
-                                <input type="radio" id="newClient" name="clientType" value="new" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" onclick="togglePreviousClientDropdown()">
-                                <label for="newClient" class="ml-2 text-sm text-gray-800">নতুন ক্লায়েন্ট</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="radio" id="previousClient" name="clientType" value="previous" class="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300" onclick="togglePreviousClientDropdown()">
-                                <label for="previousClient" class="ml-2 text-sm text-gray-800">পুরানো ক্লায়েন্ট</label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Previous Client Dropdown (Initially hidden) -->
-                    <div id="previousClientDiv" class="mb-4 hidden px-4">
-                        <label class="block text-sm text-gray-600">পুরানো ক্লায়েন্টের নাম</label>
-                        <select id="previousClient" onchange="fetchClientDetails(this.value)" class="px-4 py-3 bg-gray-100 text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600">
-                            <option value="">ক্লায়েন্ট নির্বাচন করুন</option>
-                            @foreach (var client in ViewBag.ClientList)
-                            {
-                                <option value="@client.Id">@client.Name</option>
-                            }
-                        </select>
-                    </div>
 
-                    <!-- Client Details Form (Will be shown dynamically based on selection) -->
-                    <h3 class="text-xl font-semibold mb-4 px-4">ক্লায়েন্টের বিবরণ</h3>
+            <div class="relative flex items-center">
+                <label for="clientNameInput" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
+                    ক্লায়েন্ট নির্বাচন করুন
+                </label>
+                <input type="text" id="clientNameInput" placeholder="নাম লিখুন"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none"
+                       onfocus="showAllClientSuggestions()"
+                       oninput="filterClientSuggestions(this.value)"
+                       onblur="hideSuggestions()"
+                       autocomplete="off" />
+                <ul id="clientSuggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-80 top-16"></ul>
+                <span id="client-error-message" class="text-red-500 text-sm"></span>
+            </div>
 
-                    <!-- Client Name -->
-                    <div class="mb-4 px-4">
-                        <label asp-for="Client.Name" class="block text-sm text-gray-600">ক্লায়েন্টের নাম</label>
-                        <input asp-for="Client.Name" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ক্লায়েন্টের নাম লিখুন" />
-                    </div>
+            <div class="relative flex items-center mt-4">
+                <label for="clientAddress" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
+                    ক্লায়েন্টের ঠিকানা
+                </label>
+                <input id="clientAddress" type="text" placeholder="ক্লায়েন্টের ঠিকানা"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+            </div>
 
-                    <!-- Client Address -->
-                    <div class="mb-4 px-4">
-                        <label asp-for="Client.Address" class="block text-sm text-gray-600">ক্লায়েন্টের ঠিকানা</label>
-                        <input asp-for="Client.Address" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ঠিকানা লিখুন" />
-                    </div>
+            <div class="relative flex items-center mt-4">
+                <label for="clientPhoneNo" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
+                    ফোন নম্বর
+                </label>
+                <input id="clientPhoneNo" type="number" placeholder="ফোন নম্বর লিখুন"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+            </div>
 
-                    <!-- Client Phone Number -->
-                    <div class="mb-4 px-4">
-                        <label asp-for="Client.PhoneNo" class="block text-sm text-gray-600">ফোন নম্বর</label>
-                        <input asp-for="Client.PhoneNo" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" placeholder="ফোন নম্বর লিখুন" />
-                    </div>         
-                    <!-- বাকি টাকা -->
-                    <div class="relative flex items-center  mt-4">
-                        <label asp-for="Client.Debt" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
-                        <input asp-for="Client.Debt" readonly type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                        <span class="text-danger"></span>
-                    </div>
+            <div class="relative flex items-center mt-4">
+                <label for="clientDebt" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
+                    সাবেক টাকা
+                </label>
+                <input id="clientDebt" type="number" placeholder="সাবেক টাকা"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+            </div>
 
-            <!-- সর্বমোট টাকা (readonly) -->
-            <div class="relative flex items-center  mt-4">
+            <div class="relative flex items-center ">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সর্বমোট টাকা</label>
-                <input id="shorboMotTaka" type="number" placeholder="সর্বমোট টাকা" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span class="text-danger"></span>
+                <input id="grandTotal" type="number" placeholder="সর্বমোট টাকা"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
             </div>
 
-            <!-- পরিশোধক্রিত টাকা  -->
-            <div class="relative flex items-center  mt-4">
-                <label asp-for="Product.TotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিশোধক্রিত টাকা</label>
-                <input asp-for="Product.TotalPrice" type="number" placeholder="পরিশোধক্রিত টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span class="text-danger"></span>
+            <div class="relative flex items-center sm:col-span-2">
+                <label for="paidAmountInput" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিশোধক্রিত টাকা</label>
+                <input id="paidAmountInput" type="number" placeholder="পরিশোধক্রিত টাকা"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
             </div>
-                        
-            <!-- Total বাকি টাকা -->
-            <div class="relative flex items-center  mt-4">
-                <label id="debt" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
-                <input id="debt" readonly id="totaldueAmount" type="number" placeholder="বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
-                <span class="text-danger"></span>
+
+            <div class="relative flex items-center sm:col-span-2">
+                <label for="remainingAmountInput" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
+                <input id="remainingAmountInput" type="number" placeholder="বাকি টাকা"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" readonly />
             </div>
+
         </div>
 
         <button type="button" id="submitButton"
@@ -181,202 +167,348 @@
             পণ্য এবং ক্লায়েন্ট যোগ করুন
         </button>
     </form>
+    @* responsive form end *@
 
 
 </div>
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-<script>
-        let previousDueAdded = false; // Track whether previous due has been added or not
-        let totalTotalPrice = 0; // Initialize totalTotalPrice
+    <script>
+        // start
+        // Existing product data
+        let existingProducts = {
+            "দুধ": 50,
+            "চাল": 60,
+            "ডাল": 70,
+            "তেল": 80,
+            "চিনি": 90
+        };
 
-        // Function to fetch product details using AJAX
-        function fetchClientDetails(clientId) {
-    fetch(`/Home/GetClientDetails/${clientId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Update the view with the fetched client details
-                document.getElementById("client_Address").value = data.data.Address;
-                document.getElementById("client_PhoneNo").value = data.data.PhoneNo;
-                // Assuming you have a way to calculate or retrieve the due amount
-                // This example just shows a placeholder for due amount
-                document.getElementById('clientDue').innerText = "Placeholder for due amount"; // Update with actual logic
-                document.getElementById('clientDetails').classList.remove('hidden');
-
+        // Function to show all suggestions
+        function showAllSuggestions() {
+            const suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = '';
+            if (Object.keys(existingProducts).length > 0) {
+                suggestionsBox.classList.remove('hidden');
+                for (const product in existingProducts) {
+                    const li = document.createElement('li');
+                    li.textContent = product;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = () => selectProduct(product);
+                    suggestionsBox.appendChild(li);
+                }
             } else {
-                        console.error(data.message); // Handle error case
+                suggestionsBox.classList.add('hidden');
             }
-        })
-        .catch(error => {
-            console.error(error); // Log any errors
-        });
-        }
-        // Toggle dropdown visibility
-        document.getElementById('dropdownButton').onclick = function(e) {
-            e.preventDefault()
-            const dropdownContent = document.getElementById('dropdownContent');
-            dropdownContent.classList.toggle('hidden');
         }
 
-        function togglePreviousClientDropdown() {
-            const newClient = document.getElementById('newClient').checked;
-            const previousClientDiv = document.getElementById('previousClientDiv');
-            previousClientDiv.classList.toggle('hidden', newClient);
+        // Function to show suggestions based on input
+        function showSuggestions(value) {
+            const suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = '';
+            if (value.length === 0) {
+                showAllSuggestions();
+                return;
+            }
+            const filteredProducts = Object.keys(existingProducts).filter(product => product.includes(value));
+            if (filteredProducts.length > 0) {
+                suggestionsBox.classList.remove('hidden');
+                filteredProducts.forEach(product => {
+                    const li = document.createElement('li');
+                    li.textContent = product;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = () => selectProduct(product);
+                    suggestionsBox.appendChild(li);
+                });
+            } else {
+                suggestionsBox.classList.add('hidden');
+            }
         }
+
+        // Function to select a product
+        function selectProduct(product) {
+            document.getElementById('productName').value = product;
+            document.getElementById('suggestions').classList.add('hidden');
+            document.getElementById('previousBuyPrice').value = existingProducts[product];
+        }
+
+        // Event listener for input on product name
+        document.getElementById('productName').addEventListener('input', function () {
+            const productName = this.value;
+            if (!existingProducts.hasOwnProperty(productName)) {
+                document.getElementById('previousBuyPrice').value = '';
+            } else {
+                document.getElementById('previousBuyPrice').value = existingProducts[productName];
+            }
+        });
+
+        // Event listener to hide suggestions when clicking outside
+        document.addEventListener('click', function (event) {
+            const suggestionsBox = document.getElementById('suggestions');
+            const productInput = document.getElementById('productName');
+            if (!productInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.classList.add('hidden');
+            }
+        });
+
+        // Function to calculate total price
         function calculateTotalPrice() {
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
             const stock = parseFloat(document.getElementById('stock').value) || 0;
             const totalPrice = buyPrice * stock;
             document.getElementById('totalPrice').value = totalPrice.toFixed(2);
-            calculateDebt();
         }
 
-        function calculateDebt() {
-            const totalPrice = parseFloat(document.getElementById('totalPrice').value) || 0;
-            const depositMoney = parseFloat(document.getElementById('depositMoney').value) || 0;
-            const debt = totalPrice - depositMoney;
-            document.getElementById('debt').value = debt.toFixed(2);
-        }
+        // Add event listeners for buyPrice and stock inputs
+        document.getElementById('buyPrice').addEventListener('input', calculateTotalPrice);
+        document.getElementById('stock').addEventListener('input', calculateTotalPrice);
 
-        // Calculate and update total amount
-        function updateTotalAmount(addShabekDue = false) {
-            var totalAmount = 0;
+        // Function to add product
+        function addProduct() {
+            const productName = document.getElementById('productName').value;
+            const previousBuyPrice = parseFloat(document.getElementById('previousBuyPrice').value) || null;
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
+            const stock = parseFloat(document.getElementById('stock').value) || 0;
+            const totalPrice = buyPrice * stock;
 
-            // Loop through the product table to sum up the total product prices
-            $('#productTable tbody tr').each(function () {
-                var rowTotal = parseFloat($(this).find('td:eq(4)').text()) || 0;
-                totalAmount += rowTotal;
-            });
-
-            // Get the previous due (shabekDue)
-            var previousDue = parseFloat($('#shabekDue').val()) || 0;
-
-            // Add previous due to totalAmount if not already added or forcefully adding
-            if (addShabekDue || !previousDueAdded) {
-                totalAmount += previousDue;
-                previousDueAdded = true; // Mark that previous due has been added
+            if (!productName || stock <= 0) {
+                alert('পণ্য নাম এবং পরিমাণ ফিল্ড পূর্ণ করুন');
+                return;
             }
 
-            // Update total amounts in the form
-            $('#shorboMotTaka').val(totalAmount.toFixed(2));
-            $('#dueAmount').val(totalAmount.toFixed(2));
+            addProductToSuggestions(productName);
 
-            // Update remaining due after subtracting the paid amount
-            var paidAmount = parseFloat($('#paidAmount').val()) || 0;
-            var remainingDue = totalAmount - paidAmount;
-            $('#remainingDue').val(remainingDue.toFixed(2));
+            const finalPreviousBuyPrice = previousBuyPrice !== null ? previousBuyPrice : buyPrice;
 
-            // Update totalTotalPrice by adding only the total product prices (excluding previous due)
-            totalTotalPrice = 0; // Reset totalTotalPrice before recalculating
-            $('#productTable tbody tr').each(function () {
-                var rowTotal = parseFloat($(this).find('td:eq(4)').text()) || 0;
-                totalTotalPrice += rowTotal;
-            });
+            const productTableBody = document.getElementById('productTable').querySelector('tbody');
+            const newRow = productTableBody.insertRow();
+            newRow.innerHTML = `
+                    <td class="px-4 py-2">${productName}</td>
+                    <td class="px-4 py-2">${finalPreviousBuyPrice.toFixed(2)}</td>
+                    <td class="px-4 py-2">${buyPrice.toFixed(2)}</td>
+                    <td class="px-4 py-2">${stock}</td>
+                    <td class="px-4 py-2">${totalPrice.toFixed(2)}</td>
+                    <td class="px-4 py-2">
+                        <button class="text-red-500" onclick="removeProduct(this)">মুছুন</button>
+                        <button class="text-blue-500" onclick="updateProduct(this)">আপডেট</button>
+                    </td>
+                `;
 
-            // Set totalTotalPrice only if it is greater than zero
-            if (totalTotalPrice > 0) {
-                $('#totalTotalPrice').val(totalTotalPrice.toFixed(2)); // Update totalTotalPrice field
-            }
+            clearInputFields();
+            updateTotalPrice(); // Update total price after adding product
         }
 
-        // Update total amount after adding a product
-        $(document).on('click', '#addProductBtn', function () {
-            var productName = $('#productSelect option:selected').text();
-            var buyPrice = $('#buyPrice').val();
-            var sellPrice = $('#sellPrice').val();
-            var quantity = parseFloat($('#quantity').val());
-            var stock = parseFloat($('#stock').val());
-            var totalPrice = $('#totalPrice').val();
+        // Function to update total price
+        function updateTotalPrice() {
+            const productTableBody = document.getElementById('productTable').querySelector('tbody');
+            const rows = productTableBody.getElementsByTagName('tr');
+            let total = 0;
 
-            if (quantity > stock) {
-                alert("আপনি স্টকের থেকে বেশি পণ্য যোগ করতে পারবেন না।");
-            } else if (quantity <= 0) {
-                alert("পণ্যের পরিমাণ শূন্য বা তার চেয়ে কম হতে পারবে না।");
-            } else {
-                if (productName && buyPrice && sellPrice && quantity && totalPrice) {
-                    var newRow = `
-                                <tr>
-                                    <td class="px-4 py-2">${productName}</td>
-                                    <td class="px-4 py-2">${buyPrice}</td>
-                                    <td class="px-4 py-2">${sellPrice}</td>
-                                    <td class="px-4 py-2">${quantity}</td>
-                                    <td class="px-4 py-2">${totalPrice}</td>
-                                    <td class="px-4 py-2">
-                                        <button type="button" class="update-btn text-blue-500">আপডেট</button>
-                                        <button type="button" class="delete-btn text-red-500">মুছে দিন</button>
-                                    </td>
-                                </tr>`;
-                    $('#productTable tbody').append(newRow);
-
-                    var updatedStock = stock - quantity;
-                    $('#stock').val(updatedStock);
-
-                    clearProductFields(); // Clear input fields after adding
-
-                    // Recalculate total amount
-                    updateTotalAmount();
-                } else {
-                    alert("অনুগ্রহ করে সব তথ্য পূরণ করুন!");
-                }
+            for (let row of rows) {
+                const priceCell = row.cells[4]; // Total price cell (5th column)
+                const price = parseFloat(priceCell.textContent) || 0;
+                total += price;
             }
-        });
 
-        // Clear input fields for products
-        function clearProductFields() {
-            $('#productSelect').val('');
-            $('#buyPrice').val('');
-            $('#stock').val('');
-            $('#quantity').val('');
-            $('#sellPrice').val('');
-            $('#totalPrice').val('');
+            // Display total price in the readonly input field
+            document.getElementById('totalTotalPrice').value = total.toFixed(2);
+
+            // Update the grand total including client debt
+            updateGrandTotal();
         }
 
-        // Remove product from the table
-        $(document).on('click', '.delete-btn', function () {
-            $(this).closest('tr').remove();
-            updateTotalAmount(); // Update the total amount after deletion
-        });
+        // Function to add the product to the suggestions
+        function addProductToSuggestions(productName) {
+            const suggestions = document.getElementById('suggestions');
+            const suggestionItem = document.createElement('li');
+            suggestionItem.textContent = productName;
+            suggestionItem.classList.add('px-4', 'py-2', 'cursor-pointer');
+            suggestionItem.onclick = () => {
+                document.getElementById('productName').value = productName;
+                suggestions.innerHTML = '';
+            };
+            suggestions.appendChild(suggestionItem);
+        }
 
-        // Update product fields in the form when clicking the "Update" button
-        $(document).on('click', '.update-btn', function () {
-            var row = $(this).closest('tr');
-            var productName = row.find('td:eq(0)').text();
-            var buyPrice = row.find('td:eq(1)').text();
-            var sellPrice = row.find('td:eq(2)').text();
-            var quantity = row.find('td:eq(3)').text();
-            var totalPrice = row.find('td:eq(4)').text();
+        // Function to clear input fields
+        function clearInputFields() {
+            document.getElementById('productName').value = '';
+            document.getElementById('previousBuyPrice').value = '';
+            document.getElementById('buyPrice').value = '';
+            document.getElementById('stock').value = '';
+            document.getElementById('totalPrice').value = '';
+        }
 
-            $('#productSelect option').filter(function () {
-                return $(this).text() === productName;
-            }).prop('selected', true);
-            $('#buyPrice').val(buyPrice);
-            $('#sellPrice').val(sellPrice);
-            $('#quantity').val(quantity);
-            $('#totalPrice').val(totalPrice);
-
+        // Function to remove product from the table
+        function removeProduct(button) {
+            const row = button.closest('tr');
             row.remove();
-            updateTotalAmount(); // Recalculate total amount
-        });
+            updateTotalPrice(); // Update total price after removal
+        }
 
-        // Update remaining due when paid amount changes
-        $(document).on('input', '#paidAmount', function () {
-            updateTotalAmount();
-        });
+        // Function to update product in the table
+        function updateProduct(button) {
+            const row = button.closest('tr');
+            const productName = row.cells[0].textContent;
+            const previousBuyPrice = parseFloat(row.cells[1].textContent);
+            const buyPrice = parseFloat(row.cells[2].textContent);
+            const stock = parseFloat(row.cells[3].textContent);
 
-        // Function to handle button click
-        document.getElementById('submitButton').addEventListener('click', function () {
-            var depositAmount = parseFloat(document.getElementById('depositAmount').value) || 0;
-            var dueAmount = parseFloat(document.getElementById('dueAmount').value) || 0;
+            // Fill the input fields with the current row data for editing
+            document.getElementById('productName').value = productName;
+            document.getElementById('previousBuyPrice').value = previousBuyPrice;
+            document.getElementById('buyPrice').value = buyPrice;
+            document.getElementById('stock').value = stock;
 
-            // Check if depositAmount is greater than dueAmount
-            if (depositAmount > dueAmount) {
-                alert("আপনার দেওয়া জমার পরিমাণ বকেয়ার চেয়ে বেশি হতে পারবে না!");
+            // Remove the current row
+            row.remove();
+            updateTotalPrice(); // Update total price after updating
+        }
+
+        // Add event listener to the Add Product button
+        document.getElementById('addProductBtn').addEventListener('click', addProduct);
+
+        // ক্লায়েন্ট সেকশ শুরু
+        const clientsData = [
+            {
+                name: "ক্লায়েন্ট ১",
+                address: "ঢাকা, বাংলাদেশ",
+                phoneNo: "01810000001",
+                debt: 5000
+            },
+            {
+                name: "ক্লায়েন্ট ২",
+                address: "চট্টগ্রাম, বাংলাদেশ",
+                phoneNo: "01810045002",
+                debt: 3000
+            },
+            {
+                name: "সিফাত",
+                address: "চট্টগ্রাম, বাংলাদেশ",
+                phoneNo: "018108980002",
+                debt: 1000
+            },
+            {
+                name: "mohin",
+                address: "চট্টগ্রাম, বাংলাদেশ",
+                phoneNo: "01810000140",
+                debt: 3100
+            }
+        ];
+
+        const clientInput = document.getElementById('clientNameInput');
+        const suggestionsList = document.getElementById('clientSuggestions');
+        const addressInput = document.getElementById('clientAddress');
+        const phoneInput = document.getElementById('clientPhoneNo');
+        const debtInput = document.getElementById('clientDebt');
+
+        // Function to show suggestions
+        function showAllClientSuggestions() {
+            suggestionsList.innerHTML = '';
+            clientsData.forEach(client => {
+                const li = document.createElement('li');
+                li.textContent = client.name;
+                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                li.onclick = function () {
+                    clientInput.value = client.name;
+                    addressInput.value = client.address;
+                    phoneInput.value = client.phoneNo;
+                    debtInput.value = client.debt.toFixed(2);
+                    suggestionsList.style.display = 'none';
+                    updateGrandTotal(); // Update grand total when a client is selected
+                };
+                suggestionsList.appendChild(li);
+            });
+            suggestionsList.style.display = 'block';
+        }
+
+        // Event listener for input and click to show suggestions
+        clientInput.addEventListener('input', function () {
+            const inputValue = clientInput.value.toLowerCase();
+            const filteredClients = clientsData.filter(client => client.name.toLowerCase().includes(inputValue));
+            suggestionsList.innerHTML = '';
+
+            if (filteredClients.length > 0) {
+                suggestionsList.style.display = 'block';
+                filteredClients.forEach(client => {
+                    const li = document.createElement('li');
+                    li.textContent = client.name;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = function () {
+                        clientInput.value = client.name;
+                        addressInput.value = client.address;
+                        phoneInput.value = client.phoneNo;
+                        debtInput.value = client.debt.toFixed(2);
+                        suggestionsList.style.display = 'none';
+                        updateGrandTotal(); // Update grand total when a client is selected
+                    };
+                    suggestionsList.appendChild(li);
+                });
             } else {
-                // Update dueAmount
-                var newDueAmount = dueAmount - depositAmount;
-                document.getElementById('dueAmount').value = newDueAmount.toFixed(2);
+                suggestionsList.style.display = 'none';
             }
         });
-</script>
+
+        // Show suggestions on input field click
+        clientInput.addEventListener('click', function () {
+            showAllClientSuggestions();
+        });
+
+        // Dummy function for getting client debt (replace with your actual logic)
+        function getClientDebt(clientName) {
+            const client = clientsData.find(c => c.name === clientName);
+            return client ? client.debt : 0;
+        }
+
+        // Function to handle client selection and auto-fill debt
+        function handleClientSelection() {
+            const clientName = clientInput.value;
+            const clientDebtValue = getClientDebt(clientName);
+            document.getElementById('clientDebt').value = clientDebtValue.toFixed(2);
+            updateGrandTotal(); // Update the grand total
+        }
+
+        // Update the grand total including client debt
+        function updateGrandTotal() {
+            const totalPrice = parseFloat(document.getElementById('totalTotalPrice').value) || 0;
+            const clientDebt = parseFloat(document.getElementById('clientDebt').value) || 0;
+            const grandTotal = totalPrice + clientDebt;
+
+            // Update the grand total field
+            document.getElementById('grandTotal').value = grandTotal.toFixed(2);
+
+            // Directly update remaining amount with grand total initially
+            document.getElementById('remainingAmountInput').value = grandTotal.toFixed(2);
+        }
+
+
+
+        // Function to update remaining amount when paidAmount is entered
+        function updateRemainingAmount() {
+            const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
+            let paidAmount = parseFloat(document.getElementById('paidAmountInput').value) || 0;
+            let remainingAmount = grandTotal - paidAmount;
+
+            // Check if paidAmount exceeds grandTotal
+            if (paidAmount > grandTotal) {
+                alert('পরিশোধক্রিত টাকা বাকি টাকার থেকে বেশি হতে পারে না।');
+                // Set paidAmount to grandTotal
+                paidAmount = grandTotal;
+                document.getElementById('paidAmountInput').value = paidAmount.toFixed(2);
+                remainingAmount = 0;  // If paidAmount equals grandTotal, remainingAmount becomes 0
+            }
+
+            // Update the remaining amount field
+            document.getElementById('remainingAmountInput').value = remainingAmount.toFixed(2);
+        }
+
+        // Event listener for paidAmount input to update remaining amount
+        document.getElementById('paidAmountInput').addEventListener('input', updateRemainingAmount);
+
+        // Call updateGrandTotal initially to set initial grandTotal and remainingAmount values
+        updateGrandTotal();
+
+
+    </script>
+
 }
