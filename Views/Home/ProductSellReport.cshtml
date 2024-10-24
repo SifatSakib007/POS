@@ -102,29 +102,12 @@
             <tbody class="whitespace-nowrap divide-y divide-gray-200" id="table-body">
                 @foreach (var sell in Model)
                 {
-                    <tr>
-
-                        <td class="p-4 text-sm">
-                            <div class="flex items-center cursor-pointer w-max">
-                                <div class="ml-4">
-                                    <p class="text-sm text-black text-center">@sell.CustomerName</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="p-4 text-sm ">
-                            <p class="text-center">@sell.ProductName</p>
-                            
-                        </td>
-
-                        <td class="px-6 py-3 text-center">
-                            <p class="text-center">@sell.Quantity</p>
-                            
-                        </td>
-
-                        <td class="px-6 py-3">
-                            <p class="text-center sell-price">@sell.TotalPrice</p>
-                        </td>
-                        <td class="px-6 py-3">
+                    <tr class="border-b">
+                        <td class="px-4 py-2">@sell.ProductNames</td>
+                        <td class="px-4 py-2">@sell.CustomerName</td>
+                        <td class="px-4 py-2">@sell.Quantities</td>
+                        <td class="px-4 py-2 sell-price">@sell.TotalPricePerProduct</td>
+                        <td class="px-4 py-2">
                             @if (sell.CreatedAt.HasValue)
                             {
                                 <p class="text-center">@sell.CreatedAt.Value.ToString("yyyy-MM-dd hh:mm tt")</p>
