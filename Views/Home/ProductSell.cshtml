@@ -349,14 +349,16 @@
         var row = $(this).closest('tr');
         var productName = row.find('td:eq(0)').text();
         var buyPrice = row.find('td:eq(1)').text();
-        var sellingPrice = row.find('td:eq(2)').text();
-        var quantity = row.find('td:eq(3)').text();
-        var totalPrice = row.find('td:eq(4)').text();
+        var stock = row.find('td:eq(2)').text();
+        var sellingPrice = row.find('td:eq(3)').text();
+        var quantity = row.find('td:eq(4)').text();
+        var totalPrice = row.find('td:eq(5)').text();
 
         $('#SelectedProductId option').filter(function() {
             return $(this).text() === productName;
         }).prop('selected', true);
         $('#BuyPrice').val(buyPrice);
+        $('#Stock').val(stock);
         $('#SellingPrice').val(sellingPrice);
         $('#Quantity').val(quantity);
         $('#TotalPrice').val(totalPrice);
