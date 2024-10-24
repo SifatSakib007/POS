@@ -91,7 +91,7 @@
 
     @* responsive form start *@
     <form class="font-[sans-serif] m-6 max-w-4xl mx-auto">
-        
+
         <div class="grid sm:grid-cols-2 gap-10">
 
             <div class="relative flex items-center  mt-4">
@@ -149,15 +149,15 @@
             </div>
 
             <div class="relative flex items-center sm:col-span-2">
-                <label asp-for="Product.TotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিশোধক্রিত টাকা</label>
-                <input asp-for="Product.TotalPrice" type="number" placeholder="পরিশোধক্রিত টাকা"
+                <label for="paidAmountInput" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিশোধক্রিত টাকা</label>
+                <input id="paidAmountInput" type="number" placeholder="পরিশোধক্রিত টাকা"
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
             </div>
 
             <div class="relative flex items-center sm:col-span-2">
-                <label asp-for="Product.TotalPrice" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
-                <input asp-for="Product.TotalPrice" type="number" placeholder="বাকি টাকা সংখ্যায় "
-                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <label for="remainingAmountInput" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">বাকি টাকা</label>
+                <input id="remainingAmountInput" type="number" placeholder="বাকি টাকা"
+                       class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" readonly />
             </div>
 
         </div>
@@ -173,8 +173,7 @@
 </div>
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
-<script>
-
+    <script>
         // start
         // Existing product data
         let existingProducts = {
@@ -284,16 +283,16 @@
             const productTableBody = document.getElementById('productTable').querySelector('tbody');
             const newRow = productTableBody.insertRow();
             newRow.innerHTML = `
-                <td class="px-4 py-2">${productName}</td>
-                <td class="px-4 py-2">${finalPreviousBuyPrice.toFixed(2)}</td>
-                <td class="px-4 py-2">${buyPrice.toFixed(2)}</td>
-                <td class="px-4 py-2">${stock}</td>
-                <td class="px-4 py-2">${totalPrice.toFixed(2)}</td>
-                <td class="px-4 py-2">
-                    <button class="text-red-500" onclick="removeProduct(this)">মুছুন</button>
-                    <button class="text-blue-500" onclick="updateProduct(this)">আপডেট</button>
-                </td>
-            `;
+                    <td class="px-4 py-2">${productName}</td>
+                    <td class="px-4 py-2">${finalPreviousBuyPrice.toFixed(2)}</td>
+                    <td class="px-4 py-2">${buyPrice.toFixed(2)}</td>
+                    <td class="px-4 py-2">${stock}</td>
+                    <td class="px-4 py-2">${totalPrice.toFixed(2)}</td>
+                    <td class="px-4 py-2">
+                        <button class="text-red-500" onclick="removeProduct(this)">মুছুন</button>
+                        <button class="text-blue-500" onclick="updateProduct(this)">আপডেট</button>
+                    </td>
+                `;
 
             clearInputFields();
             updateTotalPrice(); // Update total price after adding product
@@ -313,6 +312,9 @@
 
             // Display total price in the readonly input field
             document.getElementById('totalTotalPrice').value = total.toFixed(2);
+
+            // Update the grand total including client debt
+            updateGrandTotal();
         }
 
         // Function to add the product to the suggestions
@@ -366,10 +368,7 @@
         // Add event listener to the Add Product button
         document.getElementById('addProductBtn').addEventListener('click', addProduct);
 
-        // end
-
         // ক্লায়েন্ট সেকশ শুরু
-        // প্রাথমিকভাবে কিছু পুরোনো ক্লায়েন্টের ডেটা
         const clientsData = [
             {
                 name: "ক্লায়েন্ট ১",
@@ -403,142 +402,113 @@
         const phoneInput = document.getElementById('clientPhoneNo');
         const debtInput = document.getElementById('clientDebt');
 
-        // সমস্ত ক্লায়েন্টের সাজেশন দেখানো হবে ইনপুট ফোকাস করার সাথে সাথে
+        // Function to show suggestions
         function showAllClientSuggestions() {
             suggestionsList.innerHTML = '';
             clientsData.forEach(client => {
                 const li = document.createElement('li');
-                li.classList = 'px-4 py-2 cursor-pointer hover:bg-gray-100';
-                li.innerText = client.name;
-                li.addEventListener('click', () => selectClient(client.name));
+                li.textContent = client.name;
+                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                li.onclick = function () {
+                    clientInput.value = client.name;
+                    addressInput.value = client.address;
+                    phoneInput.value = client.phoneNo;
+                    debtInput.value = client.debt.toFixed(2);
+                    suggestionsList.style.display = 'none';
+                    updateGrandTotal(); // Update grand total when a client is selected
+                };
                 suggestionsList.appendChild(li);
             });
-            suggestionsList.classList.remove('hidden');
+            suggestionsList.style.display = 'block';
         }
 
-        // ইনপুটে টাইপ করার সাথে সাথে সাজেশন ফিল্টার করা হবে
-        function filterClientSuggestions(value) {
+        // Event listener for input and click to show suggestions
+        clientInput.addEventListener('input', function () {
+            const inputValue = clientInput.value.toLowerCase();
+            const filteredClients = clientsData.filter(client => client.name.toLowerCase().includes(inputValue));
             suggestionsList.innerHTML = '';
-            const filteredClients = clientsData.filter(client =>
-                client.name.toLowerCase().includes(value.toLowerCase())
-            );
 
             if (filteredClients.length > 0) {
+                suggestionsList.style.display = 'block';
                 filteredClients.forEach(client => {
                     const li = document.createElement('li');
-                    li.classList = 'px-4 py-2 cursor-pointer hover:bg-gray-100';
-                    li.innerText = client.name;
-                    li.addEventListener('click', () => selectClient(client.name));
+                    li.textContent = client.name;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = function () {
+                        clientInput.value = client.name;
+                        addressInput.value = client.address;
+                        phoneInput.value = client.phoneNo;
+                        debtInput.value = client.debt.toFixed(2);
+                        suggestionsList.style.display = 'none';
+                        updateGrandTotal(); // Update grand total when a client is selected
+                    };
                     suggestionsList.appendChild(li);
                 });
-                suggestionsList.classList.remove('hidden');
             } else {
-                // নতুন ক্লায়েন্ট যোগ করার অপশন দেখানো হবে
-                const li = document.createElement('li');
-                li.classList = 'px-4 py-2 cursor-pointer hover:bg-gray-100 text-gray-500';
-                li.innerText = 'নতুন ক্লায়েন্ট যোগ করুন';
-                li.addEventListener('click', () => selectClient(clientInput.value));
-                suggestionsList.appendChild(li);
-                suggestionsList.classList.remove('hidden');
-            }
-        }
-
-        // সাজেশন থেকে ক্লায়েন্ট সিলেক্ট করলে ইনপুট এবং অন্যান্য তথ্য পূরণ হবে
-        function selectClient(clientName) {
-            const client = clientsData.find(client => client.name === clientName);
-
-            clientInput.value = clientName;
-
-            if (client) {
-                addressInput.value = client.address;
-                phoneInput.value = client.phoneNo;
-                debtInput.value = client.debt;
-            } else {
-                // নতুন ক্লায়েন্ট হলে ফিল্ডগুলো ফাঁকা রাখবে
-                addressInput.value = '';
-                phoneInput.value = '';
-                debtInput.value = '';
-            }
-
-            suggestionsList.classList.add('hidden');
-        }
-
-        // মাউস বইরে ক্লিক করলে সাজেশন লুকিয়ে যাবে
-        function hideSuggestions() {
-            setTimeout(() => {
-                suggestionsList.classList.add('hidden');
-            }, 200); // 200ms অপেক্ষা করা হচ্ছে যাতে ক্লিক ইভেন্ট ঠিকমতো কাজ করে
-        }
-
-        // কোনো ইনপুটে ঋণাত্মক সংখ্যা দেয়া গেলে তা বন্ধ করা
-        phoneInput.addEventListener('input', function () {
-            if (this.value < 0) {
-                this.value = '';
+                suggestionsList.style.display = 'none';
             }
         });
 
-        debtInput.addEventListener('input', function () {
-            if (this.value < 0) {
-                this.value = '';
-            }
+        // Show suggestions on input field click
+        clientInput.addEventListener('click', function () {
+            showAllClientSuggestions();
         });
-        // হিসাব
-        // Function to calculate the total amount including client debt
-        // Function to calculate the total amount including client debt
-        function updateGrandTotal() {
-            const totalPrice = parseFloat(document.getElementById('totalTotalPrice').value) || 0; // totalTotalPrice থেকে নেয়া টাকার মান
-            const clientDebt = parseFloat(document.getElementById('clientDebt').value) || 0; // clientDebt থেকে নেয়া টাকার মান
-            const grandTotal = totalPrice + clientDebt; // উভয় মান যোগ করা
-            document.getElementById('grandTotal').value = grandTotal.toFixed(2); // সর্বমোট টাকা আপডেট করা
-        }
-
-        // Add event listener to update grand total whenever clientDebt changes
-        document.getElementById('clientDebt').addEventListener('input', updateGrandTotal);
-
-        // Update grand total when total price changes
-        function updateTotalPrice() {
-            const productTableBody = document.getElementById('productTable').querySelector('tbody');
-            const rows = productTableBody.getElementsByTagName('tr');
-            let total = 0;
-
-            for (let row of rows) {
-                const priceCell = row.cells[4]; // Total price cell (5th column)
-                const price = parseFloat(priceCell.textContent) || 0;
-                total += price;
-            }
-
-            // Display total price in the readonly input field
-            document.getElementById('totalTotalPrice').value = total.toFixed(2);
-
-            // Update the grand total including client debt
-            updateGrandTotal();
-        }
-
-        // Call updateGrandTotal initially to make sure all values are correct
-        updateGrandTotal();
-
-        // Function that handles client selection and auto-fills clientDebt
-        function handleClientSelection() {
-            // Assuming you are getting the client debt from some data source
-            const clientDebtValue = getClientDebt(); // এখানে আপনার ডাটাবেস বা উৎস থেকে clientDebt পাওয়া যাবে
-
-            // Set the clientDebt value in the input field
-            document.getElementById('clientDebt').value = clientDebtValue.toFixed(2);
-
-            // After updating clientDebt, update the grand total
-            updateGrandTotal(); // clientDebt পূরণ হওয়ার সাথে সাথেই grandTotal আপডেট হবে
-        }
 
         // Dummy function for getting client debt (replace with your actual logic)
-        function getClientDebt() {
-            // এখানে আপনার ক্লায়েন্টের উপর ভিত্তি করে clientDebt এর মান নির্ধারণ করুন
-            return 500.00; // উদাহরণস্বরূপ ৫০০ টাকা রাখা হলো
+        function getClientDebt(clientName) {
+            const client = clientsData.find(c => c.name === clientName);
+            return client ? client.debt : 0;
         }
 
-        // Assuming the client selection dropdown triggers this function
-        document.getElementById('clientSelectionDropdown').addEventListener('change', handleClientSelection);
+        // Function to handle client selection and auto-fill debt
+        function handleClientSelection() {
+            const clientName = clientInput.value;
+            const clientDebtValue = getClientDebt(clientName);
+            document.getElementById('clientDebt').value = clientDebtValue.toFixed(2);
+            updateGrandTotal(); // Update the grand total
+        }
 
-        // ক্লায়েন্ট সেকশ শেষ
+        // Update the grand total including client debt
+        function updateGrandTotal() {
+            const totalPrice = parseFloat(document.getElementById('totalTotalPrice').value) || 0;
+            const clientDebt = parseFloat(document.getElementById('clientDebt').value) || 0;
+            const grandTotal = totalPrice + clientDebt;
 
-</script>
+            // Update the grand total field
+            document.getElementById('grandTotal').value = grandTotal.toFixed(2);
+
+            // Directly update remaining amount with grand total initially
+            document.getElementById('remainingAmountInput').value = grandTotal.toFixed(2);
+        }
+
+
+
+        // Function to update remaining amount when paidAmount is entered
+        function updateRemainingAmount() {
+            const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
+            let paidAmount = parseFloat(document.getElementById('paidAmountInput').value) || 0;
+            let remainingAmount = grandTotal - paidAmount;
+
+            // Check if paidAmount exceeds grandTotal
+            if (paidAmount > grandTotal) {
+                alert('পরিশোধক্রিত টাকা বাকি টাকার থেকে বেশি হতে পারে না।');
+                // Set paidAmount to grandTotal
+                paidAmount = grandTotal;
+                document.getElementById('paidAmountInput').value = paidAmount.toFixed(2);
+                remainingAmount = 0;  // If paidAmount equals grandTotal, remainingAmount becomes 0
+            }
+
+            // Update the remaining amount field
+            document.getElementById('remainingAmountInput').value = remainingAmount.toFixed(2);
+        }
+
+        // Event listener for paidAmount input to update remaining amount
+        document.getElementById('paidAmountInput').addEventListener('input', updateRemainingAmount);
+
+        // Call updateGrandTotal initially to set initial grandTotal and remainingAmount values
+        updateGrandTotal();
+
+
+    </script>
+
 }
