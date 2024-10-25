@@ -308,16 +308,22 @@ namespace POS.Controllers
                         };
                         //======== Add data to Customer table ========
                         _db.Customer.Add(customer);
-                        }
-                       
-
+                    }
                     await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
 
                     TempData["success"] = "Successfully sold!";
                     //return RedirectToAction("ProductSell");
                     // If successful
-                    return Json(new { success = true, message = "Successfully sold!" });
+                    return Json(new { success = true, message = "Successfully sold!",
+                        invoiceDetails = new
+                        {
+                            invoiceNumber = invoice,
+                            customerName = customer?.Name ?? "Walk-in Customer",
+                            totalAmount = sell.TotalTotalPrice,
+                            totalDue = sell.TotalDuePrice
+                        }
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -329,18 +335,19 @@ namespace POS.Controllers
                 }
             }
         }
-
+        
         public async Task<IActionResult> ProductSellReport()
         {
-            // Fetch all the sell records along with related product and customer details
+            // Fetch all sell records with related product and customer details
             var sellReport = await _db.Sell
-                .Include(s => s.Product) // Include related Product data
-                .Include(s => s.Customer) // Include related Customer data
+                .Include(s => s.Product)  
+                .Include(s => s.Customer) 
                 .ToListAsync();
 
-            // Pass the fetched data to the view
+            // Pass the data directly to the view
             return View(sellReport);
         }
+
 
         // GET: Sell/Edit/{id}
         [HttpGet]
