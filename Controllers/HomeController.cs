@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using POS.Migrations;
 using POS.Models;
 
 namespace POS.Controllers
@@ -353,35 +354,59 @@ namespace POS.Controllers
         [HttpGet]
         public async Task<IActionResult> EditProductSell(int id)
         {
-            // Retrieve the sell entry by ID
             var sell = await _db.Sell
-                .Include(s => s.Customer)
-                .Include(s => s.Product)
-                .FirstOrDefaultAsync(s => s.SellId == id);
+                       .Include(s => s.Product)
+                       .Include(s => s.Customer)
+                       .FirstOrDefaultAsync(s => s.SellId == id);
 
-            if (sell == null)
+            if(sell == null)
             {
                 return NotFound();
             }
-            // Fetch the list of products and customers from the database
-            var products = _db.Product.ToList();
-            var customers = _db.Customer.ToList();
+            var products = await _db.Product.ToListAsync();
+            var customers = await _db.Customer.ToListAsync();
 
-            if (products == null || customers == null)
+            if(products == null || customers == null)
             {
-                // Handle the error when either list is null or empty
-                ModelState.AddModelError("", "Products or Customers data is missing.");
-                return View();
+                return BadRequest("No products or customers found.");
             }
-            // Prepare the ViewModel with the existing data
+            var productIds = sell.ProductIds?.Split(',').Select(int.Parse).ToList() ?? new List<int>();
+            var productNames = sell.ProductNames?.Split(',').ToList() ?? new List<string>();
+            var quantities = sell.Quantities?.Split(',').Select(int.Parse).ToList() ?? new List<int>();
+            var pricePerProduct = sell.TotalPricePerProduct?.Split(',').Select(decimal.Parse).ToList() ?? new List<decimal>();
+            
+            var productDetailsList = new List<ProductDetailsViewModel>();
+
+            for (int i = 0; i < productIds.Count; i++)
+            {
+                var productDetail = new ProductDetailsViewModel
+                {
+                    ProductId = productIds[i],
+                    ProductName = productNames.Count > i ? productNames[i] : string.Empty,
+                    Quantity = quantities.Count > i ? quantities[i] : 0,
+                    TotalPrice = pricePerProduct.Count > i ? pricePerProduct[i] : 0.0m
+                };
+                productDetailsList.Add(productDetail);
+            }
+
+            // Prepare the ViewModel with the parsed data and other existing data
             var viewModel = new ProductCustomerViewModel
             {
                 Sells = sell,
                 Products = products,
-                Customers = customers
+                Customers = customers,
+                ProductDetails = productDetailsList,
+                SelectedCustomerId = sell.CustomerId ?? 0,
+                SelectedProductId = sell.ProductId ?? 0,
+                Invoice = sell.SellId,
+                CustomerPhoneNo = sell.CustomerPhoneNo,
+                CustomerAddress = sell.CustomerAddress,
+                Deposit = sell.Deposit,
+                ShabekDue = sell.ShabekDue ?? 0
             };
 
             return View(viewModel);
+
         }
 
         // POST: Sell/Edit/{id}
@@ -457,6 +482,24 @@ namespace POS.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult DetailsProductSell(int id)
+        {
+            var sellDetails = _db.Sell
+                .Include(s => s.Product)
+                .Include(s => s.Customer)
+                .Include(s => s.User)
+                .FirstOrDefault(s => s.SellId == id);
+
+            if (sellDetails == null)
+            {
+                return NotFound();
+            }
+
+            return View(sellDetails);
+        }
+
 
         private bool SellExists(int id)
         {
