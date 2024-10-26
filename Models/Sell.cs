@@ -48,14 +48,14 @@ namespace POS.Models
         [StringLength(50, ErrorMessage = "যোগ করা ব্যক্তির নাম ৫০ অক্ষরের বেশি হতে পারবে না।")]
         public string? AddedBy { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
-        public  decimal ShabekDue { get; set; } = 0; 
+        public  decimal? ShabekDue { get; set; } = 0; 
         public int? UserId { get; set; }  // References the user who added the product
         public Users? User { get; set; }  // Navigation property to reference the user
 
         // Store multiple product-related data in a serialized format (e.g., comma-separated or JSON)
-        public string ProductIds { get; set; } // Comma-separated product IDs
-        public string ProductNames { get; set; } // Comma-separated product names
-        public string Quantities { get; set; } // Comma-separated product quantities
-        public string TotalPricePerProduct { get; set; } // Comma-separated total price per product
+        public string? ProductIds { get; set; } // Comma-separated product IDs
+        public string? ProductNames { get; set; } // Comma-separated product names
+        public string? Quantities { get; set; } // Comma-separated product quantities
+        public string? TotalPricePerProduct { get; set; } // Comma-separated total price per product
     }
 }

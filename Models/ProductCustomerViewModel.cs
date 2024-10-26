@@ -12,6 +12,7 @@ namespace POS.Models
 
         // Sell properties to store after submission
         public Sell? Sells { get; set; }
+        public List<ProductDetailsViewModel> ProductDetails { get; set; }  // List of products
 
         // Additional fields that may be relevant for submission
         public int SelectedProductId { get; set; } // Stores selected product
@@ -48,5 +49,6 @@ namespace POS.Models
         // New fields for quantities and selling prices (comma-separated)
         public string Quantities { get; set; } // Stores comma-separated quantities
         public string SellingPrices { get; set; } // Stores comma-separated selling prices
+        public string? ProductIds { get; set; } // Stores comma-separated selling prices
     }
 }

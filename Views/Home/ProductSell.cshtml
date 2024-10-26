@@ -469,8 +469,11 @@
             processData: false, // Important for FormData
             success: function(response) {
                 if (response.success) {
-                    // Trigger toastr success message
-                    toastr.success(response.message);
+                    // Display success message with invoice details in the toastr
+            toastr.success(`Sold successfully! Invoice: ${response.invoiceDetails.invoiceNumber},
+            Customer: ${response.invoiceDetails.customerName},
+            Total Amount: ${response.invoiceDetails.totalAmount},
+            Total Due: ${response.invoiceDetails.totalDue}`);
                 } else {
                     // Trigger toastr error message
                     toastr.error(response.message);
