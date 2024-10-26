@@ -339,8 +339,16 @@ namespace POS.Controllers
         
         public async Task<IActionResult> ProductSellReport()
         {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int? userId = null;
+
+            if (int.TryParse(userIdString, out int parsedUserId))
+            {
+                userId = parsedUserId; // Successfully parsed the string to an integer
+            }
             // Fetch all sell records with related product and customer details
             var sellReport = await _db.Sell
+                .Where(s => s.UserId == userId) // Filter by user ID
                 .Include(s => s.Product)  
                 .Include(s => s.Customer) 
                 .ToListAsync();

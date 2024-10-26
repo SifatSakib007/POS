@@ -1,113 +1,77 @@
 ﻿@model POS.Models.Sell
 
-<div class="p-6 bg-gray-100 min-h-screen flex justify-center items-center">
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl w-full">
+<div class="p-8 bg-gray-100 min-h-screen flex justify-center items-center">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl">
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-500 to-indigo-500 p-6">
-            <h2 class="text-white text-2xl font-semibold text-center">Sell Details</h2>
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-700">INVOICE</h1>
+                <p class="text-gray-500 mt-2">@Model.Invoice</p>
+            </div>
+            <div class="text-right">
+                <p class="font-medium text-gray-600">Date: @DateTime.Now.ToString("yyyy-MM-dd")</p>
+                <p class="font-medium text-gray-600">Customer ID: @Model.CustomerId</p>
+            </div>
         </div>
 
-        <!-- Content -->
-        <div class="p-8 space-y-6">
-            <!-- Invoice and Product Name -->
-            <div class="flex justify-between items-center bg-gray-50 p-4 rounded-md shadow">
-                <div>
-                    <span class="block font-medium text-gray-600">Invoice:</span>
-                    <span class="text-gray-900 font-semibold">@Model.Invoice</span>
+        <!-- Company & Customer Info -->
+        <div class="p-6 border-b border-gray-200 grid grid-cols-2 gap-4">
+            <div>
+                <h2 class="text-gray-700 font-semibold">BILL TO</h2>
+                <p class="text-gray-600">@Model.CustomerName</p>
+                <p class="text-gray-600">@Model.CustomerAddress</p>
+                <p class="text-gray-600">@Model.CustomerPhoneNo</p>
+            </div>
+            <div>
+                <h2 class="text-gray-700 font-semibold">SHIP TO</h2>
+                <p class="text-gray-600">@Model.CustomerName</p>
+                <p class="text-gray-600">@Model.CustomerAddress</p>
+                <p class="text-gray-600">@Model.CustomerPhoneNo</p>
+            </div>
+        </div>
+
+        <!-- Itemized Details -->
+        <div class="p-6 border-b border-gray-200">
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-2 font-semibold text-gray-600">DESCRIPTION</div>
+                <div class="text-right font-semibold text-gray-600">TOTAL</div>
+            </div>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-2">
+                    <p>Product Name: @Model.ProductName</p>
+                    @* <p>Buy Price: @Model.BuyPrice</p> *@
+                    <p>Quantity: @Model.Quantities</p>
                 </div>
-                <div>
-                    <span class="block font-medium text-gray-600">Product Name:</span>
-                    <span class="text-gray-900 font-semibold">@Model.ProductName</span>
+                <div class="text-right">
+                    <p>@Model.TotalPricePerProduct</p>
                 </div>
             </div>
+        </div>
 
-            <!-- Buy Price, Stock, Quantity -->
-            <div class="grid grid-cols-3 gap-4">
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Buy Price:</span>
-                    <span class="text-gray-900 font-semibold">@Model.BuyPrice</span>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Stock:</span>
-                    <span class="text-gray-900 font-semibold">@Model.Stock</span>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Quantity:</span>
-                    <span class="text-gray-900 font-semibold">@Model.Quantity</span>
-                </div>
-            </div>
-
-            <!-- Pricing Details -->
+        <!-- Summary -->
+        <div class="p-6 border-b border-gray-200">
             <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Selling Price:</span>
-                    <span class="text-gray-900 font-semibold">@Model.SellingPrice</span>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Total Price:</span>
-                    <span class="text-gray-900 font-semibold">@Model.TotalPrice</span>
-                </div>
-            </div>
-
-            <!-- Due, Deposit, Total Due Price -->
-            <div class="grid grid-cols-3 gap-4">
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Due Price:</span>
-                    <span class="text-gray-900 font-semibold">@Model.DuePrice</span>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Deposit:</span>
-                    <span class="text-gray-900 font-semibold">@Model.Deposit</span>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-md shadow">
-                    <span class="block font-medium text-gray-600">Total Due Price:</span>
-                    <span class="text-gray-900 font-semibold">@Model.TotalDuePrice</span>
-                </div>
-            </div>
-
-            <!-- Customer Info -->
-            <div class="bg-gray-50 p-6 rounded-md shadow">
-                <h3 class="text-xl font-semibold text-gray-700">Customer Details</h3>
-                <div class="mt-4 space-y-2">
-                    <div>
-                        <span class="font-medium text-gray-600">Customer Name:</span>
-                        <span class="text-gray-900 font-semibold">@Model.CustomerName</span>
-                    </div>
-                    <div>
-                        <span class="font-medium text-gray-600">Phone No:</span>
-                        <span class="text-gray-900 font-semibold">@Model.CustomerPhoneNo</span>
-                    </div>
-                    <div>
-                        <span class="font-medium text-gray-600">Address:</span>
-                        <span class="text-gray-900 font-semibold">@Model.CustomerAddress</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Miscellaneous Info -->
-            <div class="bg-gray-50 p-6 rounded-md shadow">
-                <h3 class="text-xl font-semibold text-gray-700">Additional Information</h3>
-                <div class="mt-4 space-y-2">
-                    <div>
-                        <span class="font-medium text-gray-600">Added By:</span>
-                        <span class="text-gray-900 font-semibold">@Model.AddedBy</span>
-                    </div>
-                    <div>
-                        <span class="font-medium text-gray-600">Created At:</span>
-                        <span class="text-gray-900 font-semibold">@Model.CreatedAt?.ToString("yyyy-MM-dd HH:mm")</span>
-                    </div>
-                    <div>
-                        <span class="font-medium text-gray-600">Shabek Due:</span>
-                        <span class="text-gray-900 font-semibold">@Model.ShabekDue</span>
-                    </div>
-                </div>
+                <div class="text-right font-semibold text-gray-600">Subtotal</div>
+                <div class="text-right">@Model.TotalTotalPrice</div>
+                <div class="text-right font-semibold text-gray-600">Tax</div>
+                <div class="text-right">--</div>
+                <div class="text-right font-semibold text-gray-600">Shipping/Handling</div>
+                <div class="text-right">--</div>
+                <div class="text-right font-semibold text-gray-600">Total</div>
+                <div class="text-right font-bold text-gray-900">@Model.TotalTotalPrice</div>
             </div>
         </div>
 
-        <!-- Footer Actions -->
-       @*  <div class="bg-gray-100 p-4 flex justify-end space-x-4">
-            <a href="@Url.Action("EditProductSell", new { id = Model.SellId })" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Edit</a>
-            <a href="@Url.Action("DeleteProductSell", new { id = Model.SellId })" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">Delete</a>
-        </div> *@
+        <!-- Additional Information -->
+        <div class="p-6 border-b border-gray-200">
+            <p class="font-semibold text-gray-600">Remarks / Instructions:</p>
+            <p class="text-gray-600">Please make payment by the due date. Contact us for any questions.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-6 text-center">
+            <p class="text-gray-600">Thank you for your business!</p>
+            <p class="text-gray-500 text-sm mt-2">For questions concerning this invoice, please contact</p>
+        </div>
     </div>
 </div>
