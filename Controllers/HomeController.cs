@@ -852,5 +852,23 @@ namespace POS.Controllers
         {
             return View();
         }
+
+
+
+        // Controller method to get total sales per day
+        public async Task<IActionResult> GetTotalSalesPerDay()
+        {
+            var totalSales = await _db.Sell
+                .GroupBy(s => s.CreatedAt.Value.Date)
+                .Select(g => new
+                {
+                    Date = g.Key,
+                    TotalSell = g.Sum(s => s.TotalTotalPrice)
+                })
+                .OrderBy(g => g.Date)
+                .ToListAsync();
+
+            return Json(totalSales);
+        }
     }
 }
