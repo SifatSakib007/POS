@@ -7,24 +7,26 @@
     <div class="font-[sans-serif] bg-white">
         <div class="max-w-4xl w-full h-max rounded-md px-4 py-8 mx-auto">
             <form id="" class="mt-8">
-                @Html.AntiForgeryToken()
+                
                 <!-- Product Section -->
 
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
                     <!-- পণ্য সিলেক্ট করুন -->
-                    <div>
+                    <div class="relative mb-4">
                         <label for="productName" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
                         <input id="productName"
                                class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                                placeholder="পণ্যের নাম লিখুন"
-                               onfocus="showAllSuggestions()"
-                               oninput="showSuggestions(this.value)"
+                               onfocus="fetchAllProducts()"
+                               oninput="searchProducts(this.value)"
                                autocomplete="off" />
 
                         <!-- Suggestions List -->
-                        <ul id="suggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-80"></ul>
+                        <ul id="suggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-full"></ul>
 
-                        <span id="error-message" class="text-red-500 text-sm"></span>
+                        <input type="hidden" id="SelectedProductId" name="SelectedProductId" value="" />
+                       @*  <input type="hidden" id="previousBuyPrice" name="previousBuyPrice" value="" />
+                        <span id="error-message" class="text-red-500 text-sm"></span> *@
                     </div>
 
                     <!-- Previous Buy Price -->
@@ -172,85 +174,80 @@
 
 </div>
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @* @await Html.PartialAsync("_ValidationScriptsPartial") *@
     <script>
         // start
-        // Existing product data
-        let existingProducts = {
-            "দুধ": 50,
-            "চাল": 60,
-            "ডাল": 70,
-            "তেল": 80,
-            "চিনি": 90
-        };
-
-        // Function to show all suggestions
-        function showAllSuggestions() {
-            const suggestionsBox = document.getElementById('suggestions');
-            suggestionsBox.innerHTML = '';
-            if (Object.keys(existingProducts).length > 0) {
+        // Function to fetch all products when the input field is focused
+            function fetchAllProducts() {
+                const suggestionsBox = document.getElementById('suggestions');
+                suggestionsBox.innerHTML = ''; // Clear previous results
                 suggestionsBox.classList.remove('hidden');
-                for (const product in existingProducts) {
-                    const li = document.createElement('li');
-                    li.textContent = product;
-                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                    li.onclick = () => selectProduct(product);
-                    suggestionsBox.appendChild(li);
+
+                fetch('/Home/GetAllProducts') // Adjust this URL to get all products
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.products.length > 0) {
+                            data.products.forEach(product => {
+                                const li = document.createElement('li');
+                                li.textContent = product.productName;
+                                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                                li.onclick = () => selectProduct(product);
+                                suggestionsBox.appendChild(li);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
+            // Function to search for products as the user types
+            function searchProducts(searchTerm) {
+                const suggestionsBox = document.getElementById('suggestions');
+                suggestionsBox.innerHTML = ''; // Clear previous results
+
+                if (searchTerm.length === 0) {
+                    fetchAllProducts(); // Show all products if search term is empty
+                    return;
                 }
-            } else {
-                suggestionsBox.classList.add('hidden');
-            }
-        }
 
-        // Function to show suggestions based on input
-        function showSuggestions(value) {
-            const suggestionsBox = document.getElementById('suggestions');
-            suggestionsBox.innerHTML = '';
-            if (value.length === 0) {
-                showAllSuggestions();
-                return;
+                fetch(`/Home/SearchProducts?term=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.products.length > 0) {
+                            suggestionsBox.classList.remove('hidden');
+                            data.products.forEach(product => {
+                                const li = document.createElement('li');
+                                li.textContent = product.productName;
+                                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                                li.onclick = () => selectProduct(product);
+                                suggestionsBox.appendChild(li);
+                            });
+                        } else {
+                            suggestionsBox.classList.add('hidden'); // Hide dropdown if no results
+                        }
+                    })
+                    .catch(error => console.error(error));
             }
-            const filteredProducts = Object.keys(existingProducts).filter(product => product.includes(value));
-            if (filteredProducts.length > 0) {
-                suggestionsBox.classList.remove('hidden');
-                filteredProducts.forEach(product => {
-                    const li = document.createElement('li');
-                    li.textContent = product;
-                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                    li.onclick = () => selectProduct(product);
-                    suggestionsBox.appendChild(li);
-                });
-            } else {
-                suggestionsBox.classList.add('hidden');
+
+            // Function to select a product
+            function selectProduct(product) {
+                document.getElementById('productName').value = product.productName;
+                document.getElementById('SelectedProductId').value = product.productId;
+                document.getElementById('previousBuyPrice').value = product.buyPrice; // Adjusted based on fetched product details
+
+                // Hide suggestions after selection
+                document.getElementById('suggestions').classList.add('hidden');
             }
-        }
 
-        // Function to select a product
-        function selectProduct(product) {
-            document.getElementById('productName').value = product;
-            document.getElementById('suggestions').classList.add('hidden');
-            document.getElementById('previousBuyPrice').value = existingProducts[product];
-        }
-
-        // Event listener for input on product name
-        document.getElementById('productName').addEventListener('input', function () {
-            const productName = this.value;
-            if (!existingProducts.hasOwnProperty(productName)) {
-                document.getElementById('previousBuyPrice').value = '';
-            } else {
-                document.getElementById('previousBuyPrice').value = existingProducts[productName];
-            }
-        });
-
-        // Event listener to hide suggestions when clicking outside
-        document.addEventListener('click', function (event) {
-            const suggestionsBox = document.getElementById('suggestions');
-            const productInput = document.getElementById('productName');
-            if (!productInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
-                suggestionsBox.classList.add('hidden');
-            }
-        });
-
+            // Close the dropdown if clicked outside
+            document.addEventListener('click', function (event) {
+                const suggestionsBox = document.getElementById('suggestions');
+                const productInput = document.getElementById('productName');
+                if (!productInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                    suggestionsBox.classList.add('hidden');
+                }
+            });
         // Function to calculate total price
         function calculateTotalPrice() {
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;

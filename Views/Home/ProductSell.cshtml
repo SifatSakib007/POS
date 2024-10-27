@@ -22,7 +22,7 @@
                         </select>
                         <span class="text-danger"></span>
                     </div>
-                    <!-- Hidden field to store customer name -->
+                    <!-- Hidden field to store product name -->
                     <input type="hidden" id="ProductName" name="ProductName" value="" />
                     <!-- ক্রয় মূল্য (readonly) -->
                     <div class="relative flex items-center  mt-4">
@@ -106,16 +106,21 @@
                 <span class="text-danger"></span>
             </div>
             <!-- ক্রেতার নাম সিলেক্ট করুন Dropdown -->
-            <div>
-                <label asp-for="SelectedCustomerId" class="block text-sm text-gray-600">ক্রেতার নাম সিলেক্ট করুন</label>
-                <select asp-for="SelectedCustomerId" onchange="fetchCustomerDetails(this.value)" class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md">
-                    <option value="">ক্রেতার নাম সিলেক্ট করুন</option>
-                    @foreach (var customer in Model.Customers)
-                    {
-                        <option value="@customer.Id">@customer.Name</option>
-                    }
-                </select>
-                <span class="text-danger"></span>
+            <div class="relative mb-4">
+                <label class="block text-sm text-gray-600">ক্রেতার নাম লিখুন / সিলেক্ট করুন</label>
+                <input type="text" id="CustomerSearch"
+                       class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md"
+                       placeholder="ক্রেতার নাম লিখুন..."
+                       onfocus="fetchCustomers()"
+                       oninput="searchCustomers(this.value)"
+                       autocomplete="off" />
+
+                <ul id="customerDropdown" class="absolute bg-white border border-gray-300 rounded-md w-full z-10 hidden">
+                    <!-- Customer options will be appended here -->
+                </ul>
+
+                <input type="hidden" id="CustomerName" name="CustomerName" value="" />
+                <input type="hidden" id="SelectedCustomerId" name="SelectedCustomerId" value="" />
             </div>
             <!-- Hidden field to store customer name -->
             <input type="hidden" id="CustomerName" name="CustomerName" value="" />
@@ -208,32 +213,80 @@
 
 
     // Function to fetch customer details using AJAX
-    function fetchCustomerDetails(customerId) {
-        if (!customerId) {
-            // Reset the fields if no customer is selected
-            document.getElementById("CustomerPhoneNo").value = '';
-            document.getElementById("CustomerAddress").value = '';
-            document.getElementById("ShabekDue").value = '';
-            document.getElementById("CustomerName").value = ''; // Reset CustomerName
-            return;
-        }
-        fetch(`/Home/GetCustomerDetails?customerId=${customerId}`)
+     // Fetch all customers when the input field is focused
+    function fetchCustomers() {
+        const dropdown = document.getElementById("customerDropdown");
+        dropdown.innerHTML = ''; // Clear previous results
+
+        fetch('/Home/GetCustomerDetails') // Adjust the URL as needed
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    document.getElementById("CustomerAddress").value = data.data.address;
-                    document.getElementById("CustomerPhoneNo").value = data.data.phoneNo;
-                    document.getElementById("ShabekDue").value = data.data.shabekDue; // Ensure correct key
-                    document.getElementById("CustomerName").value = data.data.customerName; // Set CustomerName
-                    updateTotalAmount(true); // Pass true to force adding previous due
+                if (data.success && data.customers.length > 0) {
+                    data.customers.forEach(customer => {
+                        const option = document.createElement("li");
+                        option.className = "px-4 py-2 cursor-pointer hover:bg-gray-200";
+                        option.textContent = customer.name;
+                        option.onclick = () => selectCustomer(customer);
+                        dropdown.appendChild(option);
+                    });
+                    dropdown.classList.remove('hidden'); // Show dropdown
                 } else {
-                    console.error(data.message);
+                    dropdown.classList.add('hidden'); // Hide dropdown if no customers
                 }
             })
             .catch(error => {
                 console.error(error);
             });
     }
+
+    // Search customers as the user types
+    function searchCustomers(searchTerm) {
+        const dropdown = document.getElementById("customerDropdown");
+        dropdown.innerHTML = ''; // Clear previous results
+
+        if (searchTerm.length < 1) {
+            fetchCustomers(); // Show all customers if search term is empty
+            return;
+        }
+
+        fetch(`/Home/SearchCustomers?term=${encodeURIComponent(searchTerm)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.customers.length > 0) {
+                    data.customers.forEach(customer => {
+                        const option = document.createElement("li");
+                        option.className = "px-4 py-2 cursor-pointer hover:bg-gray-200";
+                        option.textContent = customer.name;
+                        option.onclick = () => selectCustomer(customer);
+                        dropdown.appendChild(option);
+                    });
+                    dropdown.classList.remove('hidden'); // Show dropdown after fetching
+                } else {
+                    dropdown.classList.add('hidden'); // Hide dropdown if no results
+                }
+            })
+            .catch(error => console.error(error));
+    }
+
+    function selectCustomer(customer) {
+        document.getElementById("CustomerSearch").value = customer.name;
+        document.getElementById("CustomerName").value = customer.name;
+        document.getElementById("SelectedCustomerId").value = customer.id;
+        document.getElementById("CustomerPhoneNo").value = customer.phoneNo;
+        document.getElementById("CustomerAddress").value = customer.address;
+        document.getElementById("ShabekDue").value = customer.shabekDue;
+
+        // Hide the dropdown after selection
+        document.getElementById("customerDropdown").classList.add('hidden');
+    }
+
+    // Close the dropdown if clicked outside
+    document.addEventListener('click', function (event) {
+        const dropdown = document.getElementById("customerDropdown");
+        if (!event.target.closest('#CustomerSearch')) {
+            dropdown.classList.add('hidden');
+        }
+    });
 
     // Calculate and update total amount
     function updateTotalAmount(addShabekDue = false) {

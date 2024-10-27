@@ -113,6 +113,42 @@ namespace POS.Controllers
             return Json(new { success = false, message = "Product not found." });
         }
 
+        // Method to search products based on the term
+        [HttpGet]
+        public async Task<IActionResult> SearchProducts(string term)
+        {
+            var products = await _db.Product
+                .Where(p => p.ProductName.Contains(term))
+                .Select(p => new
+                {
+                    productId = p.ProductId,
+                    productName = p.ProductName,
+                    buyPrice = p.BuyPrice,
+                    stock = p.Stock,
+                    unit = p.Unit
+                })
+                .ToListAsync();
+
+            return Json(new { success = true, products });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchCustomers(string term)
+        {
+            var customers = await _db.Customer
+                .Where(c => c.Name.Contains(term))
+                .Select(c => new
+                {
+                    id = c.Id,
+                    name = c.Name,
+                    phoneNo = c.PhoneNo,
+                    address = c.Address,
+                    shabekDue = c.Due
+                })
+                .ToListAsync();
+
+            return Json(new { success = true, customers });
+        }
         // AJAX call to fetch customer details
         [HttpGet]
         public async Task<JsonResult> GetCustomerDetails(int customerId)
