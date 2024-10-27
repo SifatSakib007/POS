@@ -708,25 +708,37 @@ namespace POS.Controllers
             return View(new ProductClientViewModel());
         }
         [HttpGet]
-        public IActionResult GetClientDetails(int id)
+        public async Task<IActionResult> GetClientDetails(int id)
         {
-            var client = _db.Client.FirstOrDefault(c => c.Id == id);
-            if (client == null)
+            var clients = await _db.Client.Select(c => new
             {
-                return NotFound();
-            }
+                clientId = c.Id,
+                name = c.Name,
+                address = c.Address,
+                phoneNo = c.PhoneNo,
+                debt = c.Debt
+            }).ToListAsync();
 
-            var clientDetails = new
-            {
-                Name = client.Name,
-                Address = client.Address,
-                PhoneNo = client.PhoneNo,
-                Debt = client.Debt
-            };
-
-            return Json(clientDetails);
+            return Json(new { success = true, clients });
         }
+        // Method to search clients based on the term
+        [HttpGet]
+        public async Task<IActionResult> SearchClients(string term)
+        {
+            var clients = await _db.Client
+                .Where(c => c.Name.Contains(term))
+                .Select(c => new
+                {
+                    clientId = c.Id,
+                    name = c.Name,
+                    address = c.Address,
+                    phoneNo = c.PhoneNo,
+                    debt = c.Debt
+                })
+                .ToListAsync();
 
+            return Json(new { success = true, clients });
+        }
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public IActionResult ProductBuy(ProductClientViewModel viewModel)

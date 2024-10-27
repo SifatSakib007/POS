@@ -106,17 +106,17 @@
             </div>
 
 
-            <div class="relative flex items-center">
+            <!-- Client Selection Section -->
+            <div class="relative flex items-center mb-4">
                 <label for="clientNameInput" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
                     ক্লায়েন্ট নির্বাচন করুন
                 </label>
                 <input type="text" id="clientNameInput" placeholder="নাম লিখুন"
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none"
-                       onfocus="showAllClientSuggestions()"
-                       oninput="filterClientSuggestions(this.value)"
-                       onblur="hideSuggestions()"
+                       onfocus="fetchAllClients()"
+                       oninput="searchClients(this.value)"
                        autocomplete="off" />
-                <ul id="clientSuggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-80 top-16"></ul>
+                <ul id="clientSuggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-full top-16"></ul>
                 <span id="client-error-message" class="text-red-500 text-sm"></span>
             </div>
 
@@ -143,6 +143,7 @@
                 <input id="clientDebt" type="number" placeholder="সাবেক টাকা"
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
             </div>
+
 
             <div class="relative flex items-center ">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সর্বমোট টাকা</label>
@@ -365,105 +366,78 @@
         // Add event listener to the Add Product button
         document.getElementById('addProductBtn').addEventListener('click', addProduct);
 
-        // ক্লায়েন্ট সেকশ শুরু
-        const clientsData = [
-            {
-                name: "ক্লায়েন্ট ১",
-                address: "ঢাকা, বাংলাদেশ",
-                phoneNo: "01810000001",
-                debt: 5000
-            },
-            {
-                name: "ক্লায়েন্ট ২",
-                address: "চট্টগ্রাম, বাংলাদেশ",
-                phoneNo: "01810045002",
-                debt: 3000
-            },
-            {
-                name: "সিফাত",
-                address: "চট্টগ্রাম, বাংলাদেশ",
-                phoneNo: "018108980002",
-                debt: 1000
-            },
-            {
-                name: "mohin",
-                address: "চট্টগ্রাম, বাংলাদেশ",
-                phoneNo: "01810000140",
-                debt: 3100
-            }
-        ];
+                // Fetch all clients when the input field is focused
+        function fetchAllClients() {
+            const suggestionsBox = document.getElementById('clientSuggestions');
+            suggestionsBox.innerHTML = ''; // Clear previous results
+            suggestionsBox.classList.remove('hidden');
 
-        const clientInput = document.getElementById('clientNameInput');
-        const suggestionsList = document.getElementById('clientSuggestions');
-        const addressInput = document.getElementById('clientAddress');
-        const phoneInput = document.getElementById('clientPhoneNo');
-        const debtInput = document.getElementById('clientDebt');
-
-        // Function to show suggestions
-        function showAllClientSuggestions() {
-            suggestionsList.innerHTML = '';
-            clientsData.forEach(client => {
-                const li = document.createElement('li');
-                li.textContent = client.name;
-                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                li.onclick = function () {
-                    clientInput.value = client.name;
-                    addressInput.value = client.address;
-                    phoneInput.value = client.phoneNo;
-                    debtInput.value = client.debt.toFixed(2);
-                    suggestionsList.style.display = 'none';
-                    updateGrandTotal(); // Update grand total when a client is selected
-                };
-                suggestionsList.appendChild(li);
-            });
-            suggestionsList.style.display = 'block';
+            fetch('/Home/GetClientDetails') // Replace 'ControllerName' with actual name
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.clients.length > 0) {
+                        data.clients.forEach(client => {
+                            const li = document.createElement('li');
+                            li.textContent = client.name;
+                            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                            li.onclick = () => selectClient(client);
+                            suggestionsBox.appendChild(li);
+                        });
+                    } else {
+                        suggestionsBox.classList.add('hidden');
+                    }
+                })
+                .catch(error => console.error(error));
         }
 
-        // Event listener for input and click to show suggestions
-        clientInput.addEventListener('input', function () {
-            const inputValue = clientInput.value.toLowerCase();
-            const filteredClients = clientsData.filter(client => client.name.toLowerCase().includes(inputValue));
-            suggestionsList.innerHTML = '';
 
-            if (filteredClients.length > 0) {
-                suggestionsList.style.display = 'block';
-                filteredClients.forEach(client => {
-                    const li = document.createElement('li');
-                    li.textContent = client.name;
-                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                    li.onclick = function () {
-                        clientInput.value = client.name;
-                        addressInput.value = client.address;
-                        phoneInput.value = client.phoneNo;
-                        debtInput.value = client.debt.toFixed(2);
-                        suggestionsList.style.display = 'none';
-                        updateGrandTotal(); // Update grand total when a client is selected
-                    };
-                    suggestionsList.appendChild(li);
-                });
-            } else {
-                suggestionsList.style.display = 'none';
+                // Filter clients based on the input value
+        function searchClients(value) {
+            const suggestionsBox = document.getElementById('clientSuggestions');
+            suggestionsBox.innerHTML = ''; // Clear previous results
+
+            if (value.length === 0) {
+                fetchAllClients();
+                return;
+            }
+
+                   fetch(`/Home/SearchClients?term=${encodeURIComponent(value)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.clients.length > 0) {
+                        suggestionsBox.classList.remove('hidden');
+                        data.clients.forEach(client => {
+                            const li = document.createElement('li');
+                            li.textContent = client.name;
+                            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                            li.onclick = () => selectClient(client);
+                            suggestionsBox.appendChild(li);
+                        });
+                    } else {
+                        suggestionsBox.classList.add('hidden');
+                    }
+                })
+                .catch(error => console.error(error));
+        }
+
+        // Select a client and populate the fields
+        function selectClient(client) {
+            document.getElementById('clientNameInput').value = client.name;
+            document.getElementById('clientAddress').value = client.address;
+            document.getElementById('clientPhoneNo').value = client.phoneNo;
+            document.getElementById('clientDebt').value = client.debt;
+
+            document.getElementById('clientSuggestions').classList.add('hidden'); // Hide suggestions
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(event) {
+            const suggestionsBox = document.getElementById('clientSuggestions');
+            const clientInput = document.getElementById('clientNameInput');
+            if (!clientInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.classList.add('hidden');
             }
         });
-
-        // Show suggestions on input field click
-        clientInput.addEventListener('click', function () {
-            showAllClientSuggestions();
-        });
-
-        // Dummy function for getting client debt (replace with your actual logic)
-        function getClientDebt(clientName) {
-            const client = clientsData.find(c => c.name === clientName);
-            return client ? client.debt : 0;
-        }
-
-        // Function to handle client selection and auto-fill debt
-        function handleClientSelection() {
-            const clientName = clientInput.value;
-            const clientDebtValue = getClientDebt(clientName);
-            document.getElementById('clientDebt').value = clientDebtValue.toFixed(2);
-            updateGrandTotal(); // Update the grand total
-        }
 
         // Update the grand total including client debt
         function updateGrandTotal() {
