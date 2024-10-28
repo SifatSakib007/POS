@@ -13,6 +13,5 @@
         {
             Products = new List<Product>() // Ensure the collection is initialized
         };
-
     }
 }

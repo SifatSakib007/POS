@@ -1,0 +1,75 @@
+﻿<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+@{
+    ViewData["Title"] = "Sales Report";
+}
+
+<div class="p-6 bg-gray-100 min-h-screen flex justify-center items-center">
+    <div class="bg-white shadow-lg rounded-lg max-w-4xl w-full">
+        <div class="p-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Total Sales and Deposits</h2>
+
+            <!-- Dropdown for selecting date format -->
+            <label for="dateFormat" class="block mb-2 text-lg font-medium text-gray-700">Select Date Format:</label>
+            <select id="dateFormat" class="mb-4 p-2 border border-gray-300 rounded-md" onchange="createChart()">
+                <option value="week">Per Week</option>
+                <option value="month">Per Month</option>
+                <option value="year">Per Year</option>
+                <option value="day">Per Day</option>
+            </select>
+
+            <div id="salesChart" style="width: 100%; height: 400px;"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function fetchSalesAndDepositData(format) {
+            const response = await fetch(`/Charts/GetTotalSales?format=${format}`);
+            const data = await response.json();
+            return data;
+        }
+
+        async function createChart() {
+            const format = document.getElementById("dateFormat").value;
+            const data = await fetchSalesAndDepositData(format);
+            if (!data || data.length === 0) {
+                console.error("No data available for chart rendering.");
+                return;
+            }
+
+            Highcharts.chart('salesChart', {
+                chart: { type: 'line' },
+                title: { text: 'Total Sales and Deposits' },
+                xAxis: {
+                    categories: data.map(item => item.date),
+                    title: { text: 'Date' }
+                },
+                yAxis: {
+                    title: { text: 'Amount (৳)' },
+                    min: 0
+                },
+                series: [
+                    {
+                        name: 'Total Sales',
+                        data: data.map(item => item.totalSell),
+                        color: '#4CAF50'
+                    },
+                    {
+                        name: 'Total Deposit',
+                        data: data.map(item => item.totalDeposit),
+                        color: '#FF5733'
+                    }
+                ]
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createChart(); // Create chart with default "Per Week" format on page load
+        });
+    </script>
+}

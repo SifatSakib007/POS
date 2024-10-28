@@ -7,24 +7,26 @@
     <div class="font-[sans-serif] bg-white">
         <div class="max-w-4xl w-full h-max rounded-md px-4 py-8 mx-auto">
             <form id="" class="mt-8">
-                @Html.AntiForgeryToken()
+                
                 <!-- Product Section -->
 
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
                     <!-- পণ্য সিলেক্ট করুন -->
-                    <div>
+                    <div class="relative mb-4">
                         <label for="productName" class="block text-sm text-gray-600">পণ্য সিলেক্ট করুন</label>
                         <input id="productName"
                                class="px-4 py-3 bg-gray-100 focus:bg-white text-gray-800 w-full text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
                                placeholder="পণ্যের নাম লিখুন"
-                               onfocus="showAllSuggestions()"
-                               oninput="showSuggestions(this.value)"
+                               onfocus="fetchAllProducts()"
+                               oninput="searchProducts(this.value)"
                                autocomplete="off" />
 
                         <!-- Suggestions List -->
-                        <ul id="suggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-80"></ul>
+                        <ul id="suggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-full"></ul>
 
-                        <span id="error-message" class="text-red-500 text-sm"></span>
+                        <input type="hidden" id="SelectedProductId" name="SelectedProductId" value="" />
+                       @*  <input type="hidden" id="previousBuyPrice" name="previousBuyPrice" value="" />
+                        <span id="error-message" class="text-red-500 text-sm"></span> *@
                     </div>
 
                     <!-- Previous Buy Price -->
@@ -42,6 +44,12 @@
                     </div>
 
                     <!-- স্টক (readonly) -->
+                    <div class="relative flex items-center mt-4">
+                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
+                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <!-- Quantity -->
                     <div class="relative flex items-center mt-4">
                         <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
                         <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
@@ -88,7 +96,6 @@
         </div>
     </div>
 
-
     @* responsive form start *@
     <form class="font-[sans-serif] m-6 max-w-4xl mx-auto">
 
@@ -103,18 +110,17 @@
                 <span class="text-danger"></span>
             </div>
 
-
-            <div class="relative flex items-center">
+            <!-- Client Selection Section -->
+            <div class="relative flex items-center mb-4">
                 <label for="clientNameInput" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">
                     ক্লায়েন্ট নির্বাচন করুন
                 </label>
                 <input type="text" id="clientNameInput" placeholder="নাম লিখুন"
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none"
-                       onfocus="showAllClientSuggestions()"
-                       oninput="filterClientSuggestions(this.value)"
-                       onblur="hideSuggestions()"
+                       onfocus="fetchAllClients()"
+                       oninput="searchClients(this.value)"
                        autocomplete="off" />
-                <ul id="clientSuggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-80 top-16"></ul>
+                <ul id="clientSuggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-full top-16"></ul>
                 <span id="client-error-message" class="text-red-500 text-sm"></span>
             </div>
 
@@ -172,77 +178,72 @@
 
 </div>
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @* @await Html.PartialAsync("_ValidationScriptsPartial") *@
     <script>
         // start
-        // Existing product data
-        let existingProducts = {
-            "দুধ": 50,
-            "চাল": 60,
-            "ডাল": 70,
-            "তেল": 80,
-            "চিনি": 90
-        };
+              let allProducts = []; // Store all products once
 
-        // Function to show all suggestions
-        function showAllSuggestions() {
+        // Fetch all products when the input field is focused
+        function fetchAllProducts() {
             const suggestionsBox = document.getElementById('suggestions');
-            suggestionsBox.innerHTML = '';
-            if (Object.keys(existingProducts).length > 0) {
-                suggestionsBox.classList.remove('hidden');
-                for (const product in existingProducts) {
-                    const li = document.createElement('li');
-                    li.textContent = product;
-                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                    li.onclick = () => selectProduct(product);
-                    suggestionsBox.appendChild(li);
-                }
+            suggestionsBox.innerHTML = ''; // Clear previous results
+            suggestionsBox.classList.remove('hidden');
+
+            if (allProducts.length === 0) {
+                // Fetch products only once
+                fetch('/Home/GetAllProducts') // Adjust URL to fetch all products once
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.products.length > 0) {
+                            allProducts = data.products; // Store products locally
+                            displaySuggestions(allProducts); // Show all products initially
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching products:", error);
+                    });
             } else {
-                suggestionsBox.classList.add('hidden');
+                displaySuggestions(allProducts); // Show cached products
             }
         }
 
-        // Function to show suggestions based on input
-        function showSuggestions(value) {
+        // Function to filter products based on user input (frontend filtering)
+        function searchProducts(searchTerm) {
+            const filteredProducts = allProducts.filter(product =>
+                product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            displaySuggestions(filteredProducts); // Display filtered suggestions
+        }
+
+        // Function to display suggestions in the dropdown
+        function displaySuggestions(products) {
             const suggestionsBox = document.getElementById('suggestions');
-            suggestionsBox.innerHTML = '';
-            if (value.length === 0) {
-                showAllSuggestions();
-                return;
-            }
-            const filteredProducts = Object.keys(existingProducts).filter(product => product.includes(value));
-            if (filteredProducts.length > 0) {
+            suggestionsBox.innerHTML = ''; // Clear previous results
+
+            if (products.length > 0) {
                 suggestionsBox.classList.remove('hidden');
-                filteredProducts.forEach(product => {
+                products.forEach(product => {
                     const li = document.createElement('li');
-                    li.textContent = product;
+                    li.textContent = product.productName;
                     li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
                     li.onclick = () => selectProduct(product);
                     suggestionsBox.appendChild(li);
                 });
             } else {
-                suggestionsBox.classList.add('hidden');
+                suggestionsBox.classList.add('hidden'); // Hide dropdown if no results
             }
         }
 
         // Function to select a product
         function selectProduct(product) {
-            document.getElementById('productName').value = product;
-            document.getElementById('suggestions').classList.add('hidden');
-            document.getElementById('previousBuyPrice').value = existingProducts[product];
+            document.getElementById('productName').value = product.productName;
+            document.getElementById('SelectedProductId').value = product.productId;
+            document.getElementById('previousBuyPrice').value = product.buyPrice;
+
+            document.getElementById('suggestions').classList.add('hidden'); // Hide suggestions after selection
         }
 
-        // Event listener for input on product name
-        document.getElementById('productName').addEventListener('input', function () {
-            const productName = this.value;
-            if (!existingProducts.hasOwnProperty(productName)) {
-                document.getElementById('previousBuyPrice').value = '';
-            } else {
-                document.getElementById('previousBuyPrice').value = existingProducts[productName];
-            }
-        });
-
-        // Event listener to hide suggestions when clicking outside
+        // Close the dropdown if clicked outside
         document.addEventListener('click', function (event) {
             const suggestionsBox = document.getElementById('suggestions');
             const productInput = document.getElementById('productName');
@@ -368,105 +369,70 @@
         // Add event listener to the Add Product button
         document.getElementById('addProductBtn').addEventListener('click', addProduct);
 
-        // ক্লায়েন্ট সেকশ শুরু
-        const clientsData = [
-            {
-                name: "ক্লায়েন্ট ১",
-                address: "ঢাকা, বাংলাদেশ",
-                phoneNo: "01810000001",
-                debt: 5000
-            },
-            {
-                name: "ক্লায়েন্ট ২",
-                address: "চট্টগ্রাম, বাংলাদেশ",
-                phoneNo: "01810045002",
-                debt: 3000
-            },
-            {
-                name: "সিফাত",
-                address: "চট্টগ্রাম, বাংলাদেশ",
-                phoneNo: "018108980002",
-                debt: 1000
-            },
-            {
-                name: "mohin",
-                address: "চট্টগ্রাম, বাংলাদেশ",
-                phoneNo: "01810000140",
-                debt: 3100
+               let allClients = []; // Store clients after fetching
+
+        // Fetch all clients when the input field is focused
+        function fetchAllClients() {
+            if (allClients.length === 0) {
+                fetch('/Home/GetClientDetails') // Adjust URL as needed
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.clients.length > 0) {
+                            allClients = data.clients; // Store fetched clients
+                            displayClientSuggestions(allClients); // Show all clients initially
+                        }
+                    })
+                    .catch(error => console.error("Error fetching clients:", error));
+            } else {
+                displayClientSuggestions(allClients); // Show cached clients
             }
-        ];
-
-        const clientInput = document.getElementById('clientNameInput');
-        const suggestionsList = document.getElementById('clientSuggestions');
-        const addressInput = document.getElementById('clientAddress');
-        const phoneInput = document.getElementById('clientPhoneNo');
-        const debtInput = document.getElementById('clientDebt');
-
-        // Function to show suggestions
-        function showAllClientSuggestions() {
-            suggestionsList.innerHTML = '';
-            clientsData.forEach(client => {
-                const li = document.createElement('li');
-                li.textContent = client.name;
-                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                li.onclick = function () {
-                    clientInput.value = client.name;
-                    addressInput.value = client.address;
-                    phoneInput.value = client.phoneNo;
-                    debtInput.value = client.debt.toFixed(2);
-                    suggestionsList.style.display = 'none';
-                    updateGrandTotal(); // Update grand total when a client is selected
-                };
-                suggestionsList.appendChild(li);
-            });
-            suggestionsList.style.display = 'block';
         }
 
-        // Event listener for input and click to show suggestions
-        clientInput.addEventListener('input', function () {
-            const inputValue = clientInput.value.toLowerCase();
-            const filteredClients = clientsData.filter(client => client.name.toLowerCase().includes(inputValue));
-            suggestionsList.innerHTML = '';
+        // Filter clients based on the input value (frontend filtering)
+        function searchClients(value) {
+            const filteredClients = allClients.filter(client =>
+                client.name.toLowerCase().includes(value.toLowerCase())
+            );
+            displayClientSuggestions(filteredClients); // Display filtered suggestions
+        }
 
-            if (filteredClients.length > 0) {
-                suggestionsList.style.display = 'block';
-                filteredClients.forEach(client => {
+        // Display client suggestions in the dropdown
+        function displayClientSuggestions(clients) {
+            const suggestionsBox = document.getElementById('clientSuggestions');
+            suggestionsBox.innerHTML = ''; // Clear previous results
+
+            if (clients.length > 0) {
+                suggestionsBox.classList.remove('hidden');
+                clients.forEach(client => {
                     const li = document.createElement('li');
                     li.textContent = client.name;
                     li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                    li.onclick = function () {
-                        clientInput.value = client.name;
-                        addressInput.value = client.address;
-                        phoneInput.value = client.phoneNo;
-                        debtInput.value = client.debt.toFixed(2);
-                        suggestionsList.style.display = 'none';
-                        updateGrandTotal(); // Update grand total when a client is selected
-                    };
-                    suggestionsList.appendChild(li);
+                    li.onclick = () => selectClient(client);
+                    suggestionsBox.appendChild(li);
                 });
             } else {
-                suggestionsList.style.display = 'none';
+                suggestionsBox.classList.add('hidden'); // Hide dropdown if no results
+            }
+        }
+
+        // Select a client and populate the fields
+        function selectClient(client) {
+            document.getElementById('clientNameInput').value = client.name;
+            document.getElementById('clientAddress').value = client.address;
+            document.getElementById('clientPhoneNo').value = client.phoneNo;
+            document.getElementById('clientDebt').value = client.debt;
+            document.getElementById('clientSuggestions').classList.add('hidden'); // Hide suggestions
+        }
+
+        // Hide suggestions if clicked outside
+        document.addEventListener('click', function (event) {
+            const suggestionsBox = document.getElementById('clientSuggestions');
+            const clientInput = document.getElementById('clientNameInput');
+            if (!clientInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.classList.add('hidden');
             }
         });
 
-        // Show suggestions on input field click
-        clientInput.addEventListener('click', function () {
-            showAllClientSuggestions();
-        });
-
-        // Dummy function for getting client debt (replace with your actual logic)
-        function getClientDebt(clientName) {
-            const client = clientsData.find(c => c.name === clientName);
-            return client ? client.debt : 0;
-        }
-
-        // Function to handle client selection and auto-fill debt
-        function handleClientSelection() {
-            const clientName = clientInput.value;
-            const clientDebtValue = getClientDebt(clientName);
-            document.getElementById('clientDebt').value = clientDebtValue.toFixed(2);
-            updateGrandTotal(); // Update the grand total
-        }
 
         // Update the grand total including client debt
         function updateGrandTotal() {
@@ -480,9 +446,6 @@
             // Directly update remaining amount with grand total initially
             document.getElementById('remainingAmountInput').value = grandTotal.toFixed(2);
         }
-
-
-
         // Function to update remaining amount when paidAmount is entered
         function updateRemainingAmount() {
             const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
@@ -497,7 +460,6 @@
                 document.getElementById('paidAmountInput').value = paidAmount.toFixed(2);
                 remainingAmount = 0;  // If paidAmount equals grandTotal, remainingAmount becomes 0
             }
-
             // Update the remaining amount field
             document.getElementById('remainingAmountInput').value = remainingAmount.toFixed(2);
         }
@@ -507,8 +469,5 @@
 
         // Call updateGrandTotal initially to set initial grandTotal and remainingAmount values
         updateGrandTotal();
-
-
     </script>
-
 }
