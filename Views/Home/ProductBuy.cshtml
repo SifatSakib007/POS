@@ -49,6 +49,12 @@
                         <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
+                    <!-- Quantity -->
+                    <div class="relative flex items-center mt-4">
+                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
+                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <span class="text-danger"></span>
+                    </div>
 
                     <!-- পরিমাণ  -->
                     <div class="relative flex items-center  mt-4">
@@ -90,7 +96,6 @@
         </div>
     </div>
 
-
     @* responsive form start *@
     <form class="font-[sans-serif] m-6 max-w-4xl mx-auto">
 
@@ -104,7 +109,6 @@
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
-
 
             <!-- Client Selection Section -->
             <div class="relative flex items-center mb-4">
@@ -144,7 +148,6 @@
                        class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
             </div>
 
-
             <div class="relative flex items-center ">
                 <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সর্বমোট টাকা</label>
                 <input id="grandTotal" type="number" placeholder="সর্বমোট টাকা"
@@ -178,77 +181,77 @@
     @* @await Html.PartialAsync("_ValidationScriptsPartial") *@
     <script>
         // start
-        // Function to fetch all products when the input field is focused
-            function fetchAllProducts() {
-                const suggestionsBox = document.getElementById('suggestions');
-                suggestionsBox.innerHTML = ''; // Clear previous results
-                suggestionsBox.classList.remove('hidden');
+              let allProducts = []; // Store all products once
 
-                fetch('/Home/GetAllProducts') // Adjust this URL to get all products
+        // Fetch all products when the input field is focused
+        function fetchAllProducts() {
+            const suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = ''; // Clear previous results
+            suggestionsBox.classList.remove('hidden');
+
+            if (allProducts.length === 0) {
+                // Fetch products only once
+                fetch('/Home/GetAllProducts') // Adjust URL to fetch all products once
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.products.length > 0) {
-                            data.products.forEach(product => {
-                                const li = document.createElement('li');
-                                li.textContent = product.productName;
-                                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                                li.onclick = () => selectProduct(product);
-                                suggestionsBox.appendChild(li);
-                            });
+                            allProducts = data.products; // Store products locally
+                            displaySuggestions(allProducts); // Show all products initially
                         }
                     })
                     .catch(error => {
-                        console.error(error);
+                        console.error("Error fetching products:", error);
                     });
+            } else {
+                displaySuggestions(allProducts); // Show cached products
             }
+        }
 
-            // Function to search for products as the user types
-            function searchProducts(searchTerm) {
-                const suggestionsBox = document.getElementById('suggestions');
-                suggestionsBox.innerHTML = ''; // Clear previous results
+        // Function to filter products based on user input (frontend filtering)
+        function searchProducts(searchTerm) {
+            const filteredProducts = allProducts.filter(product =>
+                product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            displaySuggestions(filteredProducts); // Display filtered suggestions
+        }
 
-                if (searchTerm.length === 0) {
-                    fetchAllProducts(); // Show all products if search term is empty
-                    return;
-                }
+        // Function to display suggestions in the dropdown
+        function displaySuggestions(products) {
+            const suggestionsBox = document.getElementById('suggestions');
+            suggestionsBox.innerHTML = ''; // Clear previous results
 
-                fetch(`/Home/SearchProducts?term=${encodeURIComponent(searchTerm)}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success && data.products.length > 0) {
-                            suggestionsBox.classList.remove('hidden');
-                            data.products.forEach(product => {
-                                const li = document.createElement('li');
-                                li.textContent = product.productName;
-                                li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                                li.onclick = () => selectProduct(product);
-                                suggestionsBox.appendChild(li);
-                            });
-                        } else {
-                            suggestionsBox.classList.add('hidden'); // Hide dropdown if no results
-                        }
-                    })
-                    .catch(error => console.error(error));
+            if (products.length > 0) {
+                suggestionsBox.classList.remove('hidden');
+                products.forEach(product => {
+                    const li = document.createElement('li');
+                    li.textContent = product.productName;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = () => selectProduct(product);
+                    suggestionsBox.appendChild(li);
+                });
+            } else {
+                suggestionsBox.classList.add('hidden'); // Hide dropdown if no results
             }
+        }
 
-            // Function to select a product
-            function selectProduct(product) {
-                document.getElementById('productName').value = product.productName;
-                document.getElementById('SelectedProductId').value = product.productId;
-                document.getElementById('previousBuyPrice').value = product.buyPrice; // Adjusted based on fetched product details
+        // Function to select a product
+        function selectProduct(product) {
+            document.getElementById('productName').value = product.productName;
+            document.getElementById('SelectedProductId').value = product.productId;
+            document.getElementById('previousBuyPrice').value = product.buyPrice;
 
-                // Hide suggestions after selection
-                document.getElementById('suggestions').classList.add('hidden');
+            document.getElementById('suggestions').classList.add('hidden'); // Hide suggestions after selection
+        }
+
+        // Close the dropdown if clicked outside
+        document.addEventListener('click', function (event) {
+            const suggestionsBox = document.getElementById('suggestions');
+            const productInput = document.getElementById('productName');
+            if (!productInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.classList.add('hidden');
             }
+        });
 
-            // Close the dropdown if clicked outside
-            document.addEventListener('click', function (event) {
-                const suggestionsBox = document.getElementById('suggestions');
-                const productInput = document.getElementById('productName');
-                if (!productInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
-                    suggestionsBox.classList.add('hidden');
-                }
-            });
         // Function to calculate total price
         function calculateTotalPrice() {
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
@@ -366,58 +369,50 @@
         // Add event listener to the Add Product button
         document.getElementById('addProductBtn').addEventListener('click', addProduct);
 
-                // Fetch all clients when the input field is focused
-        function fetchAllClients() {
-            const suggestionsBox = document.getElementById('clientSuggestions');
-            suggestionsBox.innerHTML = ''; // Clear previous results
-            suggestionsBox.classList.remove('hidden');
+               let allClients = []; // Store clients after fetching
 
-            fetch('/Home/GetClientDetails') // Replace 'ControllerName' with actual name
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.clients.length > 0) {
-                        data.clients.forEach(client => {
-                            const li = document.createElement('li');
-                            li.textContent = client.name;
-                            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                            li.onclick = () => selectClient(client);
-                            suggestionsBox.appendChild(li);
-                        });
-                    } else {
-                        suggestionsBox.classList.add('hidden');
-                    }
-                })
-                .catch(error => console.error(error));
+        // Fetch all clients when the input field is focused
+        function fetchAllClients() {
+            if (allClients.length === 0) {
+                fetch('/Home/GetClientDetails') // Adjust URL as needed
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.clients.length > 0) {
+                            allClients = data.clients; // Store fetched clients
+                            displayClientSuggestions(allClients); // Show all clients initially
+                        }
+                    })
+                    .catch(error => console.error("Error fetching clients:", error));
+            } else {
+                displayClientSuggestions(allClients); // Show cached clients
+            }
         }
 
-
-                // Filter clients based on the input value
+        // Filter clients based on the input value (frontend filtering)
         function searchClients(value) {
+            const filteredClients = allClients.filter(client =>
+                client.name.toLowerCase().includes(value.toLowerCase())
+            );
+            displayClientSuggestions(filteredClients); // Display filtered suggestions
+        }
+
+        // Display client suggestions in the dropdown
+        function displayClientSuggestions(clients) {
             const suggestionsBox = document.getElementById('clientSuggestions');
             suggestionsBox.innerHTML = ''; // Clear previous results
 
-            if (value.length === 0) {
-                fetchAllClients();
-                return;
+            if (clients.length > 0) {
+                suggestionsBox.classList.remove('hidden');
+                clients.forEach(client => {
+                    const li = document.createElement('li');
+                    li.textContent = client.name;
+                    li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
+                    li.onclick = () => selectClient(client);
+                    suggestionsBox.appendChild(li);
+                });
+            } else {
+                suggestionsBox.classList.add('hidden'); // Hide dropdown if no results
             }
-
-                   fetch(`/Home/SearchClients?term=${encodeURIComponent(value)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.clients.length > 0) {
-                        suggestionsBox.classList.remove('hidden');
-                        data.clients.forEach(client => {
-                            const li = document.createElement('li');
-                            li.textContent = client.name;
-                            li.classList.add('cursor-pointer', 'p-2', 'hover:bg-gray-200');
-                            li.onclick = () => selectClient(client);
-                            suggestionsBox.appendChild(li);
-                        });
-                    } else {
-                        suggestionsBox.classList.add('hidden');
-                    }
-                })
-                .catch(error => console.error(error));
         }
 
         // Select a client and populate the fields
@@ -426,18 +421,18 @@
             document.getElementById('clientAddress').value = client.address;
             document.getElementById('clientPhoneNo').value = client.phoneNo;
             document.getElementById('clientDebt').value = client.debt;
-
             document.getElementById('clientSuggestions').classList.add('hidden'); // Hide suggestions
         }
 
-        // Hide suggestions when clicking outside
-        document.addEventListener('click', function(event) {
+        // Hide suggestions if clicked outside
+        document.addEventListener('click', function (event) {
             const suggestionsBox = document.getElementById('clientSuggestions');
             const clientInput = document.getElementById('clientNameInput');
             if (!clientInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
                 suggestionsBox.classList.add('hidden');
             }
         });
+
 
         // Update the grand total including client debt
         function updateGrandTotal() {
@@ -451,9 +446,6 @@
             // Directly update remaining amount with grand total initially
             document.getElementById('remainingAmountInput').value = grandTotal.toFixed(2);
         }
-
-
-
         // Function to update remaining amount when paidAmount is entered
         function updateRemainingAmount() {
             const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
@@ -468,7 +460,6 @@
                 document.getElementById('paidAmountInput').value = paidAmount.toFixed(2);
                 remainingAmount = 0;  // If paidAmount equals grandTotal, remainingAmount becomes 0
             }
-
             // Update the remaining amount field
             document.getElementById('remainingAmountInput').value = remainingAmount.toFixed(2);
         }
@@ -478,8 +469,5 @@
 
         // Call updateGrandTotal initially to set initial grandTotal and remainingAmount values
         updateGrandTotal();
-
-
     </script>
-
 }

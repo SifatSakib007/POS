@@ -21,6 +21,17 @@ namespace POS.Controllers
             _db = db;
         }
 
+        // Method for fetching the logged-in user ID
+        private int? GetLoggedInUserId()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (int.TryParse(userIdString, out int userId))
+            {
+                return userId;
+            }
+            return null;
+        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult AdminDashboard()
         {
@@ -47,21 +58,17 @@ namespace POS.Controllers
         // Private method to load products and customers
         private async Task<ProductCustomerViewModel> LoadProductCustomerViewModelAsync()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int? userId = null;
-
-            if(int.TryParse(userIdString, out int parsedUserId))
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
             {
-                userId = parsedUserId; // Successfully parsed the string to an integer
-            }
-            if(userId == null)
-            {
-                return null; // Return null if the userId is not valid
+                return null; // Return null if the user ID is not valid
             }
 
+            // Fetch products and customers associated with the logged-in user
             var products = await _db.Product.Where(p => p.UserId == userId).ToListAsync();
             var customers = await _db.Customer.Where(c => c.UserId == userId).ToListAsync();
 
+            // Initialize and return the view model
             return new ProductCustomerViewModel
             {
                 Products = products,
@@ -87,12 +94,20 @@ namespace POS.Controllers
             return View(viewModel);
         }
 
-        // GET: ProductSell - Displays the sell page
+
         // GET: Fetches product details for a specific product ID (for AJAX)
         [HttpGet]
         public async Task<IActionResult> GetProductDetails(int productId)
         {
-            var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == productId);
+            int? userId = GetLoggedInUserId(); // Retrieve the logged-in user ID
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "User not authenticated." });
+            }
+
+            // Fetch the product associated with the logged-in user
+            var product = await _db.Product
+                .FirstOrDefaultAsync(p => p.ProductId == productId && p.UserId == userId);
 
             if (product != null)
             {
@@ -113,24 +128,6 @@ namespace POS.Controllers
             return Json(new { success = false, message = "Product not found." });
         }
 
-        // Method to search products based on the term
-        [HttpGet]
-        public async Task<IActionResult> SearchProducts(string term)
-        {
-            var products = await _db.Product
-                .Where(p => p.ProductName.Contains(term))
-                .Select(p => new
-                {
-                    productId = p.ProductId,
-                    productName = p.ProductName,
-                    buyPrice = p.BuyPrice,
-                    stock = p.Stock,
-                    unit = p.Unit
-                })
-                .ToListAsync();
-
-            return Json(new { success = true, products });
-        }
 
         [HttpGet]
         public async Task<IActionResult> SearchCustomers(string term)
@@ -153,7 +150,15 @@ namespace POS.Controllers
         [HttpGet]
         public async Task<JsonResult> GetCustomerDetails(int customerId)
         {
-            var customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == customerId);
+            int? userId = GetLoggedInUserId(); // Retrieve the logged-in user ID
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "User not authenticated." });
+            }
+
+            // Fetch the customer associated with the logged-in user
+            var customer = await _db.Customer
+                .FirstOrDefaultAsync(c => c.Id == customerId && c.UserId == userId);
 
             if (customer != null)
             {
@@ -173,7 +178,8 @@ namespace POS.Controllers
 
             return Json(new { success = false, message = "Customer not found!" });
         }
-        
+
+
         // GET: ProductSell - Displays the sell page
         [Authorize(Roles = "Client")]
         [HttpGet]
@@ -279,12 +285,10 @@ namespace POS.Controllers
                     totalQuantity = totalQuantity.TrimEnd(',', ' ');
 
 
-                    var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    int? userId = null;
-
-                    if (int.TryParse(userIdString, out int parsedUserId))
+                    int? userId = GetLoggedInUserId();
+                    if (userId == null)
                     {
-                        userId = parsedUserId; // Successfully parsed the string to an integer
+                        return Unauthorized("User not authenticated."); // Return an unauthorized response if the user is not authenticated
                     }
 
                     // Create and populate the Sell entity with combined product data
@@ -372,27 +376,26 @@ namespace POS.Controllers
                 }
             }
         }
-        
+
         public async Task<IActionResult> ProductSellReport()
         {
-            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int? userId = null;
-
-            if (int.TryParse(userIdString, out int parsedUserId))
+            // Retrieve the logged-in user ID
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
             {
-                userId = parsedUserId; // Successfully parsed the string to an integer
+                return Unauthorized("User not authenticated."); // Return an unauthorized response if the user is not authenticated
             }
-            // Fetch all sell records with related product and customer details
+
+            // Fetch all sell records with related product and customer details, filtered by user ID
             var sellReport = await _db.Sell
-                .Where(s => s.UserId == userId) // Filter by user ID
-                .Include(s => s.Product)  
-                .Include(s => s.Customer) 
+                .Where(s => s.UserId == userId)
+                .Include(s => s.Product)
+                .Include(s => s.Customer)
                 .ToListAsync();
 
             // Pass the data directly to the view
             return View(sellReport);
         }
-
 
         // GET: Sell/Edit/{id}
         [HttpGet]
@@ -582,8 +585,17 @@ namespace POS.Controllers
         // GET: CustomerList - Show all customers in a table
         public async Task<IActionResult> CustomerList()
         {
-            // Fetch all customers from the database
-            var customers = await _db.Customer.ToListAsync();
+            // Retrieve the logged-in user ID
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
+            {
+                return Unauthorized("User not authenticated."); // Return an unauthorized response if the user is not authenticated
+            }
+
+            // Fetch all customers associated with the logged-in user
+            var customers = await _db.Customer
+                .Where(c => c.UserId == userId) // Filter customers by user ID
+                .ToListAsync();
 
             // Pass the customers to the view
             return View(customers);
@@ -592,17 +604,39 @@ namespace POS.Controllers
         // GET: CustomerDue (Displays the dropdown with all customers)
         public IActionResult CustomerDue()
         {
-            // Fetch all customers to populate the dropdown
-            var customers = _db.Customer.ToList();
-            ViewBag.CustomerList = new SelectList(customers, "Id", "Name"); // Passing customers to dropdown
+            // Retrieve the logged-in user ID
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
+            {
+                return Unauthorized("User not authenticated."); // Return an unauthorized response if the user is not authenticated
+            }
+
+            // Fetch customers associated with the logged-in user
+            var customers = _db.Customer
+                .Where(c => c.UserId == userId) // Filter customers by user ID
+                .ToList();
+
+            // Pass the filtered customers to the dropdown
+            ViewBag.CustomerList = new SelectList(customers, "Id", "Name");
             return View();
         }
 
+
         // GET: Get customer details by ID using AJAX
         [HttpGet]
-        public JsonResult GetCustomerDetailsForDueCustomer(int id)
+        public async Task<JsonResult> GetCustomerDetailsForDueCustomer(int id)
         {
-            var customer = _db.Customer.FirstOrDefault(c => c.Id == id);
+            // Retrieve the logged-in user ID
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "User not authenticated." });
+            }
+
+            // Fetch the customer based on the ID and user ID
+            var customer = await _db.Customer
+                .FirstOrDefaultAsync(c => c.Id == id && c.UserId == userId); // Ensure the customer belongs to the logged-in user
+
             if (customer == null)
             {
                 return Json(new { success = false, message = "Customer not found" });
@@ -616,6 +650,7 @@ namespace POS.Controllers
                 due = customer.Due
             });
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -633,16 +668,7 @@ namespace POS.Controllers
                 ModelState.AddModelError(nameof(model.DueClose), "Due Close amount must be greater than 0.");
             }
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int? userId = null;
-
-            if (int.TryParse(userIdString, out int parsedUserId))
-            {
-                userId = parsedUserId; // Successfully parsed the string to an integer
-            }
-            else
-            {
-                userId = null; // Failed to parse the string to an integer
-            }
+            int? userId = GetLoggedInUserId();
 
             // Now assign it to customer.UserId
             customer.UserId = userId;
@@ -708,25 +734,41 @@ namespace POS.Controllers
             return View(new ProductClientViewModel());
         }
         [HttpGet]
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var userId = GetLoggedInUserId();
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "User ID not found" });
+            }
+
+            var products = await _db.Product
+                .Where(p => p.UserId == userId) // Assuming a UserId column in Product table
+                .Select(p => new
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    BuyPrice = p.BuyPrice,
+                    Stock = p.Stock,
+                    Unit = p.Unit
+                })
+                .ToListAsync();
+
+
+            return Json(new { success = true, products });
+        }
         public async Task<IActionResult> GetClientDetails(int id)
         {
-            var clients = await _db.Client.Select(c => new
+            var userId = GetLoggedInUserId();
+            if (userId == null)
             {
-                clientId = c.Id,
-                name = c.Name,
-                address = c.Address,
-                phoneNo = c.PhoneNo,
-                debt = c.Debt
-            }).ToListAsync();
+                return Json(new { success = false, message = "User ID not found" });
+            }
 
-            return Json(new { success = true, clients });
-        }
-        // Method to search clients based on the term
-        [HttpGet]
-        public async Task<IActionResult> SearchClients(string term)
-        {
             var clients = await _db.Client
-                .Where(c => c.Name.Contains(term))
+                .Where(c => c.UserId == userId) // Assuming a UserId column in Client table
                 .Select(c => new
                 {
                     clientId = c.Id,
@@ -739,6 +781,7 @@ namespace POS.Controllers
 
             return Json(new { success = true, clients });
         }
+    
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public IActionResult ProductBuy(ProductClientViewModel viewModel)
@@ -749,12 +792,7 @@ namespace POS.Controllers
                 {
                     try
                     {
-                        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                        int? userId = null;
-                        if (int.TryParse(userIdString, out int parsedUserId))
-                        {
-                            userId = parsedUserId;
-                        }
+                        int? userId = GetLoggedInUserId();
 
                         // Assign userId to both product and client
                         viewModel.Product.UserId = userId;
@@ -802,25 +840,48 @@ namespace POS.Controllers
             return View(viewModel); // Return the form with validation errors
         }
 
-        public ActionResult ProductBuyList()
+        public async Task<IActionResult> ProductBuyList()
         {
-            var products = _db.Product.ToList();
+            // Retrieve the logged-in user ID
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
+            {
+                // Optionally, you could return an error view or redirect to a login page
+                return RedirectToAction("Login", "RegLog"); // Redirect to login if user is not authenticated
+            }
+
+            // Fetch products associated with the logged-in user
+            var products = await _db.Product
+                .Where(p => p.UserId == userId) // Ensure the product belongs to the logged-in user
+                .ToListAsync();
+
             return View(products);
         }
 
+
         [HttpGet]
-        public IActionResult UpdateProductStock(int id)
+        public async Task<IActionResult> UpdateProductStock(int id)
         {
-            // Find the product by ID
-            var product = _db.Product.FirstOrDefault(p => p.ProductId == id);
+            // Retrieve the logged-in user ID
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
+            {
+                // Optionally, redirect to the login page if user is not authenticated
+                return RedirectToAction("Login", "RegLog");
+            }
+
+            // Find the product by ID and check if it belongs to the logged-in user
+            var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == id && p.UserId == userId);
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound(); // Product not found or does not belong to the user
             }
+
             // Pass the product details to the view
             return View(product);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -901,22 +962,5 @@ namespace POS.Controllers
             return View();
         }
 
-
-
-        // Controller method to get total sales per day
-        public async Task<IActionResult> GetTotalSalesPerDay()
-        {
-            var totalSales = await _db.Sell
-                .GroupBy(s => s.CreatedAt.Value.Date)
-                .Select(g => new
-                {
-                    Date = g.Key,
-                    TotalSell = g.Sum(s => s.TotalTotalPrice)
-                })
-                .OrderBy(g => g.Date)
-                .ToListAsync();
-
-            return Json(totalSales);
-        }
     }
 }
