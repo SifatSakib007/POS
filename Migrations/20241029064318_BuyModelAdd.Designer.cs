@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POS.Models;
 
@@ -11,9 +12,11 @@ using POS.Models;
 namespace POS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241029064318_BuyModelAdd")]
+    partial class BuyModelAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +56,7 @@ namespace POS.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal?>("Deposit")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Invoice")
                         .HasColumnType("nvarchar(max)");
@@ -75,7 +78,7 @@ namespace POS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("ShabekDue")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("TotalSum")
                         .HasColumnType("decimal(18, 2)");

@@ -9,7 +9,6 @@
             <form id="" class="mt-8">
                 
                 <!-- Product Section -->
-
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
                     <!-- পণ্য সিলেক্ট করুন -->
                     <div class="relative mb-4">
@@ -45,21 +44,21 @@
 
                     <!-- স্টক (readonly) -->
                     <div class="relative flex items-center mt-4">
-                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <label for="previousStock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
+                        <input id="previousStock" placeholder="পূর্বের স্টক" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
                     <!-- Quantity -->
                     <div class="relative flex items-center mt-4">
-                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <label for="quantity" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্বের র্পরিমাণ</label>
+                        <input id="quantity" placeholder="র্পরিমাণ"  class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
                     <!-- পরিমাণ  -->
                     <div class="relative flex items-center  mt-4">
                         <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পণ্যের একক</label>
-                        <input type="text" asp-for="Product.Unit" placeholder="পণ্যের একক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <input type="text" id="quantity" placeholder="পণ্যের একক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
@@ -81,6 +80,7 @@
                                 <th class="px-4 py-2">পণ্যের নাম</th>
                                 <th class="px-4 py-2">পূর্ববর্তী ক্রয় মূল্য</th>
                                 <th class="px-4 py-2">ক্রয় মূল্য</th>
+                                <th class="px-4 py-2">স্টক</th>
                                 <th class="px-4 py-2">পরিমাণ</th>
                                 <th class="px-4 py-2">একক</th>
                                 <th class="px-4 py-2">মোট মূল্য</th>
@@ -239,6 +239,7 @@
             document.getElementById('productName').value = product.productName;
             document.getElementById('SelectedProductId').value = product.productId;
             document.getElementById('previousBuyPrice').value = product.buyPrice;
+            document.getElementById('previousStock').value = product.stock;
 
             document.getElementById('suggestions').classList.add('hidden'); // Hide suggestions after selection
         }
@@ -256,13 +257,13 @@
         function calculateTotalPrice() {
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
             const stock = parseFloat(document.getElementById('stock').value) || 0;
-            const totalPrice = buyPrice * stock;
+            const totalPrice = buyPrice * quantity;
             document.getElementById('totalPrice').value = totalPrice.toFixed(2);
         }
 
         // Add event listeners for buyPrice and stock inputs
         document.getElementById('buyPrice').addEventListener('input', calculateTotalPrice);
-        document.getElementById('stock').addEventListener('input', calculateTotalPrice);
+        document.getElementById('quantity').addEventListener('input', calculateTotalPrice);
 
         // Function to add product
         function addProduct() {
@@ -270,13 +271,14 @@
             const previousBuyPrice = parseFloat(document.getElementById('previousBuyPrice').value) || null;
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
             const stock = parseFloat(document.getElementById('stock').value) || 0;
-            const totalPrice = buyPrice * stock;
+            const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+            const totalPrice = buyPrice * quantity;
 
-            if (!productName || stock <= 0) {
+            if (!productName || quantity <= 0) {
                 alert('পণ্য নাম এবং পরিমাণ ফিল্ড পূর্ণ করুন');
                 return;
             }
-
+           
             addProductToSuggestions(productName);
 
             const finalPreviousBuyPrice = previousBuyPrice !== null ? previousBuyPrice : buyPrice;
@@ -288,6 +290,7 @@
                     <td class="px-4 py-2">${finalPreviousBuyPrice.toFixed(2)}</td>
                     <td class="px-4 py-2">${buyPrice.toFixed(2)}</td>
                     <td class="px-4 py-2">${stock}</td>
+                    <td class="px-4 py-2">${quantity}</td>
                     <td class="px-4 py-2">${totalPrice.toFixed(2)}</td>
                     <td class="px-4 py-2">
                         <button class="text-red-500" onclick="removeProduct(this)">মুছুন</button>
@@ -337,6 +340,7 @@
             document.getElementById('previousBuyPrice').value = '';
             document.getElementById('buyPrice').value = '';
             document.getElementById('stock').value = '';
+            document.getElementById('quantity').value = '';
             document.getElementById('totalPrice').value = '';
         }
 
@@ -354,12 +358,15 @@
             const previousBuyPrice = parseFloat(row.cells[1].textContent);
             const buyPrice = parseFloat(row.cells[2].textContent);
             const stock = parseFloat(row.cells[3].textContent);
+            const quantity = parseFloat(row.cells[4].textContent);
 
             // Fill the input fields with the current row data for editing
             document.getElementById('productName').value = productName;
             document.getElementById('previousBuyPrice').value = previousBuyPrice;
             document.getElementById('buyPrice').value = buyPrice;
-            document.getElementById('stock').value = stock;
+            document.getElementById('previousStock').value = stock;
+            document.getElementById('quantity').value = quantity;
+            document.getElementById('quantity').value = quantity;
 
             // Remove the current row
             row.remove();
@@ -432,8 +439,6 @@
                 suggestionsBox.classList.add('hidden');
             }
         });
-
-
         // Update the grand total including client debt
         function updateGrandTotal() {
             const totalPrice = parseFloat(document.getElementById('totalTotalPrice').value) || 0;
@@ -469,5 +474,74 @@
 
         // Call updateGrandTotal initially to set initial grandTotal and remainingAmount values
         updateGrandTotal();
+
+
+        // Function to submit the form
+        $(document).on('click', '#submitButton', function(){
+            let products = [];
+            let client = {};
+            // Get all products from the table
+            const productTableBody = document.getElementById('productTable').querySelector('tbody');
+            const rows = productTableBody.getElementsByTagName('tr');
+            for (let row of rows) {
+                const productName = row.cells[0].textContent;
+                const previousBuyPrice = parseFloat(row.cells[1].textContent);
+                const buyPrice = parseFloat(row.cells[2].textContent);
+                const stock = parseFloat(row.cells[3].textContent);
+                const quantity = parseFloat(row.cells[4].textContent);
+                const totalPrice = parseFloat(row.cells[5].textContent);
+                products.push({
+                    productName,
+                    previousBuyPrice,
+                    buyPrice,
+                    stock,
+                    quantity,
+                    totalPrice
+                });
+            }
+            console.log("Products: ", products);
+            // Get client details
+            client = {
+                name: document.getElementById('clientNameInput').value,
+                address: document.getElementById('clientAddress').value,
+                phoneNo: document.getElementById('clientPhoneNo').value,
+                debt: parseFloat(document.getElementById('clientDebt').value) || 0
+            };
+            console.log("Client: ", client);
+            // Get grand total and remaining amount
+            const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
+            const paidAmount = parseFloat(document.getElementById('paidAmountInput').value) || 0;
+            const remainingAmount = parseFloat(document.getElementById('remainingAmountInput').value) || 0;
+            console.log("Grand Total: ", grandTotal);
+            console.log("Paid Amount: ", paidAmount);
+            console.log("Remaining Amount: ", remainingAmount);
+
+            // Prepare the data to send to the server
+            const data = {
+                products,
+                client,
+                grandTotal,
+                paidAmount,
+                remainingAmount
+            };
+            console.log("Data to send: ", data);
+            // Send the data to the server
+            fetch('/Home/ProductBuy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('পণ্য এবং ক্লায়েন্ট সফলভাবে যোগ করা হয়েছে।');
+                        location.reload(); // Reload the page after successful submission
+                    } else {
+                        alert('কিছু ভুল হয়েছে। দয়া করে আববার চেষ্টা করুন।');
+                    }
+        });
+        });
     </script>
 }
