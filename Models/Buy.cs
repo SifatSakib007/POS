@@ -33,7 +33,9 @@ namespace POS.Models
         public string? ClientShopName { get; set; }  // Navigation property
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? TotalSum { get; set; } = 0;
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? ShabekDue { get; set; } = 0;
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal? Deposit { get; set; } = 0;
 
         // Additional tracking fields

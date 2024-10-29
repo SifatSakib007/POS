@@ -44,14 +44,14 @@
 
                     <!-- স্টক (readonly) -->
                     <div class="relative flex items-center mt-4">
-                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <label for="previousStock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
+                        <input id="previousStock" placeholder="পূর্বের স্টক" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
                     <!-- Quantity -->
                     <div class="relative flex items-center mt-4">
-                        <label for="previousStock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্বের র্পরিমাণ</label>
-                        <input id="previousStock" placeholder="পূর্বের র্পরিমাণ" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <label for="quantity" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্বের র্পরিমাণ</label>
+                        <input id="quantity" placeholder="র্পরিমাণ"  class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
@@ -238,7 +238,7 @@
             document.getElementById('productName').value = product.productName;
             document.getElementById('SelectedProductId').value = product.productId;
             document.getElementById('previousBuyPrice').value = product.buyPrice;
-            document.getElementById('previousBuyPrice').value = product.stock;
+            document.getElementById('previousStock').value = product.stock;
 
             document.getElementById('suggestions').classList.add('hidden'); // Hide suggestions after selection
         }
@@ -256,13 +256,13 @@
         function calculateTotalPrice() {
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
             const stock = parseFloat(document.getElementById('stock').value) || 0;
-            const totalPrice = buyPrice * stock;
+            const totalPrice = buyPrice * quantity;
             document.getElementById('totalPrice').value = totalPrice.toFixed(2);
         }
 
         // Add event listeners for buyPrice and stock inputs
         document.getElementById('buyPrice').addEventListener('input', calculateTotalPrice);
-        document.getElementById('stock').addEventListener('input', calculateTotalPrice);
+        document.getElementById('quantity').addEventListener('input', calculateTotalPrice);
 
         // Function to add product
         function addProduct() {
@@ -270,9 +270,10 @@
             const previousBuyPrice = parseFloat(document.getElementById('previousBuyPrice').value) || null;
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
             const stock = parseFloat(document.getElementById('stock').value) || 0;
-            const totalPrice = buyPrice * stock;
+            const stock = parseFloat(document.getElementById('quantity').value) || 0;
+            const totalPrice = buyPrice * quantity;
 
-            if (!productName || stock <= 0) {
+            if (!productName || quantity <= 0) {
                 alert('পণ্য নাম এবং পরিমাণ ফিল্ড পূর্ণ করুন');
                 return;
             }
@@ -359,7 +360,7 @@
             document.getElementById('productName').value = productName;
             document.getElementById('previousBuyPrice').value = previousBuyPrice;
             document.getElementById('buyPrice').value = buyPrice;
-            document.getElementById('stock').value = stock;
+            document.getElementById('previousStock').value = stock;
 
             // Remove the current row
             row.remove();
@@ -490,6 +491,7 @@
                     totalPrice
                 });
             }
+            console.log("Products: ", products);
             // Get client details
             client = {
                 name: document.getElementById('clientNameInput').value,
@@ -497,10 +499,15 @@
                 phoneNo: document.getElementById('clientPhoneNo').value,
                 debt: parseFloat(document.getElementById('clientDebt').value) || 0
             };
+            console.log("Client: ", client);
             // Get grand total and remaining amount
             const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
             const paidAmount = parseFloat(document.getElementById('paidAmountInput').value) || 0;
             const remainingAmount = parseFloat(document.getElementById('remainingAmountInput').value) || 0;
+            console.log("Grand Total: ", grandTotal);
+            console.log("Paid Amount: ", paidAmount);
+            console.log("Remaining Amount: ", remainingAmount);
+
             // Prepare the data to send to the server
             const data = {
                 products,
@@ -509,6 +516,7 @@
                 paidAmount,
                 remainingAmount
             };
+            console.log("Data to send: ", data);
             // Send the data to the server
             fetch('/Home/ProductBuy', {
                 method: 'POST',
