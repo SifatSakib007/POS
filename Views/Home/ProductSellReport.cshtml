@@ -24,17 +24,26 @@
             <h3 class="text-lg font-semibold">Total Sell Amount: <span id="totalSellAmount">0</span> Taka</h3>
         </div>
 
+
         <!-- Table for displaying the sell report -->
         <div class="overflow-auto rounded-lg shadow-lg">
             <table id="sellTable" class="min-w-full bg-white">
                 <thead>
                     <tr class="bg-gray-800 text-white text-left">
                         <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">Invoice</th>
-                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">Product Names</th>
-                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">Due</th>
-                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">Total Deposit</th>
-                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">Action</th>
+                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">
+                            <input type="text" id="productNameSearch" placeholder="পণ্যের নাম" class="mt-2 p-2 text-gray-700 rounded w-52" />
+                        </th>
+                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider text-center due-header cursor-pointer">
+                            Due <i class="fas fa-sort cursor-pointer"></i>
+                        </th>
+                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider text-center deposit-header cursor-pointer">
+                            Total Deposit <i class="fas fa-sort cursor-pointer"></i>
+                        </th>
+                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider text-center date-header cursor-pointer">
+                            Date <i class="fas fa-sort cursor-pointer"></i>
+                        </th>
+                        <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
@@ -42,10 +51,10 @@
                     {
                         <tr class="border-b border-gray-200 hover:bg-gray-100">
                             <td class="px-6 py-4 text-sm">@sell.Invoice</td>
-                            <td class="px-6 py-4 text-sm">@sell.ProductNames</td>
-                            <td class="px-6 py-4 text-sm">@sell.DuePrice</td>
-                            <td class="px-6 py-4 text-sm sell-price">@sell.Deposit</td>
-                            <td class="px-6 py-4 text-sm">
+                            <td class="px-6 py-4 text-sm product-name">@sell.ProductNames</td>
+                            <td class="px-6 py-4 text-sm text-center due">@sell.DuePrice</td>
+                            <td class="px-6 py-4 text-sm sell-price text-center">@sell.Deposit</td>
+                            <td class="px-6 py-4 text-sm text-center date">
                                 @if (sell.CreatedAt.HasValue)
                                 {
                                     @sell.CreatedAt.Value.ToString("yyyy-MM-dd hh:mm tt")
@@ -63,7 +72,7 @@
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
                                 <a asp-action="DeleteProductSell" asp-route-id="@sell.SellId" class="text-red-600 hover:text-red-800">
-                                    <i class="fas fa-trash-alt"></i> Delete
+                                    <i class="fas fa-trash-alt"></i> Delete a
                                 </a>
                             </td>
                         </tr>
@@ -71,6 +80,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 
     <!-- Flatpickr and Tailwind CSS Initialization -->
@@ -79,8 +89,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        // Initialize Flatpickr Date Pickers
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             flatpickr("#fromDate", {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
@@ -90,22 +99,20 @@
                 dateFormat: "Y-m-d H:i",
             });
 
-            // Function to calculate total sell amount
             function calculateTotal() {
                 let totalSell = 0;
-                $('#sellTable tbody tr:visible').each(function() {
+                $('#sellTable tbody tr:visible').each(function () {
                     const price = parseFloat($(this).find('.sell-price').text()) || 0;
                     totalSell += price;
                 });
                 $('#totalSellAmount').text(totalSell.toFixed(2));
             }
 
-            // Date Range Filtering Logic
             function filterByDate() {
                 const fromDate = new Date($('#fromDate').val());
                 const toDate = new Date($('#toDate').val());
 
-                $('#sellTable tbody tr').each(function() {
+                $('#sellTable tbody tr').each(function () {
                     const dateText = $(this).find('td:nth-child(5)').text();
                     const sellDate = new Date(dateText);
 
@@ -117,17 +124,68 @@
                     }
                 });
 
-                // Recalculate the total sell after filtering
                 calculateTotal();
             }
 
-            // Bind the filter action to date inputs
-            $('#fromDate, #toDate').on('change', function() {
-                filterByDate();
-            });
+            function filterByProductName() {
+                const searchTerm = $('#productNameSearch').val().toLowerCase();
 
-            // Initial total sell calculation
+                $('#sellTable tbody tr').each(function () {
+                    const productName = $(this).find('.product-name').text().toLowerCase();
+
+                    if (productName.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                calculateTotal();
+            }
+
+            // Sorting Logic for Due, Total Deposit, and Date columns with toggleable sort order
+            let sortOrder = -1; // Start with descending
+
+            function sortTable(column) {
+                let rows = Array.from(document.querySelectorAll('#sellTable tbody tr'));
+
+                rows.sort((a, b) => {
+                    let aValue, bValue;
+
+                    if (column === 'due') {
+                        aValue = parseFloat(a.querySelector('.due').textContent) || 0;
+                        bValue = parseFloat(b.querySelector('.due').textContent) || 0;
+                    } else if (column === 'deposit') {
+                        aValue = parseFloat(a.querySelector('.sell-price').textContent) || 0;
+                        bValue = parseFloat(b.querySelector('.sell-price').textContent) || 0;
+                    } else if (column === 'date') {
+                        aValue = new Date(a.querySelector('.date').textContent).getTime() || 0;
+                        bValue = new Date(b.querySelector('.date').textContent).getTime() || 0;
+                    }
+
+                    return (aValue - bValue) * sortOrder;
+                });
+
+                const tbody = document.querySelector('#sellTable tbody');
+                tbody.innerHTML = '';
+                rows.forEach(row => tbody.appendChild(row));
+
+                sortOrder *= -1; // Toggle the sort order for next click
+                calculateTotal();
+            }
+
+            // Bind filter action to date inputs and product name search input
+            $('#fromDate, #toDate').on('change', filterByDate);
+            $('#productNameSearch').on('input', filterByProductName);
+
+            // Bind sorting action to column headers
+            document.querySelector('.due-header').addEventListener('click', function () { sortTable('due'); });
+            document.querySelector('.deposit-header').addEventListener('click', function () { sortTable('deposit'); });
+            document.querySelector('.date-header').addEventListener('click', function () { sortTable('date'); });
+
             calculateTotal();
         });
     </script>
+
+
 </body>
