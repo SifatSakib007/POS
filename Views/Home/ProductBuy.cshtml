@@ -51,8 +51,8 @@
                     </div>
                     <!-- Quantity -->
                     <div class="relative flex items-center mt-4">
-                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <label for="previousStock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্বের র্পরিমাণ</label>
+                        <input id="previousStock" placeholder="পূর্বের র্পরিমাণ" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
@@ -239,7 +239,7 @@
             document.getElementById('productName').value = product.productName;
             document.getElementById('SelectedProductId').value = product.productId;
             document.getElementById('previousBuyPrice').value = product.buyPrice;
-
+            document.getElementById('previousStock').value = product.stock;
             document.getElementById('suggestions').classList.add('hidden'); // Hide suggestions after selection
         }
 
@@ -354,13 +354,13 @@
             const previousBuyPrice = parseFloat(row.cells[1].textContent);
             const buyPrice = parseFloat(row.cells[2].textContent);
             const stock = parseFloat(row.cells[3].textContent);
-
+            const total = parseFloat(row.cells[4].textContent);
             // Fill the input fields with the current row data for editing
             document.getElementById('productName').value = productName;
             document.getElementById('previousBuyPrice').value = previousBuyPrice;
             document.getElementById('buyPrice').value = buyPrice;
             document.getElementById('stock').value = stock;
-
+            document.getElementById('totalPrice').value = total;
             // Remove the current row
             row.remove();
             updateTotalPrice(); // Update total price after updating
