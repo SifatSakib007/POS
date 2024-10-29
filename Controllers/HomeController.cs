@@ -781,64 +781,123 @@ namespace POS.Controllers
 
             return Json(new { success = true, clients });
         }
-    
-        [HttpPost]
+
         [IgnoreAntiforgeryToken]
-        public IActionResult ProductBuy(ProductClientViewModel viewModel)
+        [HttpPost]
+        public async Task<IActionResult> ProductBuy([FromForm] ProductClientViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (viewModel == null)
             {
-                using (var transaction = _db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        int? userId = GetLoggedInUserId();
-
-                        // Assign userId to both product and client
-                        viewModel.Product.UserId = userId;
-                        viewModel.Client.UserId = userId;
-
-                        // Check if the client already exists, or add a new client
-                        var existingClient = _db.Client
-                            .FirstOrDefault(c => c.Name == viewModel.Client.Name && c.PhoneNo == viewModel.Client.PhoneNo);
-
-                        if (existingClient == null)
-                        {
-                            // Save new client data if no matching client exists
-                            _db.Client.Add(viewModel.Client);
-                            _db.SaveChanges();
-                        }
-                        else
-                        {
-                            // Use the existing client
-                            viewModel.Client = existingClient;
-                        }
-
-                        // Assign the ClientId to the product
-                        viewModel.Product.ClientId = viewModel.Client.Id;
-
-                        // Save the product data
-                        _db.Product.Add(viewModel.Product);
-                        _db.SaveChanges();
-
-                        transaction.Commit();
-
-                        TempData["success"] = "Successfully added product and client details!";
-                        return View(); // Stay on the same page
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        _logger.LogError(ex, "Error adding product and client details.");
-                        TempData["error"] = "Error adding product and client details!";
-                        return View(viewModel); // Return view with validation errors
-                    }
-                }
+                return BadRequest("ViewModel is null");
             }
 
-            TempData["error"] = "Error adding product details! Please check the form for validation errors.";
-            return View(viewModel); // Return the form with validation errors
+            // Validate the Product IDs and quantities
+            var productIds = viewModel.ProductIds?.Split(',').Select(int.Parse).ToList();
+            var quantities = viewModel.Quantities?.Split(',').Select(int.Parse).ToList();
+
+            if (productIds == null || !productIds.Any())
+            {
+                return BadRequest("Product IDs are null or empty.");
+            }
+
+            if (quantities == null || quantities.Count != productIds.Count)
+            {
+                return BadRequest("Invalid data received for product quantities.");
+            }
+            int? userId = GetLoggedInUserId();
+            if (userId == null)
+            {
+                return Unauthorized("User not authenticated."); // Return an unauthorized response if the user is not authenticated
+            }
+
+            using (var transaction = await _db.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // Creating a unique invoice number
+                    string invoice = $"INV{DateTime.Now:yyyyMMddHHmmss}"; // Generate a unique invoice number
+
+                    // Initialize variables to store combined product information
+                    string productNames = "";
+                    decimal totalBuyPrice = 0;
+                    string quantitiesString = "";
+                    // Loop through all selected products and accumulate information
+                    for (int i = 0; i < productIds.Count; i++)
+                    {
+                        var productId = productIds[i];
+                        var quantity = quantities[i];
+
+                        // Fetch product from the database
+                        var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == productId);
+                        if (product == null)
+                        {
+                            return BadRequest($"Invalid product selected for Product ID: {productId}.");
+                        }
+
+                        // Check stock availability
+                        if (product.Stock < quantity)
+                        {
+                            return BadRequest($"Insufficient stock for product '{product.ProductName}'");
+                        }
+
+                        // Calculate the total buy price
+                        decimal buyPrice = product.BuyPrice; // Assuming BuyPrice is a property of the Product
+                        totalBuyPrice += buyPrice * quantity;
+
+                        // Update stock
+                        product.Stock += quantity;
+
+                        // Concatenate product names
+                        productNames += $"{product.ProductName}, ";
+                        quantitiesString += $"{quantity}, ";
+
+                        // Update the product in the database
+                        _db.Product.Update(product);
+                    }
+
+                    // Trim the trailing comma and space from the product names
+                    productNames = productNames.TrimEnd(',', ' ');
+
+                    // Create the Buy entity
+                    var buy = new Buy
+                    {
+                        Invoice = invoice,
+                        ProductNames = productNames,
+                        BuyPricePerProduct = totalBuyPrice.ToString(),
+                        Quantities = quantitiesString,
+                        ClientId = viewModel.ClientId,
+                        UserId = userId
+                    };
+
+                    // Add the new buy record to the database
+                    _db.Buy.Add(buy);
+
+                    // Update customer due if applicable
+                    if (viewModel.ClientId.HasValue)
+                    {
+                        var client = await _db.Client.FirstOrDefaultAsync(c => c.Id == viewModel.ClientId.Value);
+                        if (client != null)
+                        {
+                            client.Debt += totalBuyPrice; // Update client due
+                            _db.Client.Update(client);
+                        }
+                    }
+
+                    // Save all changes
+                    await _db.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    // Return success response
+                    return Json(new { success = true, message = "Purchase recorded successfully!", invoice });
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return Json(new { success = false, message = "An error occurred while saving data: " + ex.Message });
+                }
+            }
         }
+
 
         public async Task<IActionResult> ProductBuyList()
         {

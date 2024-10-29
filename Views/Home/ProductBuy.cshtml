@@ -9,7 +9,6 @@
             <form id="" class="mt-8">
                 
                 <!-- Product Section -->
-
                 <div class="flex flex-col md:grid md:grid-cols-2 gap-4">
                     <!-- পণ্য সিলেক্ট করুন -->
                     <div class="relative mb-4">
@@ -51,15 +50,15 @@
                     </div>
                     <!-- Quantity -->
                     <div class="relative flex items-center mt-4">
-                        <label for="stock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পরিমাণ</label>
-                        <input id="stock" placeholder="স্টক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <label for="previousStock" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পূর্বের র্পরিমাণ</label>
+                        <input id="previousStock" placeholder="পূর্বের র্পরিমাণ" readonly class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
                     <!-- পরিমাণ  -->
                     <div class="relative flex items-center  mt-4">
                         <label class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">পণ্যের একক</label>
-                        <input type="text" asp-for="Product.Unit" placeholder="পণ্যের একক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                        <input type="text" id="quantity" placeholder="পণ্যের একক" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                         <span class="text-danger"></span>
                     </div>
 
@@ -239,6 +238,7 @@
             document.getElementById('productName').value = product.productName;
             document.getElementById('SelectedProductId').value = product.productId;
             document.getElementById('previousBuyPrice').value = product.buyPrice;
+            document.getElementById('previousBuyPrice').value = product.stock;
 
             document.getElementById('suggestions').classList.add('hidden'); // Hide suggestions after selection
         }
@@ -432,8 +432,6 @@
                 suggestionsBox.classList.add('hidden');
             }
         });
-
-
         // Update the grand total including client debt
         function updateGrandTotal() {
             const totalPrice = parseFloat(document.getElementById('totalTotalPrice').value) || 0;
@@ -469,5 +467,65 @@
 
         // Call updateGrandTotal initially to set initial grandTotal and remainingAmount values
         updateGrandTotal();
+
+
+        // Function to submit the form
+        $(document).on('click', '#submitButton', function(){
+            let products = [];
+            let client = {};
+            // Get all products from the table
+            const productTableBody = document.getElementById('productTable').querySelector('tbody');
+            const rows = productTableBody.getElementsByTagName('tr');
+            for (let row of rows) {
+                const productName = row.cells[0].textContent;
+                const previousBuyPrice = parseFloat(row.cells[1].textContent);
+                const buyPrice = parseFloat(row.cells[2].textContent);
+                const stock = parseFloat(row.cells[3].textContent);
+                const totalPrice = parseFloat(row.cells[4].textContent);
+                products.push({
+                    productName,
+                    previousBuyPrice,
+                    buyPrice,
+                    stock,
+                    totalPrice
+                });
+            }
+            // Get client details
+            client = {
+                name: document.getElementById('clientNameInput').value,
+                address: document.getElementById('clientAddress').value,
+                phoneNo: document.getElementById('clientPhoneNo').value,
+                debt: parseFloat(document.getElementById('clientDebt').value) || 0
+            };
+            // Get grand total and remaining amount
+            const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
+            const paidAmount = parseFloat(document.getElementById('paidAmountInput').value) || 0;
+            const remainingAmount = parseFloat(document.getElementById('remainingAmountInput').value) || 0;
+            // Prepare the data to send to the server
+            const data = {
+                products,
+                client,
+                grandTotal,
+                paidAmount,
+                remainingAmount
+            };
+            // Send the data to the server
+            fetch('/Home/ProductBuy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('পণ্য এবং ক্লায়েন্ট সফলভাবে যোগ করা হয়েছে।');
+                        location.reload(); // Reload the page after successful submission
+                    } else {
+                        alert('কিছু ভুল হয়েছে। দয়া করে আববার চেষ্টা করুন।');
+                    }
+        });
+        });
     </script>
 }
