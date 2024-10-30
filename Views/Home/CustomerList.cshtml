@@ -2,15 +2,16 @@
 
 <h2 class="text-2xl font-bold mb-4">Customer List</h2>
 
-<div class="mb-4">
-    <input type="text" id="customerFilter" placeholder="Search by name..." class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-</div>
 
 <table id="customerTable" class="min-w-full bg-white table-auto">
     <thead>
         <tr class="bg-gray-800 text-white">
-            <th class="px-4 py-2 text-left">Customer Name</th>
-            <th class="px-4 py-2 text-left">Phone Number</th>
+            <th class="px-2 py-2 text-left">
+                <input id="customerNameFilter" type="text" placeholder="Search by Customer Name" class="border rounded p-2 mr-2" />
+            </th>
+            <th class="px-2 py-2 text-left">
+                <input id="phoneNumberFilter" type="number" placeholder="Search by Phone Number" class="border rounded p-2 mr-2" />
+            </th>
             <th class="px-4 py-2 text-left">Address</th>
             <th class="px-4 py-2 text-left">Due</th>
             <th class="px-4 py-2 text-left">Installments</th> <!-- Modified header -->
@@ -33,18 +34,12 @@
                         var paymentAmounts = customer.PaymentAmounts?.Split(',') ?? new string[0];
                         var paymentDates = customer.PaymentDates?.Split(',') ?? new string[0];
 
-                        if (paymentAmounts.Length > 0 && paymentDates.Length > 0)
+                        if (paymentDates.Length > 0)
                         {
-                            for (int i = 0; i < paymentAmounts.Length; i++)
+                            int startIndex = Math.Max(0, paymentDates.Length - 3);
+                            for (int i = startIndex; i < paymentDates.Length; i++)
                             {
-                                string installmentNumber = i == 0 ? "1st" : i == 1 ? "2nd" : i == 2 ? "3rd" : (i + 1) + "th";
-
-                                <p><strong>@installmentNumber installment:</strong> @paymentAmounts[i]</p>
-
-                                if (i < paymentDates.Length)
-                                {
-                                    <p><strong>@installmentNumber installment date:</strong> @paymentDates[i]</p>
-                                }
+                                <p><strong>@(i + 1) installment date:</strong> @paymentDates[i]</p>
                             }
                         }
                         else
@@ -69,6 +64,7 @@
     </tbody>
 </table>
 
+
 <!-- Include the required DataTables JS and CSS for filtering functionality -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -76,17 +72,24 @@
 
 <!-- Initialize DataTables -->
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initialize DataTable
         var table = $('#customerTable').DataTable({
-            "paging": false,
-            "info": false, // Hide pagination and info
-            "dom": 'lrtip' // Hide default search input
+            "paging": true,
+            "info": false, // Hide pagination info
+            "dom": 'lrtip' // Default DataTable layout
         });
 
-        // Custom filter input
-        $('#customerFilter').on('keyup', function() {
-            table.search(this.value).draw();
+        // Custom filter input for Customer Name
+        $('#customerNameFilter').on('keyup', function () {
+            table.column(0).search(this.value).draw(); // Search in the first column (Customer Name)
+        });
+
+        // Custom filter input for Phone Number
+        $('#phoneNumberFilter').on('keyup', function () {
+            table.column(1).search(this.value).draw(); // Search in the second column (Phone Number)
         });
     });
 </script>
+
+
