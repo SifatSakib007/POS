@@ -298,6 +298,7 @@
 
             clearInputFields();
             updateTotalPrice();
+            updateGrandTotal(); // এটি যোগ করুন যাতে সাথে সাথে আপডেট হয়
         }
 
                 // Update total price
@@ -428,6 +429,8 @@
             document.getElementById('clientPhoneNo').value = client.phoneNo;
             document.getElementById('clientDebt').value = client.debt;
             document.getElementById('clientSuggestions').classList.add('hidden'); // Hide suggestions
+
+            updateGrandTotal(); // গ্র্যান্ড টোটাল এবং remainingAmountInput আপডেট করুন
         }
 
         // Hide suggestions if clicked outside
