@@ -34,7 +34,7 @@ namespace POS.Models
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? TotalSum { get; set; } = 0;
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal? ShabekDue { get; set; } = 0;
+        public decimal? ShabekDue { get; set; } = 0;    
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? Deposit { get; set; } = 0;
 

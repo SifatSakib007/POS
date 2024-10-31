@@ -791,103 +791,166 @@ namespace POS.Controllers
                 return BadRequest("ViewModel is null");
             }
 
-            // Validate the Product IDs and quantities
-            var productIds = viewModel.ProductIds?.Split(',').Select(int.Parse).ToList();
+            var productIds = viewModel.ProductIds?.Split(',').Select(id => int.TryParse(id, out var parsedId) ? parsedId : (int?)null).ToList();
             var quantities = viewModel.Quantities?.Split(',').Select(int.Parse).ToList();
-
-            if (productIds == null || !productIds.Any())
+            var productNames = viewModel.ProductNames?.Split(',');
+            var previousBuyPrices = viewModel.PreviousBuyPrices?.Split(',').Select(int.Parse).ToList();
+            var buyPricePerProduct = viewModel.BuyPricePerProduct?.Split(',').Select(int.Parse).ToList();
+            if (quantities == null || productIds == null || productNames == null || quantities.Count != productIds.Count || productIds.Count != productNames.Length)
             {
-                return BadRequest("Product IDs are null or empty.");
+                return BadRequest("Invalid product data.");
             }
 
-            if (quantities == null || quantities.Count != productIds.Count)
-            {
-                return BadRequest("Invalid data received for product quantities.");
-            }
             int? userId = GetLoggedInUserId();
             if (userId == null)
             {
-                return Unauthorized("User not authenticated."); // Return an unauthorized response if the user is not authenticated
+                return Unauthorized("User not authenticated.");
             }
 
             using (var transaction = await _db.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    // Creating a unique invoice number
-                    string invoice = $"INV{DateTime.Now:yyyyMMddHHmmss}"; // Generate a unique invoice number
-
-                    // Initialize variables to store combined product information
-                    string productNames = "";
+                    string invoice = $"INV{DateTime.Now:yyyyMMddHHmmss}";
                     decimal totalBuyPrice = 0;
+                    string productIdsString = "";
+                    string productNamesString = "";
                     string quantitiesString = "";
-                    // Loop through all selected products and accumulate information
+                    string previouBPString = "";
+                    string buyPPPString = "";
+
                     for (int i = 0; i < productIds.Count; i++)
                     {
                         var productId = productIds[i];
+                        var productName = productNames[i];
                         var quantity = quantities[i];
+                        var prevBuyP = previousBuyPrices[i];
+                        var buyPrice = buyPricePerProduct[i];
+                        Product product;
 
-                        // Fetch product from the database
-                        var product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == productId);
-                        if (product == null)
+                        // Check if product exists or create a new product entry
+                        if (productId.HasValue)
                         {
-                            return BadRequest($"Invalid product selected for Product ID: {productId}.");
+                            product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == productId.Value);
+                            if (product == null)
+                            {
+                                return BadRequest($"Invalid product ID: {productId.Value}");
+                            }
+                        }
+                        else
+                        {
+                            // Add new product if ProductId is null and ProductName is available
+                            product = new Product { ProductName = productName, Stock = quantity, CreatedAt = DateTime.Now, BuyPrice= buyPrice };
+                            await _db.Product.AddAsync(product);
+                            await _db.SaveChangesAsync();
                         }
 
-                        // Check stock availability
-                        if (product.Stock < quantity)
-                        {
-                            return BadRequest($"Insufficient stock for product '{product.ProductName}'");
-                        }
-
-                        // Calculate the total buy price
-                        decimal buyPrice = product.BuyPrice; // Assuming BuyPrice is a property of the Product
-                        totalBuyPrice += buyPrice * quantity;
-
-                        // Update stock
+                        // Update product stock and total buy price
                         product.Stock += quantity;
+                        //decimal buyPrice = product.BuyPrice;
+                        //totalBuyPrice += buyPrice * quantity;
+                        product.BuyPrice = buyPrice;
+                        product.PreviousBuyPrice = buyPrice;
 
-                        // Concatenate product names
-                        productNames += $"{product.ProductName}, ";
+                        // Concatenate product information
+                        productIdsString += $"{product.ProductId}, ";
+                        productNamesString += $"{product.ProductName}, ";
                         quantitiesString += $"{quantity}, ";
+                        previouBPString += $"{prevBuyP}, ";
+                        buyPPPString += $"{buyPrice}, ";
 
-                        // Update the product in the database
+                        product.EmployeeId = userId;
+                        product.UserId = userId;
+                        // Append new stock date and amount to the product fields
+                        // Update the AddStockDates and AddStockAmounts by appending the new data
+                        var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+                        product.AddStockDates = string.IsNullOrEmpty(product.AddStockDates)
+                            ? currentDate
+                            : $"{product.AddStockDates},{currentDate}";
+
+                        product.AddStockAmounts = string.IsNullOrEmpty(product.AddStockAmounts)
+                            ? quantity.ToString()
+                            : $"{product.AddStockAmounts},{quantity}";
+
+                        // Update the product
                         _db.Product.Update(product);
                     }
 
-                    // Trim the trailing comma and space from the product names
-                    productNames = productNames.TrimEnd(',', ' ');
+                    // Remove the trailing comma and space
+                    productNamesString = productNamesString.TrimEnd(',', ' ');
+                    productIdsString = productIdsString.TrimEnd(',', ' ');
+                    quantitiesString = quantitiesString.TrimEnd(',', ' ');
+                    previouBPString = previouBPString.TrimEnd(',', ' ');
+                    buyPPPString = buyPPPString.TrimEnd(',', ' ');
+
+                    // Handle client information
+                    Client client = null;
+                    if (viewModel.ClientId.HasValue)
+                    {
+                        client = await _db.Client.FirstOrDefaultAsync(c => c.Id == viewModel.ClientId.Value);
+                        if (client == null)
+                        {
+                            return BadRequest($"Invalid client ID: {viewModel.ClientId.Value}");
+                        }
+                        
+                    }
+                    else if (!string.IsNullOrWhiteSpace(viewModel.ClientName))
+                    {
+                        // Create new client if ClientId is null and ClientName is provided
+                        client = new Client
+                        {
+                            Name = viewModel.ClientName,
+                            Address = viewModel.ClientAddress,
+                            PhoneNo = viewModel.ClientPhoneNo,
+                            Debt = viewModel.ShabekDue,
+                            UserId = userId// Initial debt can be set here if necessary
+                        };
+                        await _db.Client.AddAsync(client);
+                        await _db.SaveChangesAsync();
+                    }
+
+                    // Update client debt
+                    if (client != null)
+                    {
+                        client.Debt = viewModel.ShabekDue;
+                        client.AddDebtDates = string.IsNullOrEmpty(client.AddDebtDates)
+                            ? DateTime.Now.ToString("yyyy-MM-dd")
+                            : $"{client.AddDebtDates},{DateTime.Now:yyyy-MM-dd}";
+
+                        //==========Jhamela ase ekhane ==========
+                        client.AddDebtAmounts = string.IsNullOrEmpty(client.AddDebtAmounts)
+                            ? viewModel.ShabekDue.ToString()
+                            : $"{client.AddDebtAmounts},{viewModel.ShabekDue}";
+                        
+                        _db.Client.Update(client);
+                    }
 
                     // Create the Buy entity
                     var buy = new Buy
                     {
                         Invoice = invoice,
-                        ProductNames = productNames,
-                        BuyPricePerProduct = totalBuyPrice.ToString(),
+                        ProductIds = productIdsString,
+                        ProductNames = productNamesString,
+                        PreviousBuyPrices = previouBPString,
+                        BuyPricePerProduct = buyPPPString,
                         Quantities = quantitiesString,
-                        ClientId = viewModel.ClientId,
-                        UserId = userId
+                        ClientId = client?.Id,
+                        UserId = userId,
+                        TotalSum = totalBuyPrice,
+                        ShabekDue = viewModel.ShabekDue,
+                        Deposit = viewModel.Deposit,
+                        ClientName = viewModel.ClientName ?? "Walk-in Client",
+                        ClientAddress = viewModel.ClientAddress ?? "N/A",
+                        ClientPhoneNo = viewModel.ClientPhoneNo ?? "N/A"
                     };
 
                     // Add the new buy record to the database
                     _db.Buy.Add(buy);
 
-                    // Update customer due if applicable
-                    if (viewModel.ClientId.HasValue)
-                    {
-                        var client = await _db.Client.FirstOrDefaultAsync(c => c.Id == viewModel.ClientId.Value);
-                        if (client != null)
-                        {
-                            client.Debt += totalBuyPrice; // Update client due
-                            _db.Client.Update(client);
-                        }
-                    }
-
                     // Save all changes
                     await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    // Return success response
                     return Json(new { success = true, message = "Purchase recorded successfully!", invoice });
                 }
                 catch (Exception ex)
@@ -897,6 +960,7 @@ namespace POS.Controllers
                 }
             }
         }
+
 
 
         public async Task<IActionResult> ProductBuyList()

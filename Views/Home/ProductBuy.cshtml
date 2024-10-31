@@ -212,6 +212,10 @@
             const filteredProducts = allProducts.filter(product =>
                 product.productName.toLowerCase().includes(searchTerm.toLowerCase())
             );
+                    // Clear SelectedProductId if manually typed name does not match any existing product
+            if (!filteredProducts.length) {
+                document.getElementById('SelectedProductId').value = '';
+            }
             displaySuggestions(filteredProducts);
         }
 
@@ -267,6 +271,7 @@
 
         // Add product to the table
         function addProduct() {
+            const productId = document.getElementById('SelectedProductId').value || null;
             const productName = document.getElementById('productName').value;
             const previousBuyPrice = parseFloat(document.getElementById('previousBuyPrice').value) || 0;
             const buyPrice = parseFloat(document.getElementById('buyPrice').value) || 0;
@@ -282,6 +287,7 @@
 
             const productTableBody = document.getElementById('productTable').querySelector('tbody');
             const newRow = productTableBody.insertRow();
+            newRow.setAttribute('data-product-id', productId);
             newRow.innerHTML = `
                 <td class="px-4 py-2">${productName}</td>
                 <td class="px-4 py-2">${previousBuyPrice.toFixed(2)}</td>
@@ -463,9 +469,9 @@
             if (paidAmount > grandTotal) {
                 alert('পরিশোধক্রিত টাকা বাকি টাকার থেকে বেশি হতে পারে না।');
                 // Set paidAmount to grandTotal
-                paidAmount = grandTotal;
+                paidAmount = 0;
                 document.getElementById('paidAmountInput').value = paidAmount.toFixed(2);
-                remainingAmount = 0;  // If paidAmount equals grandTotal, remainingAmount becomes 0
+                remainingAmount = grandTotal;  // If paidAmount equals grandTotal, remainingAmount becomes 0
             }
             // Update the remaining amount field
             document.getElementById('remainingAmountInput').value = remainingAmount.toFixed(2);
@@ -480,71 +486,98 @@
         document.addEventListener('DOMContentLoaded', updateGrandTotal);
 
         // Function to submit the form
-        $(document).on('click', '#submitButton', function(){
-            let products = [];
-            let client = {};
-            // Get all products from the table
-            const productTableBody = document.getElementById('productTable').querySelector('tbody');
-            const rows = productTableBody.getElementsByTagName('tr');
-            for (let row of rows) {
-                const productName = row.cells[0].textContent;
-                const previousBuyPrice = parseFloat(row.cells[1].textContent);
-                const buyPrice = parseFloat(row.cells[2].textContent);
-                const stock = parseFloat(row.cells[3].textContent);
-                const quantity = parseFloat(row.cells[4].textContent);
-                const totalPrice = parseFloat(row.cells[5].textContent);
-                products.push({
-                    productName,
-                    previousBuyPrice,
-                    buyPrice,
-                    stock,
-                    quantity,
-                    totalPrice
-                });
-            }
-            console.log("Products: ", products);
-            // Get client details
-            client = {
-                name: document.getElementById('clientNameInput').value,
-                address: document.getElementById('clientAddress').value,
-                phoneNo: document.getElementById('clientPhoneNo').value,
-                debt: parseFloat(document.getElementById('clientDebt').value) || 0
-            };
-            console.log("Client: ", client);
-            // Get grand total and remaining amount
-            const grandTotal = parseFloat(document.getElementById('grandTotal').value) || 0;
-            const paidAmount = parseFloat(document.getElementById('paidAmountInput').value) || 0;
-            const remainingAmount = parseFloat(document.getElementById('remainingAmountInput').value) || 0;
-            console.log("Grand Total: ", grandTotal);
-            console.log("Paid Amount: ", paidAmount);
-            console.log("Remaining Amount: ", remainingAmount);
+    $(document).on('click', '#submitButton', function(){
+    let productIds = [];
+    let quantities = [];
+    let previousBuyPrices = [];
+    let buyPrices = [];
+    let productNames = [];
 
-            // Prepare the data to send to the server
-            const data = {
-                products,
-                client,
-                grandTotal,
-                paidAmount,
-                remainingAmount
-            };
-            console.log("Data to send: ", data);
-            // Send the data to the server
-            fetch('/Home/ProductBuy', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('পণ্য এবং ক্লায়েন্ট সফলভাবে যোগ করা হয়েছে।');
-                        location.reload(); // Reload the page after successful submission
-                    } else {
-                        alert('কিছু ভুল হয়েছে। দয়া করে আববার চেষ্টা করুন।');
-                    }
-        });
-        });
+    // Gather product information from the table
+    const productTableBody = document.getElementById('productTable').querySelector('tbody');
+    const rows = productTableBody.getElementsByTagName('tr');
+
+    for (let row of rows) {
+        const productId = row.getAttribute('data-product-id'); // Retrieve productId
+        const productName = row.cells[0].textContent;
+        const previousBuyPrice = parseFloat(row.cells[1].textContent);
+        const buyPrice = parseFloat(row.cells[2].textContent);
+        const quantity = parseFloat(row.cells[4].textContent);
+
+                // Check if the productId is valid; if the user typed a new product, set productId to null
+                if (productId && productId !== '') {
+                    productIds.push(productId);  // Collect productId if it exists
+                } else {
+                    productIds.push(null); // Set to null if it's a manually entered product
+                }
+        productNames.push(productName);
+        previousBuyPrices.push(previousBuyPrice);
+        buyPrices.push(buyPrice);
+        quantities.push(quantity);
+    }
+
+    // Get client details
+           // Get client details
+        const clientIdInput = document.getElementById('clientIdInput');
+        const clientId = clientIdInput ? parseInt(clientIdInput.value) || null : null;
+
+        const clientName = document.getElementById('clientNameInput') ? document.getElementById('clientNameInput').value : null;
+        const clientAddress = document.getElementById('clientAddress') ? document.getElementById('clientAddress').value : null;
+        const clientPhoneNo = document.getElementById('clientPhoneNo') ? document.getElementById('clientPhoneNo').value : null;
+                // **Retrieve totalTotalPrice and add it to FormData as TotalPrice**
+            const totalTotalPrice = document.getElementById('totalTotalPrice') ? parseFloat(document.getElementById('totalTotalPrice').value) : 0;
+        //const shabekDue = parseFloat(document.getElementById('clientDebt') ? document.getElementById('clientDebt').value : 0);
+
+
+    // Prepare the main data object
+    const data = new FormData();
+    data.append('ProductIds', productIds.join(',')); 
+    data.append('Quantities', quantities.join(',')); 
+    data.append('ProductNames', productNames.join(',')); 
+    data.append('PreviousBuyPrices', previousBuyPrices.join(','));
+    data.append('BuyPricePerProduct', buyPrices.join(','));
+    data.append('ClientId', clientId);
+    data.append('ClientName', clientName);
+    data.append('ClientAddress', clientAddress);
+    data.append('ClientPhoneNo', clientPhoneNo);
+    data.append('TotalSum', totalTotalPrice);  // Added totalTotalPrice as TotalPrice
+    data.append('grandTotal', parseFloat(document.getElementById('grandTotal').value) || 0);
+    data.append('Deposit', parseFloat(document.getElementById('paidAmountInput').value) || 0);
+    data.append('ShabekDue', parseFloat(document.getElementById('remainingAmountInput').value) || 0);
+            // Log form data to verify before submission
+            console.log("Form Data:", {
+                ProductIds: productIds,
+                Quantities: quantities,
+                ProductNames: productNames,
+                PreviousBuyPrices: previousBuyPrices,
+                BuyPrices: buyPrices,
+                ClientId: clientId,
+                ClientName: clientName,
+                ClientAddress: clientAddress,
+                ClientPhoneNo: clientPhoneNo,
+                TotalPrice: totalTotalPrice,
+                grandTotal: parseFloat(document.getElementById('grandTotal').value) || 0,
+                Deposit: parseFloat(document.getElementById('paidAmountInput').value) || 0,
+                ShabekDue: parseFloat(document.getElementById('remainingAmountInput').value) || 0
+            });
+    
+    // Send the data to the server
+    fetch('/Home/ProductBuy', {
+        method: 'POST',
+        body: data // Send FormData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('পণ্য এবং ক্লায়েন্ট সফলভাবে যোগ করা হয়েছে।');
+            location.reload();
+        } else {
+            alert('কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+        
     </script>
 }
