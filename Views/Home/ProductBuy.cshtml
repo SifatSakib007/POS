@@ -121,6 +121,7 @@
                        oninput="searchClients(this.value)"
                        autocomplete="off" />
                 <ul id="clientSuggestions" class="absolute z-10 bg-white border border-gray-300 mt-1 hidden w-full top-16"></ul>
+                <input type="hidden" id="SelectedClientId" name="SelectedClientId" value="" />
                 <span id="client-error-message" class="text-red-500 text-sm"></span>
             </div>
 
@@ -400,12 +401,15 @@
                 displayClientSuggestions(allClients); // Show cached clients
             }
         }
-
+                
         // Filter clients based on the input value (frontend filtering)
         function searchClients(value) {
             const filteredClients = allClients.filter(client =>
                 client.name.toLowerCase().includes(value.toLowerCase())
             );
+                    if(!filteredClients.length) {
+                        document.getElementById('SelectedClientId').value = '';
+                    }
             displayClientSuggestions(filteredClients); // Display filtered suggestions
         }
 
@@ -431,6 +435,7 @@
         // Select a client and populate the fields
         function selectClient(client) {
             document.getElementById('clientNameInput').value = client.name;
+            document.getElementById('SelectedClientId').value = client.clientId;
             document.getElementById('clientAddress').value = client.address;
             document.getElementById('clientPhoneNo').value = client.phoneNo;
             document.getElementById('clientDebt').value = client.debt;
@@ -518,10 +523,9 @@
 
     // Get client details
            // Get client details
-        const clientIdInput = document.getElementById('clientIdInput');
-        const clientId = clientIdInput ? parseInt(clientIdInput.value) || null : null;
-
+        const clientId = document.getElementById('SelectedClientId') ? document.getElementById('SelectedClientId').value : null;
         const clientName = document.getElementById('clientNameInput') ? document.getElementById('clientNameInput').value : null;
+        
         const clientAddress = document.getElementById('clientAddress') ? document.getElementById('clientAddress').value : null;
         const clientPhoneNo = document.getElementById('clientPhoneNo') ? document.getElementById('clientPhoneNo').value : null;
                 // **Retrieve totalTotalPrice and add it to FormData as TotalPrice**
@@ -555,7 +559,7 @@
                 ClientName: clientName,
                 ClientAddress: clientAddress,
                 ClientPhoneNo: clientPhoneNo,
-                TotalPrice: totalTotalPrice,
+                TotalSum: totalTotalPrice,
                 grandTotal: parseFloat(document.getElementById('grandTotal').value) || 0,
                 Deposit: parseFloat(document.getElementById('paidAmountInput').value) || 0,
                 ShabekDue: parseFloat(document.getElementById('remainingAmountInput').value) || 0

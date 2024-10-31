@@ -26,7 +26,7 @@ namespace POS.Models
         // For reference to the client (optional if not every buy has an associated client)
         [ForeignKey("Client")]
         public int? ClientId { get; set; }
-        public Client Client { get; set; }  // Navigation property
+        public Client? Client { get; set; }  // Navigation property
         public string? ClientName { get; set; }  // Navigation property
         public string? ClientAddress { get; set; }  // Navigation property
         public string? ClientPhoneNo { get; set; }  // Navigation property

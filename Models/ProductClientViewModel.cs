@@ -2,8 +2,6 @@
 {
     public class ProductClientViewModel
     {
-        public int BuyId { get; set; }
-        
         public string? ProductIds { get; set; }
         public string ProductNames { get; set; }
         public string? PreviousBuyPrices { get; set; }

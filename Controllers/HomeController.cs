@@ -791,11 +791,13 @@ namespace POS.Controllers
                 return BadRequest("ViewModel is null");
             }
 
+            var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
             var productIds = viewModel.ProductIds?.Split(',').Select(id => int.TryParse(id, out var parsedId) ? parsedId : (int?)null).ToList();
             var quantities = viewModel.Quantities?.Split(',').Select(int.Parse).ToList();
             var productNames = viewModel.ProductNames?.Split(',');
-            var previousBuyPrices = viewModel.PreviousBuyPrices?.Split(',').Select(int.Parse).ToList();
-            var buyPricePerProduct = viewModel.BuyPricePerProduct?.Split(',').Select(int.Parse).ToList();
+            var previousBuyPrices = viewModel.PreviousBuyPrices?.Split(',').Select(decimal.Parse).ToList();
+            var buyPricePerProduct = viewModel.BuyPricePerProduct?.Split(',').Select(decimal.Parse).ToList();
+
             if (quantities == null || productIds == null || productNames == null || quantities.Count != productIds.Count || productIds.Count != productNames.Length)
             {
                 return BadRequest("Invalid product data.");
@@ -816,7 +818,7 @@ namespace POS.Controllers
                     string productIdsString = "";
                     string productNamesString = "";
                     string quantitiesString = "";
-                    string previouBPString = "";
+                    string previousBPString = "";
                     string buyPPPString = "";
 
                     for (int i = 0; i < productIds.Count; i++)
@@ -828,7 +830,6 @@ namespace POS.Controllers
                         var buyPrice = buyPricePerProduct[i];
                         Product product;
 
-                        // Check if product exists or create a new product entry
                         if (productId.HasValue)
                         {
                             product = await _db.Product.FirstOrDefaultAsync(p => p.ProductId == productId.Value);
@@ -836,54 +837,51 @@ namespace POS.Controllers
                             {
                                 return BadRequest($"Invalid product ID: {productId.Value}");
                             }
+                            product.Stock += quantity;
+                            product.BuyPrice = buyPrice;
+                            product.PreviousBuyPrice = prevBuyP > 0 ? prevBuyP : buyPrice;
+
+                            product.AddStockDates = string.IsNullOrEmpty(product.AddStockDates)
+                                ? currentDate
+                                : $"{product.AddStockDates},{currentDate}";
+
+                            product.AddStockAmounts = string.IsNullOrEmpty(product.AddStockAmounts)
+                                ? quantity.ToString()
+                                : $"{product.AddStockAmounts},{quantity}";
+
+                            product.UserId = userId;
+
+                            _db.Product.Update(product);
                         }
                         else
                         {
-                            // Add new product if ProductId is null and ProductName is available
-                            product = new Product { ProductName = productName, Stock = quantity, CreatedAt = DateTime.Now, BuyPrice= buyPrice };
+                            product = new Product
+                            {
+                                ProductName = productName,
+                                Stock = quantity,
+                                BuyPrice = buyPrice,
+                                PreviousBuyPrice = prevBuyP > 0 ? prevBuyP : buyPrice,
+                                UserId = userId,
+                                AddStockDates = currentDate,
+                                AddStockAmounts = quantity.ToString()
+                            };
                             await _db.Product.AddAsync(product);
                             await _db.SaveChangesAsync();
                         }
 
-                        // Update product stock and total buy price
-                        product.Stock += quantity;
-                        //decimal buyPrice = product.BuyPrice;
-                        //totalBuyPrice += buyPrice * quantity;
-                        product.BuyPrice = buyPrice;
-                        product.PreviousBuyPrice = buyPrice;
-
-                        // Concatenate product information
                         productIdsString += $"{product.ProductId}, ";
                         productNamesString += $"{product.ProductName}, ";
                         quantitiesString += $"{quantity}, ";
-                        previouBPString += $"{prevBuyP}, ";
+                        previousBPString += $"{prevBuyP}, ";
                         buyPPPString += $"{buyPrice}, ";
-
-                        product.EmployeeId = userId;
-                        product.UserId = userId;
-                        // Append new stock date and amount to the product fields
-                        // Update the AddStockDates and AddStockAmounts by appending the new data
-                        var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
-                        product.AddStockDates = string.IsNullOrEmpty(product.AddStockDates)
-                            ? currentDate
-                            : $"{product.AddStockDates},{currentDate}";
-
-                        product.AddStockAmounts = string.IsNullOrEmpty(product.AddStockAmounts)
-                            ? quantity.ToString()
-                            : $"{product.AddStockAmounts},{quantity}";
-
-                        // Update the product
-                        _db.Product.Update(product);
                     }
 
-                    // Remove the trailing comma and space
                     productNamesString = productNamesString.TrimEnd(',', ' ');
                     productIdsString = productIdsString.TrimEnd(',', ' ');
                     quantitiesString = quantitiesString.TrimEnd(',', ' ');
-                    previouBPString = previouBPString.TrimEnd(',', ' ');
+                    previousBPString = previousBPString.TrimEnd(',', ' ');
                     buyPPPString = buyPPPString.TrimEnd(',', ' ');
 
-                    // Handle client information
                     Client client = null;
                     if (viewModel.ClientId.HasValue)
                     {
@@ -892,62 +890,51 @@ namespace POS.Controllers
                         {
                             return BadRequest($"Invalid client ID: {viewModel.ClientId.Value}");
                         }
-                        
+                        client.Debt = viewModel.ShabekDue;
+                        client.AddDebtDates = string.IsNullOrEmpty(client.AddDebtDates)
+                            ? DateTime.Now.ToString("yyyy-MM-dd")
+                            : $"{client.AddDebtDates},{DateTime.Now:yyyy-MM-dd}";
+
+                        client.AddDebtAmounts = string.IsNullOrEmpty(client.AddDebtAmounts)
+                            ? viewModel.ShabekDue.ToString()
+                            : $"{client.AddDebtAmounts},{viewModel.ShabekDue}";
+
+                        _db.Client.Update(client);
                     }
                     else if (!string.IsNullOrWhiteSpace(viewModel.ClientName))
                     {
-                        // Create new client if ClientId is null and ClientName is provided
                         client = new Client
                         {
                             Name = viewModel.ClientName,
                             Address = viewModel.ClientAddress,
                             PhoneNo = viewModel.ClientPhoneNo,
                             Debt = viewModel.ShabekDue,
-                            UserId = userId// Initial debt can be set here if necessary
+                            UserId = userId
                         };
                         await _db.Client.AddAsync(client);
                         await _db.SaveChangesAsync();
                     }
 
-                    // Update client debt
-                    if (client != null)
-                    {
-                        client.Debt = viewModel.ShabekDue;
-                        client.AddDebtDates = string.IsNullOrEmpty(client.AddDebtDates)
-                            ? DateTime.Now.ToString("yyyy-MM-dd")
-                            : $"{client.AddDebtDates},{DateTime.Now:yyyy-MM-dd}";
-
-                        //==========Jhamela ase ekhane ==========
-                        client.AddDebtAmounts = string.IsNullOrEmpty(client.AddDebtAmounts)
-                            ? viewModel.ShabekDue.ToString()
-                            : $"{client.AddDebtAmounts},{viewModel.ShabekDue}";
-                        
-                        _db.Client.Update(client);
-                    }
-
-                    // Create the Buy entity
                     var buy = new Buy
                     {
                         Invoice = invoice,
                         ProductIds = productIdsString,
                         ProductNames = productNamesString,
-                        PreviousBuyPrices = previouBPString,
+                        Unit = viewModel.Unit?? "N/A",
+                        PreviousBuyPrices = previousBPString,
                         BuyPricePerProduct = buyPPPString,
                         Quantities = quantitiesString,
                         ClientId = client?.Id,
                         UserId = userId,
-                        TotalSum = totalBuyPrice,
+                        TotalSum = viewModel.TotalSum,
                         ShabekDue = viewModel.ShabekDue,
                         Deposit = viewModel.Deposit,
-                        ClientName = viewModel.ClientName ?? "Walk-in Client",
+                        ClientName = viewModel.ClientName ?? $"Walk-in Client ({DateTime.Now:yyyy-MM-dd HH:mm})",
                         ClientAddress = viewModel.ClientAddress ?? "N/A",
                         ClientPhoneNo = viewModel.ClientPhoneNo ?? "N/A"
                     };
 
-                    // Add the new buy record to the database
                     _db.Buy.Add(buy);
-
-                    // Save all changes
                     await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
 
@@ -960,9 +947,6 @@ namespace POS.Controllers
                 }
             }
         }
-
-
-
         public async Task<IActionResult> ProductBuyList()
         {
             // Retrieve the logged-in user ID
@@ -980,7 +964,6 @@ namespace POS.Controllers
 
             return View(products);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> UpdateProductStock(int id)
