@@ -1,84 +1,265 @@
-﻿@{
+﻿<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/dashboards/datagrid.js"></script>
+<script src="https://code.highcharts.com/dashboards/dashboards.js"></script>
+<script src="https://code.highcharts.com/dashboards/modules/layout.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 @{
     ViewBag.Title = "Dashboard";
 }
+
 <div class="flex flex-col justify-center items-center min-h-screen  ">
-    <div class="border-3 border-red-500">
-        <!-- ড্যাসবোর্ড টাইটেল -->
-        <p class="text-center text-3xl font-semibold my-10">ড্যাসবোর্ড</p>
+   
 
-        <!-- কাস্টমারের হিসাব নিকাশ -->
-        <p class="text-center text-3xl font-semibold ">কাস্টমারের হিসাব</p>
-
-        <div class="container mx-auto max-w-2xl px-6 grid grid-cols-2 md:grid-cols-3 gap-5 mt-4">
-            <a asp-controller="Home" asp-action="ProductSell" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2">পণ্য বিক্রয় নিবন্ধন</p>
-            </a>
-            <a asp-controller="Home" asp-action="ProductSellReport" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="/image/attendant-list.png" />
-                <p class="text-sm text-center mt-2">বিক্রয়ক্রিত পণ্যের বিবরণী</p>
-            </a>
-            <a asp-controller="Home" asp-action="AddCustomer" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2 text-center">কাস্টমার যোগ করুন</p>
-            </a>
-            <a asp-controller="Home" asp-action="CustomerList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2 text-center">কাস্টমারের লিস্ট</p>
-            </a>
-            <a asp-controller="Home" asp-action="CustomerDue" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2">বাকির হিসাব</p>
-            </a>
-            <a asp-controller="Home" asp-action="ShopHishab" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2">দোকানের হিসাব</p>
-            </a>
+    <h1 id="title">MicroElement amount in Foods</h1>
+    <div id="container">
+        <div class="row">
+            <div id="kpi-wrapper">
+                <div class="cell" id="kpi-vitamin-a"></div>
+                <div class="cell" id="kpi-iron"></div>
+            </div>
+            <div class="cell" id="dashboard-col-0"></div>
+            <div class="cell" id="dashboard-col-1"></div>
         </div>
-
-        <!-- দোকানের ক্রয়ক্রিত পণ্যের হিসাব নিকাশ -->
-        <p class="text-center text-3xl font-semibold mt-16">দোকানের ক্রয়ক্রিত পণ্যের হিসাব নিকাশ</p>
-
-        <div class="container mx-auto max-w-2xl px-6 grid grid-cols-2 md:grid-cols-3 gap-5 mt-4 mb-20">
-            <a asp-controller="Home" asp-action="ProductBuy" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2 text-center">ক্রয়ক্রিত পণ্য নিবন্ধন</p>
-            </a>
-            <a asp-controller="Home" asp-action="ProductBuyList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm text-center mt-2">ক্রয়ক্রিত পণ্যের বিবরণী</p>
-            </a>
-            <a asp-controller="Home" asp-action="AddSeller" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2 text-center">বিক্রেতা যোগ করুন</p>
-            </a>
-            <a asp-controller="Home" asp-action="SellerList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2 text-center">বিক্রেতার লিস্ট</p>
-            </a>
-            <a asp-controller="Home" asp-action="AddProduct" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2">পণ্য স্টক করুন</p>
-            </a>
-            <a asp-controller="Home" asp-action="ProductList" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2 text-center px-1">স্টকক্রিত পণ্য দেখুন</p>
-            </a>
-            <a asp-controller="Home" asp-action="OwnShopDue" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2">বাকির হিসাব</p>
-            </a>
-            <a asp-controller="Home" asp-action="OwnShopHisab" class="flex flex-col justify-center items-center border-2 border-blue-500 w-32 h-28 hover:bg-blue-400 hover:text-white rounded-lg hover:border-none">
-                <img class="w-10 h-10" src="~/image/analytics.png" alt="" />
-                <p class="text-sm mt-2">দোকানের হিসাব</p>
-            </a>
+        <div class="row">
+            <div class="cell" id="dashboard-col-2"></div>
         </div>
     </div>
+
+    <p class="highcharts-description">
+        The basic dashboard shows the amount of Vitamin A and Iron in foods.<br />
+        *Recommended Dietary Allowance (RDA).
+    </p>
+
 </div>
 
+<script>
+    Highcharts.setOptions({
+        chart: {
+            styledMode: true
+        }
+    });
+    Dashboards.board('container', {
+        dataPool: {
+            connectors: [{
+                id: 'micro-element',
+                type: 'JSON',
+                options: {
+                    firstRowAsNames: false,
+                    columnNames: ['Food', 'Vitamin A', 'Iron'],
+                    data: [
+                        ['Beef Liver', 6421, 6.5],
+                        ['Lamb Liver', 2122, 6.5],
+                        ['Cod Liver Oil', 1350, 0.9],
+                        ['Mackerel', 388, 1],
+                        ['Tuna', 214, 0.6]
+                    ]
+                }
+            }]
+        },
+        editMode: {
+            enabled: true,
+            contextMenu: {
+                enabled: true
+            }
+        },
+        components: [{
+            type: 'KPI',
+            renderTo: 'kpi-vitamin-a',
+            value: 900,
+            valueFormat: '{value}',
+            title: 'Vitamin A',
+            subtitle: 'daily recommended dose'
+        }, {
+            type: 'KPI',
+            renderTo: 'kpi-iron',
+            value: 8,
+            title: 'Iron',
+            valueFormat: '{value}',
+            subtitle: 'daily recommended dose'
+        }, {
+            sync: {
+                visibility: true,
+                highlight: true,
+                extremes: true
+            },
+            connector: {
+                id: 'micro-element',
+                columnAssignment: [{
+                    seriesId: 'Vitamin A',
+                    data: ['Food', 'Vitamin A']
+                }]
+            },
+            renderTo: 'dashboard-col-0',
+            type: 'Highcharts',
+            chartOptions: {
+                xAxis: {
+                    type: 'category',
+                    accessibility: {
+                        description: 'Groceries'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'mcg'
+                    },
+                    plotLines: [{
+                        value: 900,
+                        zIndex: 7,
+                        dashStyle: 'shortDash',
+                        label: {
+                            text: 'RDA',
+                            align: 'right',
+                            style: {
+                                color: '#B73C28'
+                            }
+                        }
+                    }]
+                },
+                credits: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        marker: {
+                            radius: 6
+                        }
+                    }
+                },
+                legend: {
+                    enabled: true,
+                    verticalAlign: 'top'
+                },
+                chart: {
+                    animation: false,
+                    type: 'column',
+                    spacing: [30, 30, 30, 20]
+                },
+                title: {
+                    text: ''
+                },
+                tooltip: {
+                    valueSuffix: ' mcg',
+                    stickOnContact: true
+                },
+                lang: {
+                    accessibility: {
+                        chartContainerLabel: 'Vitamin A in food. Highcharts ' +
+                            'Interactive Chart.'
+                    }
+                },
+                accessibility: {
+                    description: `The chart is displaying the Vitamin A amount in
+                    micrograms for some groceries. There is a plotLine demonstrating
+                    the daily Recommended Dietary Allowance (RDA) of 900
+                    micrograms.`,
+                    point: {
+                        valueSuffix: ' mcg'
+                    }
+                }
+            }
+        }, {
+            renderTo: 'dashboard-col-1',
+            sync: {
+                visibility: true,
+                highlight: true,
+                extremes: true
+            },
+            connector: {
+                id: 'micro-element',
+                columnAssignment: [{
+                    seriesId: 'Iron',
+                    data: ['Food', 'Iron']
+                }]
+            },
+            type: 'Highcharts',
+            chartOptions: {
+                xAxis: {
+                    type: 'category',
+                    accessibility: {
+                        description: 'Groceries'
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'mcg'
+                    },
+                    max: 8,
+                    plotLines: [{
+                        value: 8,
+                        dashStyle: 'shortDash',
+                        label: {
+                            text: 'RDA',
+                            align: 'right',
+                            style: {
+                                color: '#B73C28'
+                            }
+                        }
+                    }]
+                },
+                credits: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        marker: {
+                            radius: 6
+                        }
+                    }
+                },
+                title: {
+                    text: ''
+                },
+                legend: {
+                    enabled: true,
+                    verticalAlign: 'top'
+                },
+                chart: {
+                    animation: false,
+                    type: 'column',
+                    spacing: [30, 30, 30, 20]
+                },
+                tooltip: {
+                    valueSuffix: ' mcg',
+                    stickOnContact: true
+                },
+                lang: {
+                    accessibility: {
+                        chartContainerLabel: 'Iron in food. Highcharts ' +
+                            'Interactive Chart.'
+                    }
+                },
+                accessibility: {
+                    description: `The chart is displaying the Iron amount in
+                    micrograms for some groceries. There is a plotLine demonstrating
+                    the daily Recommended Dietary Allowance (RDA) of 8
+                    micrograms.`,
+                    point: {
+                        valueSuffix: ' mcg'
+                    }
+                }
+            }
+        }, {
+            renderTo: 'dashboard-col-2',
+            connector: {
+                id: 'micro-element'
+            },
+            type: 'DataGrid',
+            sync: {
+                highlight: true,
+                visibility: true
+            },
+            dataGridOptions: {
+                credits: {
+                    enabled: false
+                }
+            }
+        }]
+    }, true);
 
+</script>
 
 
