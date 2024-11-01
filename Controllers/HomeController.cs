@@ -217,7 +217,7 @@ namespace POS.Controllers
                 try
                 {
                     // Fetch the selected customer, if applicable
-                    Customer customer = null;
+                    Customer? customer = null;
                     if (viewModel.SelectedCustomerId > 0)
                     {
                         customer = await _db.Customer.FirstOrDefaultAsync(c => c.Id == viewModel.SelectedCustomerId);
@@ -826,9 +826,10 @@ namespace POS.Controllers
                         var productId = productIds[i];
                         var productName = productNames[i];
                         var quantity = quantities[i];
-                        var prevBuyP = previousBuyPrices[i];
+                        var prevBuyP = previousBuyPrices?[i] ?? 0;
                         var buyPrice = buyPricePerProduct[i];
-                        Product product;
+                        
+                        Product? product;
 
                         if (productId.HasValue)
                         {
@@ -882,7 +883,7 @@ namespace POS.Controllers
                     previousBPString = previousBPString.TrimEnd(',', ' ');
                     buyPPPString = buyPPPString.TrimEnd(',', ' ');
 
-                    Client client = null;
+                    Client? client = null;
                     if (viewModel.ClientId.HasValue)
                     {
                         client = await _db.Client.FirstOrDefaultAsync(c => c.Id == viewModel.ClientId.Value);
@@ -958,11 +959,11 @@ namespace POS.Controllers
             }
 
             // Fetch products associated with the logged-in user
-            var products = await _db.Product
+            var buy = await _db.Buy
                 .Where(p => p.UserId == userId) // Ensure the product belongs to the logged-in user
                 .ToListAsync();
 
-            return View(products);
+            return View(buy);
         }
 
         [HttpGet]

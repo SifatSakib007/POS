@@ -1,0 +1,83 @@
+﻿@model POS.Models.Buy
+
+<div class="p-8 bg-gray-100 min-h-screen flex justify-center items-center">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl">
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-700">INVOICE</h1>
+                <p class="text-gray-500 mt-2">@Model.Invoice ?? "N/A"</p>
+            </div>
+            <div class="text-right">
+                <p class="font-medium text-gray-600">Date: @Model.CreatedAt.ToString("yyyy-MM-dd")</p>
+                <p class="font-medium text-gray-600">Client ID: @(Model.ClientId?.ToString() ?? "N/A")</p>
+                <p class="font-medium text-gray-600">Processed by User ID: @(Model.UserId?.ToString() ?? "N/A")</p>
+            </div>
+        </div>
+
+        <!-- Client Information -->
+        <div class="p-6 border-b border-gray-200 grid grid-cols-2 gap-4">
+            <div>
+                <h2 class="text-gray-700 font-semibold">BILL TO</h2>
+                <p class="text-gray-600">@Model.ClientName ?? "N/A"</p>
+                <p class="text-gray-600">@Model.ClientAddress ?? "N/A"</p>
+                <p class="text-gray-600">@Model.ClientPhoneNo ?? "N/A"</p>
+                <p class="text-gray-600">@Model.ClientShopName ?? "N/A"</p>
+            </div>
+            <div>
+                <h2 class="text-gray-700 font-semibold">SHIP TO</h2>
+                <p class="text-gray-600">@Model.ClientName ?? "N/A"</p>
+                <p class="text-gray-600">@Model.ClientAddress ?? "N/A"</p>
+                <p class="text-gray-600">@Model.ClientPhoneNo ?? "N/A"</p>
+            </div>
+        </div>
+
+        <!-- Itemized Details -->
+        <div class="p-6 border-b border-gray-200">
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-2 font-semibold text-gray-600">DESCRIPTION</div>
+                <div class="text-right font-semibold text-gray-600">TOTAL</div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-2">
+                    <p>Product IDs: @Model.ProductIds ?? "N/A"</p>
+                    <p>Product Names: @Model.ProductNames ?? "N/A"</p>
+                    <p>Previous Buy Prices: @Model.PreviousBuyPrices ?? "N/A"</p>
+                    <p>Buy Price per Product: @Model.BuyPricePerProduct ?? "N/A"</p>
+                    <p>Quantities: @Model.Quantities ?? "N/A"</p>
+                    <p>Unit: @Model.Unit ?? "N/A"</p>
+                </div>
+                <div class="text-right">
+                    <p>@Model.TotalSum?.ToString("F2") ?? "N/A"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="p-6 border-b border-gray-200">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-right font-semibold text-gray-600">Subtotal</div>
+                <div class="text-right">@Model.TotalSum?.ToString("F2") ?? "N/A"</div>
+                <div class="text-right font-semibold text-gray-600">Shabek Due</div>
+                <div class="text-right">@Model.ShabekDue?.ToString("F2") ?? "N/A"</div>
+                <div class="text-right font-semibold text-gray-600">Deposit</div>
+                <div class="text-right">@Model.Deposit?.ToString("F2") ?? "N/A"</div>
+                <div class="text-right font-semibold text-gray-600">Grand Total</div>
+                <div class="text-right font-bold text-gray-900">@Model.TotalSum?.ToString("F2") ?? "N/A"</div>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="p-6 border-b border-gray-200">
+            <p class="font-semibold text-gray-600">Remarks / Instructions:</p>
+            <p class="text-gray-600">Please make payment by the due date. Contact us for any questions.</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-6 text-center">
+            <p class="text-gray-600">Thank you for your business!</p>
+            <p class="text-gray-500 text-sm mt-2">For questions concerning this invoice, please contact</p>
+        </div>
+    </div>
+</div>
