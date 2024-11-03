@@ -2,19 +2,18 @@
 
 <h2 class="text-2xl font-bold mb-4">Customer List</h2>
 
-
-<table id="customerTable" class="min-w-full bg-white table-auto">
+<table id="sellTable" class="min-w-full bg-white table-auto">
     <thead>
         <tr class="bg-gray-800 text-white">
-            <th class="px-2 py-2 text-left">
-                <input id="customerNameFilter" type="text" placeholder="Search by Customer Name" class="border rounded p-2 mr-2" />
+            <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">
+                <input type="text" id="productNameSearch" placeholder="পণ্যের নাম" class="mt-2 p-2 text-gray-700 rounded w-52" />
             </th>
-            <th class="px-2 py-2 text-left">
-                <input id="phoneNumberFilter" type="number" placeholder="Search by Phone Number" class="border rounded p-2 mr-2" />
+            <th class="px-6 py-3 text-xs font-bold uppercase tracking-wider">
+                <input type="text" id="phoneSearch" placeholder="Phone Number" class="mt-2 p-2 text-gray-700 rounded w-52" />
             </th>
             <th class="px-4 py-2 text-left">Address</th>
             <th class="px-4 py-2 text-left">Due</th>
-            <th class="px-4 py-2 text-left">Installments</th> <!-- Modified header -->
+            <th class="px-4 py-2 text-left">Installments</th>
             <th class="px-4 py-2 text-left">CreatedAt</th>
             <th class="px-4 py-2 text-left">Actions</th>
         </tr>
@@ -23,17 +22,13 @@
         @foreach (var customer in Model)
         {
             <tr class="border-b border-gray-200">
-                <td class="px-4 py-2">@customer.Name</td>
+                <td class="px-4 py-2 product-name">@customer.Name</td>
                 <td class="px-4 py-2">@customer.PhoneNo</td>
                 <td class="px-4 py-2">@customer.Address</td>
                 <td class="px-4 py-2">@customer.Due</td>
-
-                <!-- Installments Section -->
                 <td class="px-4 py-2">
                     @{
-                        var paymentAmounts = customer.PaymentAmounts?.Split(',') ?? new string[0];
                         var paymentDates = customer.PaymentDates?.Split(',') ?? new string[0];
-
                         if (paymentDates.Length > 0)
                         {
                             int startIndex = Math.Max(0, paymentDates.Length - 3);
@@ -48,15 +43,13 @@
                         }
                     }
                 </td>
-
                 <td class="px-4 py-2">@customer.CreatedAt</td>
                 <td class="px-4 py-2">
                     <a asp-action="EditCustomer" asp-route-id="@customer.Id" class="text-blue-500 hover:text-blue-700">
-                        <i class="fas fa-edit"></i> <!-- Edit Icon -->
-                    </a>
-                    |
+                        <i class="fas fa-edit"></i>
+                    </a> |
                     <a asp-action="DeleteCustomer" asp-route-id="@customer.Id" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-trash-alt"></i> <!-- Delete Icon -->
+                        <i class="fas fa-trash-alt"></i>
                     </a>
                 </td>
             </tr>
@@ -64,32 +57,31 @@
     </tbody>
 </table>
 
-
-<!-- Include the required DataTables JS and CSS for filtering functionality -->
+<!-- DataTables CSS and JS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
-<!-- Initialize DataTables -->
+<!-- Initialize DataTable and Custom Search Filters -->
 <script>
     $(document).ready(function () {
-        // Initialize DataTable
-        var table = $('#customerTable').DataTable({
+        // Initialize DataTable with custom settings
+        var table = $('#sellTable').DataTable({
             "paging": true,
-            "info": false, // Hide pagination info
-            "dom": 'lrtip' // Default DataTable layout
+            "pageLength": 50, // Show 50 entries per page
+            "info": false,
+            "dom": 'lrtip' // Removes default search box
         });
 
-        // Custom filter input for Customer Name
-        $('#customerNameFilter').on('keyup', function () {
-            table.column(0).search(this.value).draw(); // Search in the first column (Customer Name)
+        // Custom search filter for "Product Name" column
+        $('#productNameSearch').on('input', function () {
+            const searchTerm = $(this).val().toLowerCase();
+            table.columns(0).search(searchTerm).draw();
         });
 
-        // Custom filter input for Phone Number
-        $('#phoneNumberFilter').on('keyup', function () {
-            table.column(1).search(this.value).draw(); // Search in the second column (Phone Number)
+        // Custom search filter for "Phone Number" column
+        $('#phoneSearch').on('keyup', function () {
+            table.column(1).search(this.value).draw();
         });
     });
 </script>
-
-
