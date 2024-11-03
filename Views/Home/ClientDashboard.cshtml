@@ -1,263 +1,246 @@
 ﻿<link href="~/css/charts.css" rel="stylesheet" />
 
 
-<h1 id="title">MicroElement amount in Foods</h1>
-<div id="container"></div>
-<p class="highcharts-description">
-    The basic dashboard shows the amount of Vitamin A and Iron in foods.<br />
-    *Recommended Dietary Allowance (RDA).
-</p>
+<div class="bg-gray-100">
+
+     @* box style  *@
+
+    <div class="mt-5 flex  justify-center gap-4">
+        <!-- Total Sales Box -->
+        <div class="bg-blue-500 flex-1 min-w-[250px] max-w-xs h-32 text-center text-white text-3xl font-semibold p-6 rounded-lg shadow-xl transform transition-transform hover:scale-105">
+            <p class="text-xl font-medium mb-1">মোট বিক্রয়:</p>
+            ৳<span id="totalSalesAmount">0</span>
+        </div>
+
+        <!-- Total Sales and Deposit Box -->
+        <div id="totalSalesAndDepositBox" class="bg-white flex-1 min-w-[250px] max-w-xs h-32 text-center text-gray-800 text-2xl font-semibold p-6 rounded-lg shadow-lg border border-gray-200">
+            মোট বিক্রয়:  ৳<span id="totalSales">0 </span> | মোট আমানত: ৳<span id="totalDeposit">0</span>
+        </div>
+
+        <!-- Total Profit Box -->
+        <div id="totalProfitBox" class="bg-green-500 flex-1 min-w-[250px] max-w-xs h-32 text-center text-white text-2xl font-semibold p-6 rounded-lg shadow-lg">
+            মোট লাভ: <br /> ৳<span id="totalProfit">0</span>
+        </div>
+    </div>
+
+
+
+    <div class="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
+        <div class="flex flex-wrap justify-center gap-6 w-full">
+            <!-- Sales Amount Box and Chart -->
+            <div class="w-full md:w-[45%]   rounded-lg p-4 flex flex-col items-center">
+                <!-- Total Sales Box -->
+              @*     <div id="totalSalesBox" class="text-lg font-semibold mb-4 p-3 bg-gray-100 rounded-md text-center w-full">
+                      মোট বিক্রয়: ৳<span id="totalSalesAmount">0</span>
+                  </div> *@
+                <!-- Sales Amount Chart -->
+                <div id="container" class="w-full min-h-[400px]"></div>
+            </div>
+
+            <!-- Total Sales and Deposit Box and Chart -->
+            <div class="w-full md:w-[45%]   rounded-lg p-4 flex flex-col items-center">
+                <!-- Total Sales and Deposit Box -->
+               
+
+                <select id="dateFormat" class="mb-4 p-2 border border-gray-300 rounded-md w-full" onchange="createChart()">
+                    <option value="week">প্রতি সপ্তাহ</option>
+                    <option value="month">প্রতি মাস</option>
+                    <option value="year">প্রতি বছর</option>
+                    <option value="day">প্রতি দিন</option>
+                </select>
+                <div id="salesChart" class="w-full h-[400px]"></div>
+            </div>
+        </div>
+
+
+
+        <!-- Monthly Profit Chart -->
+        <div class="w-full md:w-[45%] bg-white shadow-lg rounded-lg p-4">
+            <figure class="highcharts-figure">
+               
+                <div id="containerr" class="w-full h-[400px]"></div>
+                <p class="highcharts-description text-center mt-4">
+                    এই চার্টটি বিভিন্ন মাসে অর্জিত লাভ দেখাচ্ছে।
+                </p>
+            </figure>
+        </div>
+
+
+        <p class="highcharts-description text-center mt-4">
+            এই ড্যাশবোর্ডে বিভিন্ন পণ্যের বিক্রয়ের পরিমাণ এবং মোট বিক্রয়ের সাথে আমানত দেখানো হয়েছে।
+        </p>
+    </div>
+
+</div>
+
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script src="https://code.highcharts.com/dashboards/datagrid.js"></script>
 <script src="https://code.highcharts.com/dashboards/dashboards.js"></script>
 <script src="https://code.highcharts.com/dashboards/modules/layout.js"></script>
+
+
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
 <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <script>
+    
+    // Sales Amount Dashboard
+    Highcharts.setOptions({ chart: { styledMode: true } });
+    Dashboards.board('container', {
+        dataPool: {
+            connectors: [{
+                id: 'sales-amount',
+                type: 'JSON',
+                options: {
+                    firstRowAsNames: false,
+                    columnNames: ['পণ্য', 'বিক্রয়ের পরিমাণ'],
+                    data: [
+                        ['পণ্য A', 6421],
+                        ['পণ্য B', 2122],
+                        ['পণ্য C', 1350],
+                        ['পণ্য D', 388],
+                        ['পণ্য E', 214]
+                    ]
+                }
+            }]
+        },
+        gui: {
+            layouts: [{ rows: [{ cells: [{ id: 'dashboard-col-0' }] }] }]
+        },
+        components: [{
+            sync: { visibility: true, highlight: true, extremes: true },
+            connector: {
+                id: 'sales-amount',
+                columnAssignment: [{ seriesId: 'বিক্রয়ের পরিমাণ', data: ['পণ্য', 'বিক্রয়ের পরিমাণ'] }]
+            },
+            renderTo: 'dashboard-col-0',
+            type: 'Highcharts',
+            chartOptions: {
+                xAxis: { type: 'category', accessibility: { description: 'পণ্যসমূহ' } },
+                yAxis: {
+                    title: { text: 'পরিমাণ' },
+                    plotLines: [{
+                        value: 900,
+                        zIndex: 7,
+                        dashStyle: 'shortDash',
+                        label: { text: 'লক্ষ্যমাত্রা', align: 'right', style: { color: '#B73C28' } }
+                    }]
+                },
+                credits: { enabled: false },
+                plotOptions: { series: { marker: { radius: 6 } } },
+                legend: { enabled: true, verticalAlign: 'top' },
+                chart: { animation: false, type: 'column', spacing: [30, 30, 30, 20] },
+                tooltip: { valueSuffix: ' ইউনিট', stickOnContact: true },
+                accessibility: { description: 'এই চার্টটি বিভিন্ন পণ্যের বিক্রয়ের পরিমাণ দেখাচ্ছে।', point: { valueSuffix: ' ইউনিট' } }
+            }
+        }]
+    }, true);
+
+    // Update total sales amount in the box above the Sales Amount chart
+    function updateTotalSalesAmount() {
+        const data = [
+            { name: 'পণ্য A', amount: 6421 },
+            { name: 'পণ্য B', amount: 2122 },
+            { name: 'পণ্য C', amount: 1350 },
+            { name: 'পণ্য D', amount: 388 },
+            { name: 'পণ্য E', amount: 214 }
+        ];
+        const totalSalesAmount = data.reduce((acc, item) => acc + item.amount, 0);
+        document.getElementById('totalSalesAmount').innerText = totalSalesAmount;
+    }
+    updateTotalSalesAmount();
+
+    // Total Sales and Deposit Chart
+    async function fetchSalesAndDepositData(format) {
+        const response = await fetch(`/Charts/GetTotalSales?format=${format}`);
+        const data = await response.json();
+        return data;
+    }
+
+    async function createChart() {
+        const format = document.getElementById("dateFormat").value;
+        const data = await fetchSalesAndDepositData(format);
+        if (!data || data.length === 0) return;
+
+        const totalSales = data.reduce((acc, item) => acc + item.totalSell, 0);
+        const totalDeposit = data.reduce((acc, item) => acc + item.totalDeposit, 0);
+
+        document.getElementById("totalSales").innerText = totalSales;
+        document.getElementById("totalDeposit").innerText = totalDeposit;
+
+        Highcharts.chart('salesChart', {
+            chart: { type: 'line' },
+            title: { text: 'মোট বিক্রয় এবং আমানত' },
+            xAxis: { categories: data.map(item => item.date), title: { text: 'তারিখ' } },
+            yAxis: { title: { text: 'অর্থের পরিমাণ (৳)' }, min: 0 },
+            series: [
+                { name: 'মোট বিক্রয়', data: data.map(item => item.totalSell), color: '#4CAF50' },
+                { name: 'মোট আমানত', data: data.map(item => item.totalDeposit), color: '#FF5733' }
+            ]
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        createChart();
+    });
+
+
+
+
     Highcharts.setOptions({
         chart: {
             styledMode: true
         }
     });
 
-    Dashboards.board('container', {
-        dataPool: {
-            connectors: [{
-                id: 'micro-element',
-                type: 'JSON',
-                options: {
-                    firstRowAsNames: false,
-                    columnNames: ['Food', 'Vitamin A', 'Iron'],
-                    data: [
-                        ['Beef Liver', 6421, 6.5],
-                        ['Lamb Liver', 2122, 6.5],
-                        ['Cod Liver Oil', 1350, 0.9],
-                        ['Mackerel', 388, 1],
-                        ['Tuna', 214, 0.6]
-                    ]
-                }
-            }]
-        },
-        editMode: {
-            enabled: true,
-            contextMenu: {
-                enabled: true
-            }
-        },
-        gui: {
-            layouts: [{
-                rows: [{
-                    cells: [{
-                        id: 'kpi-wrapper',
-                        layout: {
-                            rows: [{
-                                cells: [{
-                                    id: 'kpi-vitamin-a'
-                                }, {
-                                    id: 'kpi-iron'
-                                }]
-                            }]
-                        }
-                    }, {
-                        id: 'dashboard-col-0'
-                    }, {
-                        id: 'dashboard-col-1'
-                    }]
-                }, {
-                    cells: [{
-                        id: 'dashboard-col-2'
-                    }]
-                }]
-            }]
-        },
-        components: [{
-            type: 'KPI',
-            renderTo: 'kpi-vitamin-a',
-            value: @ViewBag.TotalMonthlySales, // Use the value from the controller
-            valueFormat: '{value}', // Format for the value display
-            title: 'Total Monthly Sales', // Change title to represent the new data
-            subtitle: 'total sales for the current month' // Adjust subtitle accordingly
-        }, {
-            type: 'KPI',
-            renderTo: 'kpi-iron',
-            value: 8,
-            title: 'Iron',
-            valueFormat: '{value}',
-            subtitle: 'daily recommended dose'
-        }, {
-            sync: {
-                visibility: true,
-                highlight: true,
-                extremes: true
-            },
-            connector: {
-                id: 'micro-element',
-                columnAssignment: [{
-                    seriesId: 'Vitamin A',
-                    data: ['Food', 'Vitamin A']
-                }]
-            },
-            renderTo: 'dashboard-col-0',
-            type: 'Highcharts',
-            chartOptions: {
-                xAxis: {
-                    type: 'category',
-                    accessibility: {
-                        description: 'Groceries'
-                    }
-                },
-                yAxis: {
-                    title: {
-                        text: 'mcg'
-                    },
-                    plotLines: [{
-                        value: 900,
-                        zIndex: 7,
-                        dashStyle: 'shortDash',
-                        label: {
-                            text: 'RDA',
-                            align: 'right',
-                            style: {
-                                color: '#B73C28'
-                            }
-                        }
-                    }]
-                },
-                credits: {
-                    enabled: false
-                },
-                plotOptions: {
-                    series: {
-                        marker: {
-                            radius: 6
-                        }
-                    }
-                },
-                legend: {
-                    enabled: true,
-                    verticalAlign: 'top'
-                },
-                chart: {
-                    animation: false,
-                    type: 'column',
-                    spacing: [30, 30, 30, 20]
-                },
-                title: {
-                    text: ''
-                },
-                tooltip: {
-                    valueSuffix: ' mcg',
-                    stickOnContact: true
-                },
-                lang: {
-                    accessibility: {
-                        chartContainerLabel: 'Vitamin A in food. Highcharts ' +
-                            'Interactive Chart.'
-                    }
-                },
-                accessibility: {
-                    description: `The chart is displaying the Vitamin A amount in
-                    micrograms for some groceries. There is a plotLine demonstrating
-                    the daily Recommended Dietary Allowance (RDA) of 900
-                    micrograms.`,
-                    point: {
-                        valueSuffix: ' mcg'
-                    }
-                }
-            }
-        }, {
-            renderTo: 'dashboard-col-1',
-            connector: {
-                id: 'micro-element'
-            },
-            type: 'Highcharts',
-            sync: {
-                visibility: true,
-                highlight: true,
-                extremes: true
-            },
-            chartOptions: {
-                xAxis: {
-                    type: 'category',
-                    accessibility: {
-                        description: 'Groceries'
-                    }
-                },
-                yAxis: {
-                    title: {
-                        text: 'mcg'
-                    },
-                    max: 8,
-                    plotLines: [{
-                        value: 8,
-                        dashStyle: 'shortDash',
-                        label: {
-                            text: 'RDA',
-                            align: 'right',
-                            style: {
-                                color: '#B73C28'
-                            }
-                        }
-                    }]
-                },
-                credits: {
-                    enabled: false
-                },
-                plotOptions: {
-                    series: {
-                        marker: {
-                            radius: 6
-                        }
-                    }
-                },
-                title: {
-                    text: ''
-                },
-                legend: {
-                    enabled: true,
-                    verticalAlign: 'top'
-                },
-                chart: {
-                    animation: false,
-                    type: 'column',
-                    spacing: [30, 30, 30, 20]
-                },
-                tooltip: {
-                    valueSuffix: ' mcg',
-                    stickOnContact: true
-                },
-                lang: {
-                    accessibility: {
-                        chartContainerLabel: 'Iron in food. Highcharts ' +
-                            'Interactive Chart.'
-                    }
-                },
-                accessibility: {
-                    description: `The chart is displaying the Iron amount in
-                    micrograms for some groceries. There is a plotLine demonstrating
-                    the daily Recommended Dietary Allowance (RDA) of 8
-                    micrograms.`,
-                    point: {
-                        valueSuffix: ' mcg'
-                    }
-                }
-            }
-        }, {
-            renderTo: 'dashboard-col-2',
-            connector: {
-                id: 'micro-element'
-            },
-            type: 'DataGrid',
-            sync: {
-                highlight: true,
-                visibility: true
-            },
-            dataGridOptions: {
-                credits: {
-                    enabled: false
-                }
-            }
-        }]
-    }, true);
-</script>
+    // for monthlyy or yearly profit
+    const monthlyProfitData = [
+        16000, 18200, 23100, 27900, 32200, 36400, 39800, 38400, 35500, 29200, 22000, 17800
+    ];
 
+    // Calculate and update the total profit amount in the box
+    const totalProfit = monthlyProfitData.reduce((acc, val) => acc + val, 0);
+    document.getElementById('totalProfit').innerText = totalProfit;
+
+    // Render the Monthly Profit Chart
+    Highcharts.chart('containerr', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'মাসিক লাভের পরিমাণ'
+        },
+        subtitle: {
+            text: 'Source: আপনার ব্যবসায়িক ডেটাবেস'
+        },
+        xAxis: {
+            categories: [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ]
+        },
+        yAxis: {
+            title: {
+                text: 'লাভের পরিমাণ (৳)'
+            }
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+        series: [{
+            name: '',
+            data: monthlyProfitData
+        }]
+    });
+
+</script>
