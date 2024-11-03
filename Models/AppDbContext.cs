@@ -16,5 +16,6 @@ namespace POS.Models
         public DbSet<Customer> Customer{ get; set; }
         public DbSet<Client> Client { get; set; }
         public DbSet<Buy> Buy { get; set; }
+        public DbSet<Expense> Expense { get; set; }
     }
 }

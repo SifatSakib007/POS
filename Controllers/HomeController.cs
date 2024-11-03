@@ -41,8 +41,33 @@ namespace POS.Controllers
         [Authorize(Roles = "Client")]
         public IActionResult ClientDashboard()
         {
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+            int? userId = GetLoggedInUserId();
+
+            // Log for debugging
+            Console.WriteLine($"UserId: {userId}, Year: {currentYear}, Month: {currentMonth}");
+
+            if (userId == null)
+            {
+                return NotFound(); // Return 404 if the user ID is not valid
+            }
+
+            var totalMonthlySales = _db.Sell
+                .Where(s => s.UserId == userId
+                            && s.CreatedAt.HasValue
+                            && s.CreatedAt.Value.Year == currentYear
+                            && s.CreatedAt.Value.Month == currentMonth)
+                .Sum(s => s.TotalTotalPrice);
+
+            // Log total for debugging
+            Console.WriteLine($"Total Monthly Sales: {totalMonthlySales}");
+
+            // Pass the total to the view
+            ViewBag.TotalMonthlySales = totalMonthlySales;
             return View();
         }
+
 
         public IActionResult Privacy()
         {

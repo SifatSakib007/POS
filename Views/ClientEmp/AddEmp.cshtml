@@ -1,0 +1,100 @@
+﻿@model POS.Models.EmployeeViewModel
+
+<!-- Centered Add New Employee Section -->
+<div class="flex justify-center items-center cursor-pointer my-4" onclick="toggleForm()">
+    <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    <span class="text-lg font-semibold text-gray-800">Add New Employee</span>
+</div>
+
+
+<!-- Form Section -->
+<div id="employeeForm" class="max-w-3xl mx-auto bg-white p-6 shadow-lg rounded-lg mb-8 hidden">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Add New Employee</h2>
+        <form asp-action="AddEmp" method="post" class="space-y-4">
+            @Html.AntiForgeryToken()
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full md:w-1/2 px-3">
+                    <label asp-for="NewEmployee.UserName" class="block text-gray-700">ব্যবহারকারীর নাম</label>
+                    <input asp-for="NewEmployee.UserName" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <span asp-validation-for="NewEmployee.UserName" class="text-red-500 text-sm"></span>
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label asp-for="NewEmployee.ShopName" class="block text-gray-700">দোকানের নাম</label>
+                    <input asp-for="NewEmployee.ShopName" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <span asp-validation-for="NewEmployee.ShopName" class="text-red-500 text-sm"></span>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full md:w-1/2 px-3">
+                    <label asp-for="NewEmployee.Address" class="block text-gray-700">ঠিকানা</label>
+                    <input asp-for="NewEmployee.Address" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <span asp-validation-for="NewEmployee.Address" class="text-red-500 text-sm"></span>
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label asp-for="NewEmployee.PhoneNo" class="block text-gray-700">ফোন নম্বর</label>
+                    <input asp-for="NewEmployee.PhoneNo" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <span asp-validation-for="NewEmployee.PhoneNo" class="text-red-500 text-sm"></span>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap -mx-3 mb-4">
+                <div class="w-full md:w-1/2 px-3">
+                    <label asp-for="NewEmployee.Password" class="block text-gray-700">পাসওয়ার্ড</label>
+                    <input asp-for="NewEmployee.Password" type="password" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <span asp-validation-for="NewEmployee.Password" class="text-red-500 text-sm"></span>
+                </div>
+                <div class="w-full md:w-1/2 px-3">
+                    <label asp-for="NewEmployee.ConfirmPassword" class="block text-gray-700">পাসওয়ার্ড নিশ্চিত করুন</label>
+                    <input asp-for="NewEmployee.ConfirmPassword" type="password" class="mt-1 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <span asp-validation-for="NewEmployee.ConfirmPassword" class="text-red-500 text-sm"></span>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-300">Add Employee</button>
+            </div>
+        </form>
+    </div>
+
+
+<!-- Employee List Table -->
+<div class="max-w-5xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 p-6">Employee List</h2>
+    <table class="min-w-full bg-white">
+        <thead class="bg-gray-200 text-gray-600 uppercase text-sm">
+            <tr>
+                <th class="py-3 px-6 text-left">ব্যবহারকারীর নাম</th>
+                <th class="py-3 px-6 text-left">দোকানের নাম</th>
+                <th class="py-3 px-6 text-left">ঠিকানা</th>
+                <th class="py-3 px-6 text-left">ফোন নম্বর</th>
+                <th class="py-3 px-6 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-700 text-sm">
+            @foreach (var employee in Model.EmployeeList)
+            {
+                <tr class="border-b border-gray-200 hover:bg-gray-100 transition duration-300">
+                    <td class="py-3 px-6">@employee.UserName</td>
+                    <td class="py-3 px-6">@employee.ShopName</td>
+                    <td class="py-3 px-6">@employee.Address</td>
+                    <td class="py-3 px-6">@employee.PhoneNo</td>
+                    <td class="py-3 px-6 flex space-x-2">
+                        <a href="@Url.Action("EmpDetails", "ClientEmp", new { id = employee.UserId })" class="text-blue-500 hover:underline transition duration-300">Details</a>
+                        <a href="@Url.Action("Edit", "ClientEmp", new { id = employee.UserId })" class="text-yellow-500 hover:underline transition duration-300">Edit</a>
+                        <a href="@Url.Action("Delete", "ClientEmp", new { id = employee.UserId })" class="text-red-500 hover:underline transition duration-300">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function toggleForm() {
+        const form = document.getElementById('employeeForm');
+        form.classList.toggle('hidden'); // Toggles the hidden class to show/hide the form
+    }
+</script>
