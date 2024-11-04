@@ -1,29 +1,22 @@
 ﻿<link href="~/css/charts.css" rel="stylesheet" />
 
-
 <div class="bg-gray-100">
-
      @* box style  *@
-
     <div class="mt-5 flex  justify-center gap-4">
         <!-- Total Sales Box -->
         <div class="bg-blue-500 flex-1 min-w-[250px] max-w-xs h-32 text-center text-white text-3xl font-semibold p-6 rounded-lg shadow-xl transform transition-transform hover:scale-105">
             <p class="text-xl font-medium mb-1">মোট বিক্রয়:</p>
-            ৳<span id="totalSalesAmount">0</span>
+            ৳<span id="totalSalesAmount">@ViewBag.TotalMonthlySales</span>
         </div>
-
         <!-- Total Sales and Deposit Box -->
         <div id="totalSalesAndDepositBox" class="bg-white flex-1 min-w-[250px] max-w-xs h-32 text-center text-gray-800 text-2xl font-semibold p-6 rounded-lg shadow-lg border border-gray-200">
             মোট বিক্রয়:  ৳<span id="totalSales">0 </span> | মোট আমানত: ৳<span id="totalDeposit">0</span>
         </div>
-
         <!-- Total Profit Box -->
         <div id="totalProfitBox" class="bg-green-500 flex-1 min-w-[250px] max-w-xs h-32 text-center text-white text-2xl font-semibold p-6 rounded-lg shadow-lg">
             মোট লাভ: <br /> ৳<span id="totalProfit">0</span>
         </div>
     </div>
-
-
 
     <div class="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
         <div class="flex flex-wrap justify-center gap-6 w-full">
@@ -36,13 +29,10 @@
                 <!-- Sales Amount Chart -->
                 <div id="container" class="w-full min-h-[400px]"></div>
             </div>
-
             <!-- Total Sales and Deposit Box and Chart -->
             <div class="w-full md:w-[45%]   rounded-lg p-4 flex flex-col items-center">
                 <!-- Total Sales and Deposit Box -->
-               
-
-                <select id="dateFormat" class="mb-4 p-2 border border-gray-300 rounded-md w-full" onchange="createChart()">
+               <select id="dateFormat" class="mb-4 p-2 border border-gray-300 rounded-md w-full" onchange="createChart()">
                     <option value="week">প্রতি সপ্তাহ</option>
                     <option value="month">প্রতি মাস</option>
                     <option value="year">প্রতি বছর</option>
@@ -51,29 +41,39 @@
                 <div id="salesChart" class="w-full h-[400px]"></div>
             </div>
         </div>
-
-
-
         <!-- Monthly Profit Chart -->
         <div class="w-full md:w-[45%] bg-white shadow-lg rounded-lg p-4">
+            <div class="flex justify-between items-center mb-4">
+                <!-- Profit View Option Selection -->
+                <label for="profitFormat" class="mr-2">লাভ প্রদর্শন করুন:</label>
+                <select id="profitFormat" class="border rounded px-2 py-1">
+                    <option value="day" selected>দৈনিক</option> <!-- Set daily as default -->
+                    <option value="week">সাপ্তাহিক</option>
+                    <option value="month">মাসিক</option>
+                    <option value="year">বার্ষিক</option>
+                </select>
+            </div>
+
+            <!-- Total Profit Display -->
+            <div class="mb-4 text-center">
+                <h2 class="text-lg font-semibold">মোট লাভ: <span id="totalProfit" class="text-green-500">৳0</span></h2>
+            </div>
+
             <figure class="highcharts-figure">
-               
                 <div id="containerr" class="w-full h-[400px]"></div>
                 <p class="highcharts-description text-center mt-4">
-                    এই চার্টটি বিভিন্ন মাসে অর্জিত লাভ দেখাচ্ছে।
+                    এই চার্টটি বিভিন্ন সময়ে অর্জিত লাভ দেখাচ্ছে।
                 </p>
             </figure>
         </div>
 
-
+        <!-- Additional description -->
         <p class="highcharts-description text-center mt-4">
             এই ড্যাশবোর্ডে বিভিন্ন পণ্যের বিক্রয়ের পরিমাণ এবং মোট বিক্রয়ের সাথে আমানত দেখানো হয়েছে।
         </p>
+
     </div>
-
 </div>
-
-
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
@@ -82,14 +82,7 @@
 <script src="https://code.highcharts.com/dashboards/dashboards.js"></script>
 <script src="https://code.highcharts.com/dashboards/modules/layout.js"></script>
 
-
-
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
-<script>
-    
+<script>    
     // Sales Amount Dashboard
     Highcharts.setOptions({ chart: { styledMode: true } });
     Dashboards.board('container', {
@@ -194,53 +187,95 @@
 
 
     Highcharts.setOptions({
-        chart: {
-            styledMode: true
+         chart: {
+             styledMode: true
+         }
+     });
+
+     // Fetch and render the profit data based on selected format
+     function renderProfitChart(format = "day") { // Set default format to 'day'
+         // AJAX request to fetch profit data
+       fetch(`/Charts/GetTotalProfit?format=${format}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log("Data received from server:", data); // Log the full response
+
+        // Ensure data is an array and has the correct structure
+        if (!Array.isArray(data) || data.length === 0) {
+            console.error("Invalid data format received:", data);
+            return;
         }
-    });
 
-    // for monthlyy or yearly profit
-    const monthlyProfitData = [
-        16000, 18200, 23100, 27900, 32200, 36400, 39800, 38400, 35500, 29200, 22000, 17800
-    ];
+        // Prepare data for Highcharts
+        const categories = data.map(item => {
+            if (item.date === undefined) {
+                console.error("Date is undefined for item:", item);
+            }
+            return item.date; // Use 'date' instead of 'Date'
+        });
 
-    // Calculate and update the total profit amount in the box
-    const totalProfit = monthlyProfitData.reduce((acc, val) => acc + val, 0);
-    document.getElementById('totalProfit').innerText = totalProfit;
+        const profitData = data.map(item => {
+            if (item.profit === undefined) {
+                console.error("Profit is undefined for item:", item);
+            }
+            return item.profit; // Use 'profit' instead of 'Profit'
+        });
 
-    // Render the Monthly Profit Chart
-    Highcharts.chart('containerr', {
-        chart: {
-            type: 'line'
-        },
-        title: {
-            text: 'মাসিক লাভের পরিমাণ'
-        },
-        subtitle: {
-            text: 'Source: আপনার ব্যবসায়িক ডেটাবেস'
-        },
-        xAxis: {
-            categories: [
-                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-            ]
-        },
-        yAxis: {
+        console.log("Categories:", categories); // Log categories
+        console.log("Profit Data for Chart:", profitData); // Log profit data to console
+
+        // Render the chart
+        Highcharts.chart('containerr', {
+            chart: {
+                type: 'line'
+            },
             title: {
-                text: 'লাভের পরিমাণ (৳)'
-            }
-        },
-        plotOptions: {
-            line: {
-                dataLabels: {
-                    enabled: true
-                },
-                enableMouseTracking: false
-            }
-        },
-        series: [{
-            name: '',
-            data: monthlyProfitData
-        }]
-    });
+                text: format === 'day' ? 'দৈনিক লাভের পরিমাণ' :
+                      format === 'week' ? 'সাপ্তাহিক লাভের পরিমাণ' :
+                      format === 'month' ? 'মাসিক লাভের পরিমাণ' : 'বার্ষিক লাভের পরিমাণ'
+            },
+            subtitle: {
+                text: 'Source: আপনার ব্যবসায়িক ডেটাবেস'
+            },
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                title: {
+                    text: 'লাভের পরিমাণ (৳)'
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+            series: [{
+                name: 'লাভ',
+                data: profitData
+            }]
+        });
+
+        // Update total profit
+        const totalProfit = profitData.reduce((acc, val) => acc + val, 0);
+        document.getElementById('totalProfit').innerText = `৳${totalProfit.toLocaleString()}`;
+    })
+    .catch(error => console.error('Error fetching profit data:', error));
+     }
+
+     // Event listener for format change
+     document.getElementById('profitFormat').addEventListener('change', (e) => {
+         const selectedFormat = e.target.value;
+         renderProfitChart(selectedFormat);
+     });
+
+     // Initial load with default format (daily)
+     document.addEventListener('DOMContentLoaded', () => {
+         renderProfitChart("day"); // Call with "day" format explicitly
+     });
+
 
 </script>

@@ -39,7 +39,7 @@ namespace POS.Models
         public decimal? Deposit { get; set; } = 0;
 
         // Additional tracking fields
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
         public int? UserId { get; set; }  // User who added the buy entry
     }
 }

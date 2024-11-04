@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using POS.Models;
 using System.Linq;
 
@@ -13,10 +14,10 @@ namespace POS.Controllers
             _db = db;
         }
 
-        public IActionResult CustomerList()
+        public IActionResult AdmClientList()
         {
             // Fetch all active customers
-            var customers = _db.Users.Where(u => u.Status == "Active").ToList();
+            var customers = _db.Users.Where(u => u.Role == "Client").ToList();
             return View(customers);
         }
 
@@ -33,5 +34,19 @@ namespace POS.Controllers
 
             return RedirectToAction("CustomerList");
         }
+        [HttpPost]
+        public JsonResult ToggleStatus(int id)
+        {
+            var user = _db.Users.Find(id);
+            if (user != null)
+            {
+                user.Status = user.Status == "Active" ? "Inactive" : "Active";
+                _db.SaveChanges();
+                return Json(new { success = true });
+            }
+            return Json(new { success = false });
+        }
+
+
     }
 }

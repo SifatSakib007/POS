@@ -41,30 +41,30 @@ namespace POS.Controllers
         [Authorize(Roles = "Client")]
         public IActionResult ClientDashboard()
         {
-            var currentMonth = DateTime.Now.Month;
-            var currentYear = DateTime.Now.Year;
-            int? userId = GetLoggedInUserId();
+            //var currentMonth = DateTime.Now.Month;
+            //var currentYear = DateTime.Now.Year;
+            //int? userId = GetLoggedInUserId();
 
-            // Log for debugging
-            Console.WriteLine($"UserId: {userId}, Year: {currentYear}, Month: {currentMonth}");
+            //// Log for debugging
+            //Console.WriteLine($"UserId: {userId}, Year: {currentYear}, Month: {currentMonth}");
 
-            if (userId == null)
-            {
-                return NotFound(); // Return 404 if the user ID is not valid
-            }
+            //if (userId == null)
+            //{
+            //    return NotFound(); // Return 404 if the user ID is not valid
+            //}
 
-            var totalMonthlySales = _db.Sell
-                .Where(s => s.UserId == userId
-                            && s.CreatedAt.HasValue
-                            && s.CreatedAt.Value.Year == currentYear
-                            && s.CreatedAt.Value.Month == currentMonth)
-                .Sum(s => s.TotalTotalPrice);
+            //var totalMonthlySales = _db.Sell
+            //    .Where(s => s.UserId == userId
+            //                && s.CreatedAt.HasValue
+            //                && s.CreatedAt.Value.Year == currentYear
+            //                && s.CreatedAt.Value.Month == currentMonth)
+            //    .Sum(s => s.TotalTotalPrice);
 
-            // Log total for debugging
-            Console.WriteLine($"Total Monthly Sales: {totalMonthlySales}");
+            //// Log total for debugging
+            //Console.WriteLine($"Total Monthly Sales: {totalMonthlySales}");
 
-            // Pass the total to the view
-            ViewBag.TotalMonthlySales = totalMonthlySales;
+            //// Pass the total to the view
+            //ViewBag.TotalMonthlySales = totalMonthlySales;
             return View();
         }
 
@@ -270,6 +270,10 @@ namespace POS.Controllers
                         ModelState.AddModelError("", "Invalid data received for quantities or selling prices.");
                         return BadRequest(ModelState);
                     }
+                    var profitPerProduct = 0m;
+                    var profitPerProductQuantity = 0m;
+                    var totalProfit = 0m;
+
                     // Loop through all selected products and accumulate information
                     for (int i = 0; i < viewModel.Products.Count; i++)
                     {
@@ -288,6 +292,10 @@ namespace POS.Controllers
                             ModelState.AddModelError("", $"Insufficient stock for product '{product.ProductName}'");
                             return BadRequest(ModelState);
                         }
+
+                        profitPerProduct = sellingPrices[i] - product.BuyPrice;
+                        profitPerProductQuantity = profitPerProduct * quantities[i];
+                        totalProfit += profitPerProductQuantity;
 
                         // Reduce stock
                         product.Stock = productSell.Stock; 
@@ -337,7 +345,8 @@ namespace POS.Controllers
                         ProductNames = productNames,
                         Quantities = totalQuantity,
                         TotalPricePerProduct = totalSellingPrice,
-                        Invoice = invoice
+                        Invoice = invoice,
+                        Profit = totalProfit
                     };
                     //======== Add data to Sell table ========
                     _db.Sell.Add(sell);

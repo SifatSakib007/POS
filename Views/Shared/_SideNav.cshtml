@@ -4,6 +4,14 @@
             @User.Identity.Name  <!-- Styled user name -->
         </a>
 
+        <!-- Logout Button -->
+        <form asp-action="Logout" asp-controller="RegLog" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition duration-300 ease-in-out">
+                লগআউট
+            </button>
+        </form>
+
         <!-- Large screen navigation -->
         <nav class="max-sm:hidden sm:hidden md:hidden lg:flex max-xl:flex ml-auto space-x-6">
               @* <a asp-controller="Home" asp-action="Index" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">হোম</a> *@

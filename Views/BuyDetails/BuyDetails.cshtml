@@ -9,7 +9,15 @@
                 <p class="text-gray-500 mt-2">@Model.Invoice ?? "N/A"</p>
             </div>
             <div class="text-right">
-                <p class="font-medium text-gray-600">Date: @Model.CreatedAt.ToString("yyyy-MM-dd")</p>
+                @if (Model.CreatedAt.HasValue)
+                {
+                    <p class="font-medium text-gray-600">Date: @Model.CreatedAt.Value.ToString("yyyy-MM-dd")</p>
+                }
+                else
+                {
+                    <p class="font-medium text-gray-600">Date: Not Available</p>
+                }
+
                 <p class="font-medium text-gray-600">Client ID: @(Model.ClientId?.ToString() ?? "N/A")</p>
                 <p class="font-medium text-gray-600">Processed by User ID: @(Model.UserId?.ToString() ?? "N/A")</p>
             </div>

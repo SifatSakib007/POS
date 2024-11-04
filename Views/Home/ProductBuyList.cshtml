@@ -55,8 +55,16 @@
                         <td class="px-6 py-4 text-sm text-center buy-price">@buy.TotalSum</td>
                         <td class="px-6 py-4 text-sm text-center stock">@buy.Quantities</td>
                         <td class="px-6 py-4 text-sm text-center date">
-                            @buy.CreatedAt.ToString("yyyy-MM-dd")
+                            @if (buy.CreatedAt.HasValue)
+                            {
+                                @buy.CreatedAt.Value.ToString("yyyy-MM-dd")
+                            }
+                            else
+                            {
+                                <span>No Date Available</span>
+                            }
                         </td>
+
                         <td class="px-6 py-4 text-sm">
                             <a asp-controller="BuyDetails" asp-action="BuyDetails" asp-route-id="@buy.BuyId" class="text-green-600 hover:text-green-800 mr-2">
                                 <i class="fas fa-info-circle"></i> Details

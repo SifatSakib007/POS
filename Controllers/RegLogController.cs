@@ -128,7 +128,19 @@ namespace POS.Controllers
             TempData["error"] = "Login failed!.";
             return RedirectToAction("Login", "RegLog"); // Redirect to some home or dashboard page after successful login
         }
-    
-    
-}
+
+        // GET: Logout
+        public IActionResult Logout()
+        {
+            // Sign out the user
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // Optionally, you can clear the TempData to avoid displaying messages after logout
+            TempData.Clear();
+
+            // Redirect to the login page or a public page
+            return RedirectToAction("Login", "RegLog"); // Change to your desired redirect action
+        }
+
+    }
 }
