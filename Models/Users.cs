@@ -44,7 +44,7 @@ namespace POS.Models
         public DateTime? DeletedAt { get; set; }
         public string? Status { get; set; } = "Active";
 
-
+        public int? Payment { get; set; } = 0;
         // Navigation property for the products added by the user
         public ICollection<Product> Products { get; set; } = new List<Product>();
         public ICollection<Shop> Shops { get; set; } = new List<Shop>();

@@ -1,0 +1,70 @@
+﻿@model POS.Models.Users
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="container mx-auto p-5">
+    <h1 class="text-2xl font-bold mb-4">Edit User</h1>
+
+    <form asp-action="Edit" method="post" class="bg-white shadow-md rounded-lg p-6">
+        <input type="hidden" asp-for="UserId" />
+
+        <div class="mb-4">
+            <label asp-for="UserName" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="UserName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-300" />
+            <span asp-validation-for="UserName" class="text-red-500 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="ShopName" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="ShopName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-300" />
+            <span asp-validation-for="ShopName" class="text-red-500 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Address" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Address" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-300" />
+            <span asp-validation-for="Address" class="text-red-500 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Email" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-300" />
+            <span asp-validation-for="Email" class="text-red-500 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="PhoneNo" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="PhoneNo" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-300" />
+            <span asp-validation-for="PhoneNo" class="text-red-500 text-sm"></span>
+        </div>
+         <div class="mb-4">
+            <label asp-for="Status" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Status" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-300" />
+            <span asp-validation-for="Status" class="text-red-500 text-sm"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="Payment" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Payment" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring focus:ring-blue-300" />
+            <span asp-validation-for="Payment" class="text-red-500 text-sm"></span>
+        </div>
+        
+
+        <div class="flex justify-end">
+            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300">
+                Update User
+            </button>
+        </div>
+
+        <div class="mt-4">
+            <a asp-action="Index" class="text-blue-600 hover:text-blue-800">Back to List</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
