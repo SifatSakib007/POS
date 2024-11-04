@@ -1,4 +1,6 @@
-﻿<header class="flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[80px] tracking-wide relative z-50">
+﻿@using System.Security.Claims
+
+<header class="flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[80px] tracking-wide relative z-50">
     <div class="flex flex-wrap items-center gap-5 w-full">
         <a href="#" class="text-xl font-semibold text-gray-800 hover:text-blue-600 transition duration-300 ease-in-out">
             @User.Identity.Name  <!-- Styled user name -->
@@ -12,19 +14,27 @@
             </button>
         </form>
 
-        <!-- Large screen navigation -->
-        <nav class="max-sm:hidden sm:hidden md:hidden lg:flex max-xl:flex ml-auto space-x-6">
-              @* <a asp-controller="Home" asp-action="Index" class="hover:text-[#007bff] text-[#007bff] font-semibold block text-[15px]">হোম</a> *@
-            <a asp-controller="RegLog" asp-action="Register" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">রেজিস্টার</a>
-            <a asp-controller="RegLog" asp-action="Login" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">লগিন</a>
-            <a asp-controller="Home" asp-action="ProductSell" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">পণ্য বিক্রয়</a>
-            <a asp-controller="Home" asp-action="ProductSellReport" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বিক্রয় বিবরণী</a>
-            <a asp-controller="Home" asp-action="AddCustomer" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার যুক্ত করুন</a>
-            <a asp-controller="Home" asp-action="CustomerList" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার বিবরণী</a>
-            <a asp-controller="Home" asp-action="CustomerDue" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বাকি হিসাব</a>
-            <a asp-controller="Home" asp-action="ShopHishab" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">দোকান হিসাব</a>
-            <a asp-controller="Home" asp-action="ProductBuy" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">পণ্য যুক্ত করুন</a>
-        </nav>
+        @{
+            var userRole = User.Identity.IsAuthenticated ? User.FindFirst(ClaimTypes.Role)?.Value : null;
+        }
+
+        
+            <nav class="max-sm:hidden sm:hidden md:hidden lg:flex max-xl:flex ml-auto space-x-6">
+                
+            @if (userRole == "Admin")
+            {
+                <a asp-controller="Home" asp-action="ProductSell" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">পণ্য বিক্রয়</a>
+            }
+
+                <a asp-controller="Home" asp-action="ProductSellReport" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বিক্রয় বিবরণী</a>
+                <a asp-controller="Home" asp-action="AddCustomer" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার যুক্ত করুন</a>
+                <a asp-controller="Home" asp-action="CustomerList" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">কাস্টমার বিবরণী</a>
+                <a asp-controller="Home" asp-action="CustomerDue" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">বাকি হিসাব</a>
+                <a asp-controller="Home" asp-action="ShopHishab" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">দোকান হিসাব</a>
+                <a asp-controller="Home" asp-action="ProductBuy" class="hover:text-[#007bff] text-[#333] font-semibold block text-[15px]">পণ্য যুক্ত করুন</a>
+            </nav>
+        
+
 
         <!-- Hamburger Button for Small screens -->
         <button id="toggleOpen" class="lg:hidden ml-auto" onclick="toggleMenu()">

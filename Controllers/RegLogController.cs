@@ -20,6 +20,7 @@ namespace POS.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            ViewBag.ShowNavbar = false; // Set to false for this page
             return View();
         }
         [HttpGet]
@@ -72,12 +73,13 @@ namespace POS.Controllers
         // GET: Login
         public IActionResult Login()
         {
+            ViewBag.ShowNavbar = false; // Set to false for this page
             return View();
         }
 
         // POST: Login
         [HttpPost]
-        public IActionResult Login(string phoneNo, string password)
+        public async Task<IActionResult> Login(string phoneNo, string password)
         {
             if (string.IsNullOrEmpty(phoneNo) || string.IsNullOrEmpty(password))
             {
@@ -109,8 +111,9 @@ namespace POS.Controllers
             };
 
             // Sign in the user
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
+            
             // Redirect based on the role
             if (user.Role == "Admin")
             {
@@ -118,7 +121,7 @@ namespace POS.Controllers
                 TempData["error"] = "Successfullly login!.";
                 return RedirectToAction("AdminDashboard", "Home");
             }
-            else if (user.Role == "Client")
+            else if (user.Role == "Client" || user.Role == "Employee")
             {
                 //Alert
                 TempData["success"] = "Successfullly login!.";

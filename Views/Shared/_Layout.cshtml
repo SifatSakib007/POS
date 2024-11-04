@@ -28,7 +28,11 @@
 <body class="flex flex-col min-h-screen">
 
     <header>
-        <partial name="_SideNav" />
+        @if (ViewBag.ShowNavbar != false) // Check if the navbar should be displayed
+        {
+            <partial name="_SideNav" />
+        }
+        @* <partial name="_SideNav" /> *@
     </header>
 
     <div class="flex-grow container mx-auto">
