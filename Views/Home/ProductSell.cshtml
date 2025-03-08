@@ -127,21 +127,21 @@
             <!-- ক্রেতার ফোন নাম্বার (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label asp-for="CustomerPhoneNo" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রেতার ফোন নাম্বার</label>
-                <input asp-for="CustomerPhoneNo" readonly placeholder="ক্রেতার ফোন নাম্বার" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="CustomerPhoneNo"  placeholder="ক্রেতার ফোন নাম্বার" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
             <!-- ক্রেতার ঠিকানা (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label asp-for="CustomerAddress" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">ক্রেতার ঠিকানা</label>
-                <input asp-for="CustomerAddress" readonly type="text" placeholder="ক্রেতার ঠিকানা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="CustomerAddress"  type="text" placeholder="ক্রেতার ঠিকানা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
             <!-- সাবেক টাকা (readonly) -->
             <div class="relative flex items-center  mt-4">
                 <label asp-for="ShabekDue" class="text-[13px] bg-white text-black absolute px-2 top-[-10px] left-[18px]">সাবেক টাকা</label>
-                <input asp-for="ShabekDue" type="number" readonly placeholder="সাবেক বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
+                <input asp-for="ShabekDue" type="number"  placeholder="সাবেক বাকি টাকা" class="px-4 py-3.5 bg-white text-black w-full text-sm border-2 border-gray-100 focus:border-blue-500 rounded outline-none" />
                 <span class="text-danger"></span>
             </div>
 
@@ -452,8 +452,17 @@
         var formData = new FormData();
 
         // 1. Get selected customer ID from user input
-        var selectedCustomerId = parseInt($('#SelectedCustomerId').val());
-        formData.append('SelectedCustomerId', selectedCustomerId);
+           // Get the value from the selected customer input
+        var selectedCustomerId = $('#SelectedCustomerId').val();
+    
+        // If the value is empty, append `null`; otherwise, parse the integer
+        if (!selectedCustomerId) {
+            formData.append('SelectedCustomerId', null);
+        } else {
+            formData.append('SelectedCustomerId', parseInt(selectedCustomerId));
+        }
+        var customerName = document.getElementById('CustomerSearch').value;
+        formData.append('Name', customerName);
 
         // 2. Get total total price
         var totalTotalPrice = parseFloat($('#TotalTotalPrice').val());
@@ -466,12 +475,12 @@
         var customerPhoneNo = $('#CustomerPhoneNo').val();
         var customerAddress = $('#CustomerAddress').val();
         var deposit = $('#Deposit').val();
-        var shabekDue = parseFloat($('#ShabekDue').val());
+        
 
         formData.append('CustomerPhoneNo', customerPhoneNo);
         formData.append('CustomerAddress', customerAddress);
         formData.append('Deposit', deposit);
-        formData.append('ShabekDue', shabekDue);
+        formData.append('ShabekDue', totalDuePrice);
 
 
         // 4. Send the array of selectedProductIds
