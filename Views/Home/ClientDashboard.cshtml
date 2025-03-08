@@ -1,7 +1,7 @@
 ﻿<link href="~/css/charts.css" rel="stylesheet" />
 
 <div class="bg-gray-100">
-     @* box style  *@
+    @* box style  *@
     <div class="mt-5 flex  justify-center gap-4">
         <!-- Total Sales Box -->
         <div class="bg-blue-500 flex-1 min-w-[250px] max-w-xs h-32 text-center text-white text-3xl font-semibold p-6 rounded-lg shadow-xl transform transition-transform hover:scale-105">
@@ -21,18 +21,24 @@
     <div class="p-6 bg-gray-100 min-h-screen flex flex-col items-center">
         <div class="flex flex-wrap justify-center gap-6 w-full">
             <!-- Sales Amount Box and Chart -->
-            <div class="w-full md:w-[45%]   rounded-lg p-4 flex flex-col items-center">
+            <div class="w-full md:w-[45%] rounded-lg p-4 flex flex-col items-center">
                 <!-- Total Sales Box -->
-              @*     <div id="totalSalesBox" class="text-lg font-semibold mb-4 p-3 bg-gray-100 rounded-md text-center w-full">
-                      মোট বিক্রয়: ৳<span id="totalSalesAmount">0</span>
-                  </div> *@
+                <!--     <div id="totalSalesBox" class="text-lg font-semibold mb-4 p-3 bg-gray-100 rounded-md text-center w-full">
+                        মোট বিক্রয়: ৳<span id="totalSalesAmount">0</span>
+                    </div> -->
                 <!-- Sales Amount Chart -->
+                <select id="dateFormat1" class="mb-4 p-2 border border-gray-300 rounded-md w-full">
+                    <option value="week">প্রতি সপ্তাহ</option>
+                    <option value="month">প্রতি মাস</option>
+                    <option value="year">প্রতি বছর</option>
+                    <option value="day">প্রতি দিন</option>
+                </select>
                 <div id="container" class="w-full min-h-[400px]"></div>
             </div>
             <!-- Total Sales and Deposit Box and Chart -->
             <div class="w-full md:w-[45%]   rounded-lg p-4 flex flex-col items-center">
                 <!-- Total Sales and Deposit Box -->
-               <select id="dateFormat" class="mb-4 p-2 border border-gray-300 rounded-md w-full" onchange="createChart()">
+                <select id="dateFormat" class="mb-4 p-2 border border-gray-300 rounded-md w-full" onchange="createChart()">
                     <option value="week">প্রতি সপ্তাহ</option>
                     <option value="month">প্রতি মাস</option>
                     <option value="year">প্রতি বছর</option>
@@ -82,58 +88,109 @@
 <script src="https://code.highcharts.com/dashboards/dashboards.js"></script>
 <script src="https://code.highcharts.com/dashboards/modules/layout.js"></script>
 
-<script>    
-    // Sales Amount Dashboard
-    Highcharts.setOptions({ chart: { styledMode: true } });
-    Dashboards.board('container', {
-        dataPool: {
-            connectors: [{
-                id: 'sales-amount',
-                type: 'JSON',
-                options: {
-                    firstRowAsNames: false,
-                    columnNames: ['পণ্য', 'বিক্রয়ের পরিমাণ'],
-                    data: [
-                        ['পণ্য A', 6421],
-                        ['পণ্য B', 2122],
-                        ['পণ্য C', 1350],
-                        ['পণ্য D', 388],
-                        ['পণ্য E', 214]
-                    ]
+<script>
+
+      document.addEventListener("DOMContentLoaded", function () {
+    const dateFormatSelect = document.getElementById("dateFormat1");
+    const container = document.getElementById("container");
+
+    // Function to fetch data and update the chart
+    function fetchAndRenderData(format = 'day') {
+        fetch(`/Charts/GetProductSalesData?format=${format}`)
+            .then(response => response.json())
+            .then(data => {
+                // Log the fetched data for debugging
+                console.log("Fetched Data:", data);
+
+                // Validate data structure
+                if (!data || !Array.isArray(data)) {
+                    console.error("Unexpected data format:", data);
+                    return;
                 }
-            }]
-        },
-        gui: {
-            layouts: [{ rows: [{ cells: [{ id: 'dashboard-col-0' }] }] }]
-        },
-        components: [{
-            sync: { visibility: true, highlight: true, extremes: true },
-            connector: {
-                id: 'sales-amount',
-                columnAssignment: [{ seriesId: 'বিক্রয়ের পরিমাণ', data: ['পণ্য', 'বিক্রয়ের পরিমাণ'] }]
+
+                // Process fetched data to format for Highcharts
+                let chartData = {};
+
+                data.forEach(entry => {
+                    if (entry.products && Array.isArray(entry.products)) {
+                        entry.products.forEach(product => {
+                            const productName = product.productName;
+                            const salesAmount = product.salesAmount;
+
+                            if (!chartData[productName]) {
+                                chartData[productName] = 0;
+                            }
+                            chartData[productName] += salesAmount;
+                        });
+                    }
+                });
+
+                // Convert chartData object to Highcharts series format
+                const seriesData = Object.entries(chartData).map(([product, sales]) => [product, sales]);
+
+                // Render chart with new data
+                renderChart(seriesData);
+            })
+            .catch(error => console.error("Failed to fetch sales data:", error));
+    }
+
+    // Function to render the chart with given data
+    function renderChart(seriesData) {
+        Highcharts.chart(container, {
+            chart: {
+                type: 'column',
+                animation: false,
+                spacing: [30, 30, 30, 20]
             },
-            renderTo: 'dashboard-col-0',
-            type: 'Highcharts',
-            chartOptions: {
-                xAxis: { type: 'category', accessibility: { description: 'পণ্যসমূহ' } },
-                yAxis: {
-                    title: { text: 'পরিমাণ' },
-                    plotLines: [{
-                        value: 900,
-                        zIndex: 7,
-                        dashStyle: 'shortDash',
-                        label: { text: 'লক্ষ্যমাত্রা', align: 'right', style: { color: '#B73C28' } }
-                    }]
+            title: {
+                text: 'Sales Amount per Product'
+            },
+            xAxis: {
+                type: 'category',
+                title: {
+                    text: 'Products'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Sales Amount'
                 },
-                credits: { enabled: false },
-                plotOptions: { series: { marker: { radius: 6 } } },
-                legend: { enabled: true, verticalAlign: 'top' },
-                chart: { animation: false, type: 'column', spacing: [30, 30, 30, 20] },
-                tooltip: { valueSuffix: ' ইউনিট', stickOnContact: true },
-                accessibility: { description: 'এই চার্টটি বিভিন্ন পণ্যের বিক্রয়ের পরিমাণ দেখাচ্ছে।', point: { valueSuffix: ' ইউনিট' } }
-            }
-        }]
-    }, true);
+                plotLines: [{
+                    value: 900,
+                    zIndex: 7,
+                    dashStyle: 'shortDash',
+                    label: {
+                        text: 'Target',
+                        align: 'right',
+                        style: { color: '#B73C28' }
+                    }
+                }]
+            },
+            legend: {
+                enabled: true,
+                verticalAlign: 'top'
+            },
+            tooltip: {
+                valueSuffix: ' units',
+                stickOnContact: true
+            },
+            series: [{
+                name: 'Sales Amount',
+                data: seriesData,
+                colorByPoint: true
+            }],
+            credits: { enabled: false }
+        });
+    }
+
+    // Initial fetch for default view
+    fetchAndRenderData();
+
+    // Event listener for date format change
+    dateFormatSelect.addEventListener("change", function () {
+        fetchAndRenderData(this.value);
+    });
+});
 
     // Update total sales amount in the box above the Sales Amount chart
     function updateTotalSalesAmount() {
@@ -151,7 +208,7 @@
 
     // Total Sales and Deposit Chart
     async function fetchSalesAndDepositData(format) {
-        const response = await fetch(`/Charts/GetTotalSales?format=${format}`);
+        const response = await fetch(`/Charts/GetProductSalesData?format=${format}`);
         const data = await response.json();
         return data;
     }
