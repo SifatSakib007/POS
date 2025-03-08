@@ -38,36 +38,11 @@ namespace POS.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Client")]
+        [Authorize(Roles = "Client, Employee")]
         public IActionResult ClientDashboard()
         {
-            //var currentMonth = DateTime.Now.Month;
-            //var currentYear = DateTime.Now.Year;
-            //int? userId = GetLoggedInUserId();
-
-            //// Log for debugging
-            //Console.WriteLine($"UserId: {userId}, Year: {currentYear}, Month: {currentMonth}");
-
-            //if (userId == null)
-            //{
-            //    return NotFound(); // Return 404 if the user ID is not valid
-            //}
-
-            //var totalMonthlySales = _db.Sell
-            //    .Where(s => s.UserId == userId
-            //                && s.CreatedAt.HasValue
-            //                && s.CreatedAt.Value.Year == currentYear
-            //                && s.CreatedAt.Value.Month == currentMonth)
-            //    .Sum(s => s.TotalTotalPrice);
-
-            //// Log total for debugging
-            //Console.WriteLine($"Total Monthly Sales: {totalMonthlySales}");
-
-            //// Pass the total to the view
-            //ViewBag.TotalMonthlySales = totalMonthlySales;
             return View();
         }
-
 
         public IActionResult Privacy()
         {
@@ -81,7 +56,7 @@ namespace POS.Controllers
         }
 
         // Private method to load products and customers
-        private async Task<ProductCustomerViewModel> LoadProductCustomerViewModelAsync()
+        private async Task<ProductCustomerViewModel?> LoadProductCustomerViewModelAsync()
         {
             int? userId = GetLoggedInUserId();
             if (userId == null)
@@ -153,7 +128,6 @@ namespace POS.Controllers
             return Json(new { success = false, message = "Product not found." });
         }
 
-
         [HttpGet]
         public async Task<IActionResult> SearchCustomers(string term)
         {
@@ -171,6 +145,7 @@ namespace POS.Controllers
 
             return Json(new { success = true, customers });
         }
+        
         // AJAX call to fetch customer details
         [HttpGet]
         public async Task<JsonResult> GetCustomerDetails(int customerId)
@@ -200,10 +175,8 @@ namespace POS.Controllers
                     }
                 });
             }
-
             return Json(new { success = false, message = "Customer not found!" });
         }
-
 
         // GET: ProductSell - Displays the sell page
         [Authorize(Roles = "Client")]
@@ -251,6 +224,50 @@ namespace POS.Controllers
                             ModelState.AddModelError("", "Invalid customer selected.");
                             return BadRequest(ModelState);
                         }
+                        customer.Due = viewModel.ShabekDue;
+
+                        // Update payment information for the customer
+                        /* customer.PaymentDates = string.IsNullOrEmpty(customer.PaymentDates)
+                            ? DateTime.Now.ToString("yyyy-MM-dd")
+                            : $"{customer.PaymentDates},{DateTime.Now:yyyy-MM-dd}";
+
+                        customer.PaymentAmounts = string.IsNullOrEmpty(customer.PaymentAmounts)
+                            ? viewModel.Deposit.ToString()
+                            : $"{customer.PaymentAmounts},{viewModel.Deposit}"; */
+
+                        //======== Update data to Customer table ========
+                        _db.Customer.Update(customer);
+                    }
+                    else if(viewModel.Name != null) 
+                    {
+                        customer = new Customer
+                        {
+                            Name = viewModel.Name,
+                            PhoneNo = viewModel.CustomerPhoneNo,
+                            Address = viewModel.CustomerAddress,
+                            Due = viewModel.ShabekDue,
+                            UserId = GetLoggedInUserId(),
+                            FirstDue = viewModel.ShabekDue,
+                            Invoice = $"INV{DateTime.Now:yyyyMMddHHmmss}"
+                        };
+                        _db.Customer.Add(customer);
+                        await _db.SaveChangesAsync(); // Save customer to get an ID
+                    }                    
+                    else if (customer == null && viewModel.ShabekDue > 0)
+                    {
+                        customer = new Customer
+                        {
+                            Name = "Walk-in Customer",
+                            PhoneNo = "N/A",
+                            Address = "N/A",
+                            Due = viewModel.ShabekDue,
+                            UserId = GetLoggedInUserId(),
+                            FirstDue = viewModel.ShabekDue,
+                            Invoice = $"INV{DateTime.Now:yyyyMMddHHmmss}"
+                        };
+                        //======== Add data to Customer table ========
+                        _db.Customer.Add(customer);
+                        await _db.SaveChangesAsync(); // Save customer to get an ID
                     }
                     //creating a unique invoice number
                     string invoice = $"INV{DateTime.Now:yyyyMMddHHmmss}"; // Generate a unique invoice number
@@ -260,6 +277,7 @@ namespace POS.Controllers
                     string productNames = "";
                     string totalQuantity = "";
                     string productIds = "";
+
 
                     // Split the received comma-separated values into arrays
                     var quantities = viewModel.Quantities?.Split(',').Select(int.Parse).ToList();
@@ -333,7 +351,7 @@ namespace POS.Controllers
                         SellingPrice = 0,
                         TotalPrice = totalTotalPrice,
                         TotalTotalPrice = viewModel.TotalTotalPrice, // This is the overall total price including any extra charges or adjustments
-                        CustomerName = customer?.Name ?? "Walk-in Customer",
+                        CustomerName = customer?.Name ?? $"Walk-in Customer ({DateTime.Now:yyyy-MM-dd HH:mm})",
                         CustomerPhoneNo = customer?.PhoneNo ?? "N/A",
                         CustomerAddress = customer?.Address ?? "N/A",
                         DuePrice = viewModel.ShabekDue,
@@ -351,39 +369,7 @@ namespace POS.Controllers
                     //======== Add data to Sell table ========
                     _db.Sell.Add(sell);
 
-                    // Update customer due if customer is selected
-                    if (customer != null)
-                    {
-                        customer.Due = sell.TotalDuePrice;
-
-                        // Update payment information for the customer
-                        customer.PaymentDates = string.IsNullOrEmpty(customer.PaymentDates)
-                            ? DateTime.Now.ToString("yyyy-MM-dd")
-                            : $"{customer.PaymentDates},{DateTime.Now:yyyy-MM-dd}";
-
-                        customer.PaymentAmounts = string.IsNullOrEmpty(customer.PaymentAmounts)
-                            ? viewModel.Deposit.ToString()
-                            : $"{customer.PaymentAmounts},{viewModel.Deposit}";
-                        
-                        
-                        //======== Update data to Customer table ========
-                        _db.Customer.Update(customer);
-                    }
-                    else if (customer == null && sell.TotalDuePrice > 0)
-                    {
-                        customer = new Customer
-                        {
-                            Name = "Walk-in Customer",
-                            PhoneNo = "N/A",
-                            Address = "N/A",
-                            Due = sell.TotalDuePrice,
-                            UserId = userId,
-                            FirstDue = sell.TotalDuePrice,
-                            Invoice = invoice
-                        };
-                        //======== Add data to Customer table ========
-                        _db.Customer.Add(customer);
-                    }
+                    
                     await _db.SaveChangesAsync();
                     await transaction.CommitAsync();
 
@@ -410,7 +396,8 @@ namespace POS.Controllers
                 }
             }
         }
-
+        
+        [Authorize(Roles = "Client")]
         public async Task<IActionResult> ProductSellReport()
         {
             // Retrieve the logged-in user ID
@@ -431,6 +418,7 @@ namespace POS.Controllers
             return View(sellReport);
         }
 
+        [Authorize(Roles = "Client")]
         // GET: Sell/Edit/{id}
         [HttpGet]
         public async Task<IActionResult> EditProductSell(int id)
@@ -564,6 +552,7 @@ namespace POS.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Client")]
         [HttpGet]
         public IActionResult DetailsProductSell(int id)
         {
@@ -587,6 +576,8 @@ namespace POS.Controllers
             return _db.Sell.Any(e => e.SellId == id);
         }
         // GET: AddCustomer - Display the form for adding a new customer
+
+        [Authorize(Roles = "Client")]
         public IActionResult AddCustomer()
         {
             return View();
@@ -616,6 +607,8 @@ namespace POS.Controllers
             // If the model state is invalid, return the view with validation errors
             return View(model);
         }
+
+        [Authorize(Roles = "Client, Employee")]
         // GET: CustomerList - Show all customers in a table
         public async Task<IActionResult> CustomerList()
         {
@@ -625,16 +618,27 @@ namespace POS.Controllers
             {
                 return Unauthorized("User not authenticated."); // Return an unauthorized response if the user is not authenticated
             }
+            var loggedInUser = await _db.Users.FindAsync(userId);
+            if(loggedInUser == null)
+            {
+                return Unauthorized("User not found.");
+            }
+            // Parse the employee IDs from the logged-in user's profile
+            var employeeIds = loggedInUser.EmployeeId?.Split(',')
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Select(id => id.Trim())
+                .ToList() ?? new List<string>(); // Default to an empty list if no IDs
 
-            // Fetch all customers associated with the logged-in user
+            // Fetch customers associated with either the logged-in user or their employees
             var customers = await _db.Customer
-                .Where(c => c.UserId == userId) // Filter customers by user ID
+                .Where(c => c.UserId == userId || (c.UserId.HasValue && employeeIds.Contains(c.UserId.Value.ToString())))
                 .ToListAsync();
 
             // Pass the customers to the view
             return View(customers);
         }
 
+        [Authorize(Roles = "Client")]
         // GET: CustomerDue (Displays the dropdown with all customers)
         public IActionResult CustomerDue()
         {
@@ -744,11 +748,8 @@ namespace POS.Controllers
             }
         }
 
-        public ActionResult ShopHishab()
-        {
-            return View();
-        }
-
+       
+        [Authorize(Roles = "Client, Employee")]
         public ActionResult ProductBuy()
         {
 
@@ -982,6 +983,8 @@ namespace POS.Controllers
                 }
             }
         }
+
+        [Authorize(Roles = "Client")]
         public async Task<IActionResult> ProductBuyList()
         {
             // Retrieve the logged-in user ID
@@ -1000,6 +1003,7 @@ namespace POS.Controllers
             return View(buy);
         }
 
+        [Authorize(Roles = "Client")]
         [HttpGet]
         public async Task<IActionResult> UpdateProductStock(int id)
         {
